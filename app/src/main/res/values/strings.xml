@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyOcrAndroid</string>
+    <string name="menu_toggle_tile_numbers">Show/hide tile numbers</string>
+    <string name="menu_start_new_game">Start new game</string>
 </resources>
