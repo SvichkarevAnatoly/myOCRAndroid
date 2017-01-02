@@ -25,7 +25,7 @@ import java.util.List;
 import static org.opencv.core.Core.BORDER_DEFAULT;
 
 
-public class ReceiptScannerImpl {
+public class ReceiptScanner {
 
     private static final String TAG = "myOcr";
 

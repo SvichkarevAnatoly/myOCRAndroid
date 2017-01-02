@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import ru.myocr.model.databinding.ActivityMainBinding;
-import ru.myocr.model.ocr.ReceiptScannerImpl;
+import ru.myocr.model.ocr.ReceiptScanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Mat mat;
     private Mat matPrev;
     private int idx = 0;
-    private ReceiptScannerImpl scanner;
+    private ReceiptScanner scanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                                 .getBitmap(this.getContentResolver(), selectedImage);
                         sourceImg = bitmap;
                         binding.imageImg.setImageBitmap(bitmap);
-                        scanner = new ReceiptScannerImpl();
+                        scanner = new ReceiptScanner();
                         mat = scanner.loadImage(sourceImg);
                         idx = -1;
                     } catch (IOException e) {
