@@ -10,11 +10,18 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.opencv.core.Core.BORDER_DEFAULT;
 
@@ -82,42 +89,68 @@ public class ReceiptScannerImpl implements ReceiptScanner {
         return grayImage;
     }
 
-    /*public CvSeq findLargestSquareOnCannyDetectedImage(Mat image) {
-        final Mat foundedContoursImage = cvCloneImage(image);
-        final CvMemStorage memory = CvMemStorage.create();
-        final CvSeq contours = new CvSeq();
-        cvFindContours(foundedContoursImage, memory, contours,
+    public MatOfPoint findLargestSquareOnCannyDetectedImage(Mat image) {
+        /*final Mat foundedContoursImage = cvCloneImage(image);
+        final CvMemStorage memory = CvMemStorage.create();*/
+        final List<MatOfPoint> contours = new ArrayList<>();
+        /*cvFindContours(foundedContoursImage, memory, contours,
                 Loader.sizeof(CvContour.class), CV_RETR_LIST,
-                CV_CHAIN_APPROX_SIMPLE, cvPoint(0, 0));
-
+                CV_CHAIN_APPROX_SIMPLE, cvPoint(0, 0));*/
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(image, contours, hierarchy, Imgproc.RETR_LIST,
+                Imgproc.CHAIN_APPROX_SIMPLE, new Point(0, 0));
         int maxWidth = 0;
         int maxHeight = 0;
-        CvRect contour = null;
-        CvSeq seqFounded = null;
-        CvSeq nextSeq = new CvSeq();
-        for (nextSeq = contours; nextSeq != null; nextSeq = nextSeq.h_next()) {
-            contour = cvBoundingRect(nextSeq, 0);
-            if ((contour.width() >= maxWidth) && (contour.height() >= maxHeight)) {
-                maxWidth = contour.width();
-                maxHeight = contour.height();
-                seqFounded = nextSeq;
+        Rect contour = null;
+        MatOfPoint seqFounded = null;
+        List<MatOfPoint> nextSeq = new ArrayList<>();
+        //for (nextSeq = contours; nextSeq != null; nextSeq = nextSeq.h_next()) {
+        for (MatOfPoint m : contours){
+            //contour = cvBoundingRect(nextSeq, 0);
+            contour = Imgproc.boundingRect(m);
+            if ((contour.width >= maxWidth) && (contour.height >= maxHeight)) {
+                maxWidth = contour.width;
+                maxHeight = contour.height;
+                seqFounded = m;
             }
         }
-        final CvSeq result = cvApproxPoly(seqFounded, Loader.sizeof(CvContour.class),
-                memory, CV_POLY_APPROX_DP,
-                cvContourPerimeter(seqFounded) * 0.02, 0);
-        for (int i = 0; i < result.total(); i++) {
-            final CvPoint v = new CvPoint(cvGetSeqElem(result, i));
-            cvDrawCircle(foundedContoursImage, v, 5,
-                    CvScalar.BLUE, 20, 8, 0);
-            System.out.println("found point(" + v.x()
-                    + "," + v.y() + ")");
-        }
-        saveImage(foundedContoursImage, "contoursReceipt.jpg");
-        return result;
+
+        MatOfPoint2f thisContour2f = new MatOfPoint2f();
+        MatOfPoint out = new MatOfPoint();
+        MatOfPoint2f out2f = new MatOfPoint2f();
+
+        seqFounded.convertTo(thisContour2f, CvType.CV_32FC2);
+
+        Imgproc.approxPolyDP(thisContour2f, out2f, Imgproc.arcLength(thisContour2f, true) * 0.02, false);
+
+        out2f.convertTo(out, CvType.CV_32S);
+
+        return out;
     }
 
-    public Mat applyPerspectiveTransformThresholdOnOriginalImage(Mat srcImage, CvSeq contour) {
+    public void drawLargestSquareOnCannyDetectedImage(Mat image, MatOfPoint largestSquare){
+        //final Mat foundedContoursImage = image.clone();
+
+/*
+        final List<MatOfPoint> result = ApproxPoly(seqFounded, Loader.sizeof(CvContour.class),
+                memory, CV_POLY_APPROX_DP,
+                cvContourPerimeter(seqFounded) * 0.02, 0);
+*/
+        List<Point> points = largestSquare.toList();
+        for (int i = 0; i < largestSquare.total(); i++) {
+
+            final Point v = points.get(i);//new Point(cvGetSeqElem(result, i));
+            //cvDrawCircle(foundedContoursImage, v, 5,
+            //        CvScalar.BLUE, 20, 8, 0);
+            Scalar blue = new Scalar(255);
+            Imgproc.circle(image, v, 5, blue, 20, 8, 0);
+            /*System.out.println("found point(" + v.x
+                    + "," + v.y + ")");*/
+        }
+        // saveImage(foundedContoursImage, "contoursReceipt.jpg");
+    }
+
+    /*public Mat applyPerspectiveTransformThresholdOnOriginalImage(Mat srcImage, CvSeq contour) {
         final Mat warpImage = cvCloneImage(srcImage);
 
         // first, given the percentage, adjust to the original image
