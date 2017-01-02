@@ -51,10 +51,19 @@
             android:max="100"
             android:id="@+id/seekBar" />
 
-        <ImageView
+        <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seekBar"
+            android:layout_centerHorizontal="true"
+            android:max="100"
+            android:id="@+id/seekBar2" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seekBar2"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:scaleType="fitStart"

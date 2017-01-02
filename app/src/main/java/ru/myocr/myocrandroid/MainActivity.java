@@ -89,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
         }
         switch (idx) {
             case 0:
-                mat = scanner.downScaleImage(mat, 30);
+                mat = scanner.downScaleImage(mat, binding.seekBar.getProgress());
                 Log.d(TAG, "down scale new size: width = " + mat.width() +
                         " height = " + mat.height());
                 binding.imageImg.setImageBitmap(matToBitmap(mat));
                 break;
             case 1:
                 mat = scanner.applyCannySquareEdgeDetectionOnImage(this.mat,
-                        binding.seekBar.getProgress() / 100.0);
+                        binding.seekBar.getProgress() / 100.0, binding.seekBar2.getProgress() / 100.0);
                 Log.d(TAG, "canny square edge detection");
                 binding.imageImg.setImageBitmap(matToBitmap(mat));
                 break;

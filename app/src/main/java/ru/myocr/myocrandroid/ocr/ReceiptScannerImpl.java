@@ -62,7 +62,7 @@ public class ReceiptScannerImpl implements ReceiptScanner {
         return destImage;
     }
 
-    public Mat applyCannySquareEdgeDetectionOnImage(Mat srcImage, double value) {
+    public Mat applyCannySquareEdgeDetectionOnImage(Mat srcImage, double param1, double param2) {
         // Mat destImage = downScaleImage(srcImage, 30);
         //final Mat grayImage = cvCreateImage(cvGetSize(destImage), IPL_DEPTH_8U, 1);
         final Mat grayImage = new Mat();//srcImage.clone();
@@ -85,7 +85,7 @@ public class ReceiptScannerImpl implements ReceiptScanner {
         Imgproc.dilate(grayImage, grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,2)));
         // apply the canny edge detection method
         // cvCanny(destImage, destImage, 75.0, 200.0);
-        Imgproc.Canny(grayImage, grayImage, (int)(255.0 * value), 200.0);
+        Imgproc.Canny(grayImage, grayImage, (int)(255.0 * param1), (int)(255.0 * param2));
         return grayImage;
     }
 
