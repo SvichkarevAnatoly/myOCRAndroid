@@ -9,12 +9,13 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import ru.myocr.myocrandroid.databinding.ActivityMainBinding;
 import ru.myocr.myocrandroid.ocr.ReceiptScannerImpl;
@@ -84,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
                 mat = scanner.applyCannySquareEdgeDetectionOnImage(mat);
                 Log.d(TAG, "canny square edge detection");
                 binding.imageImg.setImageBitmap(matToBitmap(mat));
+                break;
+            case 2:
+                MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(mat);
+                Log.d(TAG, "find largestSquare: " + Arrays.toString(largestSquare.toArray()));
+                scanner.drawLargestSquareOnCannyDetectedImage(mat, largestSquare);
+                binding.imageImg.setImageBitmap(matToBitmap(mat));
+                break;
         }
         idx++;
     }
