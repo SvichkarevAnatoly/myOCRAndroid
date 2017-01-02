@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
                                 .getBitmap(this.getContentResolver(), selectedImage);
                         sourceImg = bitmap;
                         binding.imageImg.setImageBitmap(bitmap);
+                        scanner = new ReceiptScannerImpl();
+                        mat = scanner.loadImage(sourceImg);
+                        idx = 0;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -72,19 +75,17 @@ public class MainActivity extends AppCompatActivity {
     private void next() {
         switch (idx) {
             case 0:
-                scanner = new ReceiptScannerImpl();
-                mat = scanner.loadImage(sourceImg);
+                mat = scanner.downScaleImage(mat, 30);
+                Log.d(TAG, "down scale new size: width = " + mat.width() +
+                        " height = " + mat.height());
+                binding.imageImg.setImageBitmap(matToBitmap(mat));
                 break;
             case 1:
-                final Mat smallImage = scanner.downScaleImage(mat, 30);
-                Log.d(TAG, "width = " + smallImage.width() +
-                        " height = " + smallImage.height());
-                binding.imageImg.setImageBitmap(matToBitmap(smallImage));
-                break;
+                mat = scanner.applyCannySquareEdgeDetectionOnImage(mat);
+                Log.d(TAG, "canny square edge detection");
+                binding.imageImg.setImageBitmap(matToBitmap(mat));
         }
         idx++;
-        /*final Mat cannyImage = scanner.applyCannySquareEdgeDetectionOnImage(image);
-        scanner.saveImage(cannyImage, "cannyReceipt.jpg");*/
     }
 
     private static Bitmap matToBitmap(Mat mat) {

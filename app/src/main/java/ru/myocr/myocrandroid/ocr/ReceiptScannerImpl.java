@@ -16,6 +16,8 @@ import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.net.URL;
 
+import static org.opencv.core.Core.BORDER_DEFAULT;
+
 
 public class ReceiptScannerImpl implements ReceiptScanner {
 
@@ -54,23 +56,30 @@ public class ReceiptScannerImpl implements ReceiptScanner {
     }
 
     public Mat applyCannySquareEdgeDetectionOnImage(Mat srcImage) {
-        Mat destImage = downScaleImage(srcImage, 30);
-        /*final Mat grayImage = cvCreateImage(cvGetSize(destImage), IPL_DEPTH_8U, 1);
-        cvCvtColor(destImage, grayImage, CV_BGR2GRAY);
-        OpenCVFrameConverter.ToMat converterToMat = new OpenCVFrameConverter.ToMat();
+        // Mat destImage = downScaleImage(srcImage, 30);
+        //final Mat grayImage = cvCreateImage(cvGetSize(destImage), IPL_DEPTH_8U, 1);
+        final Mat grayImage = new Mat();//srcImage.clone();
+        //cvCvtColor(destImage, grayImage, CV_BGR2GRAY);
+        Imgproc.cvtColor(srcImage, grayImage, Imgproc.COLOR_BGR2GRAY);
+        /*OpenCVFrameConverter.ToMat converterToMat = new OpenCVFrameConverter.ToMat();
         final Frame grayImageFrame = converterToMat.convert(grayImage);
-        final Mat grayImageMat = converterToMat.convert(grayImageFrame);
+        final Mat grayImageMat = converterToMat.convert(grayImageFrame);*/
         // apply gausian blur
-        GaussianBlur(grayImageMat, grayImageMat,
+        /*GaussianBlur(grayImageMat, grayImageMat,
                 new Size(5, 5),
+                0.0, 0.0, BORDER_DEFAULT);*/
+        Imgproc.GaussianBlur(grayImage, grayImage, new Size(5, 5),
                 0.0, 0.0, BORDER_DEFAULT);
-        destImage = converterToMat.convertToMat(grayImageFrame);
+        //destImage = converterToMat.convertToMat(grayImageFrame);
         // clean it for better detection
-        cvErode(destImage, destImage);
-        cvDilate(destImage, destImage);
+        //cvErode(destImage, destImage);
+        Imgproc.erode(grayImage, grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,2)));
+        // cvDilate(destImage, destImage);
+        Imgproc.dilate(grayImage, grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,2)));
         // apply the canny edge detection method
-        cvCanny(destImage, destImage, 75.0, 200.0);*/
-        return destImage;
+        // cvCanny(destImage, destImage, 75.0, 200.0);
+        Imgproc.Canny(grayImage, grayImage, 75.0, 200.0);
+        return grayImage;
     }
 
     /*public CvSeq findLargestSquareOnCannyDetectedImage(Mat image) {
