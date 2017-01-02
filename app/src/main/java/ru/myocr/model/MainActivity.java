@@ -1,4 +1,4 @@
-package ru.myocr.myocrandroid;
+package ru.myocr.model;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -17,8 +17,8 @@ import org.opencv.core.MatOfPoint;
 import java.io.IOException;
 import java.util.Arrays;
 
-import ru.myocr.myocrandroid.databinding.ActivityMainBinding;
-import ru.myocr.myocrandroid.ocr.ReceiptScannerImpl;
+import ru.myocr.model.databinding.ActivityMainBinding;
+import ru.myocr.model.ocr.ReceiptScannerImpl;
 
 public class MainActivity extends AppCompatActivity {
 

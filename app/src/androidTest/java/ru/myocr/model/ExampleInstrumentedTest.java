@@ -1,4 +1,4 @@
-package ru.myocr.myocrandroid;
+package ru.myocr.model;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,7 +1,6 @@
-package ru.myocr.myocrandroid.ocr;
+package ru.myocr.model.ocr;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.util.Log;
 

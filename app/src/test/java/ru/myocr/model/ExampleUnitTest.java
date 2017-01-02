@@ -1,4 +1,4 @@
-package ru.myocr.myocrandroid;
+package ru.myocr.model;
 
 import org.junit.Test;
 
