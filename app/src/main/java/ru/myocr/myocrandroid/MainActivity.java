@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private Bitmap sourceImg;
     private Mat mat;
+    private Mat matPrev;
     private int idx = 0;
     private ReceiptScannerImpl scanner;
 
@@ -38,7 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonChoosePhoto.setOnClickListener(v -> loadPhoto());
-        binding.buttonNext.setOnClickListener(v -> next());
+        binding.buttonNext.setOnClickListener(v -> {
+            idx++;
+            doOperation(false);
+        });
+        binding.buttonRepeat.setOnClickListener(v -> {
+            doOperation(true);
+        });
 
         if (OpenCVLoader.initDebug()) {
             Log.d(TAG, "OpenCV library found inside package. Using it!");
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         binding.imageImg.setImageBitmap(bitmap);
                         scanner = new ReceiptScannerImpl();
                         mat = scanner.loadImage(sourceImg);
-                        idx = 0;
+                        idx = -1;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -73,7 +80,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void next() {
+    private void doOperation(boolean isRepeated) {
+        Log.d(TAG, "Operation: " + idx + " isRepeated = " + isRepeated);
+        if (isRepeated){
+            mat = matPrev;
+        } else {
+            matPrev = mat.clone();
+        }
         switch (idx) {
             case 0:
                 mat = scanner.downScaleImage(mat, 30);
@@ -82,18 +95,18 @@ public class MainActivity extends AppCompatActivity {
                 binding.imageImg.setImageBitmap(matToBitmap(mat));
                 break;
             case 1:
-                mat = scanner.applyCannySquareEdgeDetectionOnImage(mat);
+                mat = scanner.applyCannySquareEdgeDetectionOnImage(this.mat,
+                        binding.seekBar.getProgress() / 100.0);
                 Log.d(TAG, "canny square edge detection");
                 binding.imageImg.setImageBitmap(matToBitmap(mat));
                 break;
             case 2:
-                MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(mat);
+                MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(this.mat);
                 Log.d(TAG, "find largestSquare: " + Arrays.toString(largestSquare.toArray()));
-                scanner.drawLargestSquareOnCannyDetectedImage(mat, largestSquare);
-                binding.imageImg.setImageBitmap(matToBitmap(mat));
+                scanner.drawLargestSquareOnCannyDetectedImage(this.mat, largestSquare);
+                binding.imageImg.setImageBitmap(matToBitmap(this.mat));
                 break;
         }
-        idx++;
     }
 
     private static Bitmap matToBitmap(Mat mat) {
