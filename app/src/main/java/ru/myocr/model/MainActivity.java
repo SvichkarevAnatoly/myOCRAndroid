@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "myOcr";
 
     private ActivityMainBinding binding;
-    private Bitmap sourceImg;
     private Mat mat;
     private Mat matPrev;
     private int idx = 0;
@@ -67,10 +66,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media
                                 .getBitmap(this.getContentResolver(), selectedImage);
-                        sourceImg = bitmap;
                         binding.imageImg.setImageBitmap(bitmap);
                         scanner = new ReceiptScanner();
-                        mat = scanner.loadImage(sourceImg);
+                        mat = scanner.loadImage(bitmap);
                         idx = -1;
                     } catch (IOException e) {
                         e.printStackTrace();
