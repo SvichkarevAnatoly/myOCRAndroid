@@ -1,6 +1,6 @@
 package ru.myocr.model.align;
 
-public class SimpleAligner {
+public class SimpleAligner implements Aligner {
     // символ делеции
     public final static char DELETE = '-';
 
@@ -49,11 +49,11 @@ public class SimpleAligner {
 
     // возвращает меру подобия двух строк,
     // строки не обязательно равной длины
-    public int align(String string1, String string2) {
-        str1 = string1;
-        str2 = string2;
-        s1Len = string1.length();
-        s2Len = string2.length();
+    public int align(String str1, String str2) {
+        this.str1 = str1;
+        this.str2 = str2;
+        s1Len = str1.length();
+        s2Len = str2.length();
 
         initMatrices();
         fillMatrices();

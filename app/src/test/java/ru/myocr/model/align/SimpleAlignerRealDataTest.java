@@ -30,7 +30,7 @@ public class SimpleAlignerRealDataTest {
     @Test
     public void chickenFull() throws Exception {
         final String real = "ФИЛЕ Б/КОЖИ КУРИНОЕ ОХЛ. НА ПО187. 14*1 187. 14";
-        final SimpleAligner alignment = new SimpleAligner();
+        final Aligner alignment = new SimpleAligner();
 
         System.out.println("score = " + alignment.align(ocrChicken, real));
         assertThat(alignment.align(ocrChicken, real), is(19));
@@ -52,7 +52,7 @@ public class SimpleAlignerRealDataTest {
         int maxScore = Integer.MIN_VALUE;
         String maxScoreFoodName = "empty";
 
-        final SimpleAligner alignment = new SimpleAligner();
+        final Aligner alignment = new SimpleAligner();
         for (String foodName : TestRealData.food30Names) {
             final int score = alignment.align(ocrChicken, foodName);
             System.out.println("score = " + score);
