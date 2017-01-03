@@ -1,18 +1,26 @@
 package ru.myocr.model;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Surface;
+import android.view.View;
+import android.view.WindowManager;
 
+import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,7 +28,7 @@ import java.util.Arrays;
 import ru.myocr.model.databinding.ActivityMainBinding;
 import ru.myocr.model.ocr.ReceiptScanner;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener{
 
     private static final int CODE_PICK_PHOTO = 0;
     public static final String TAG = "myOcr";
@@ -31,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Mat matPrev;
     private int idx = 0;
     private ReceiptScanner scanner;
+    private boolean isCamMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +56,23 @@ public class MainActivity extends AppCompatActivity {
             doOperation(true);
         });
 
+        binding.buttonMode.setOnClickListener(v -> {
+            isCamMode = !isCamMode;
+            if (isCamMode){
+                binding.frameCams.setVisibility(View.VISIBLE);
+                binding.imageImg.setVisibility(View.GONE);
+            } else {
+                binding.frameCams.setVisibility(View.GONE);
+                binding.imageImg.setVisibility(View.VISIBLE);
+            }
+        });
+
+        binding.tutorial1ActivityJavaSurfaceView.setCvCameraViewListener(this);
         if (OpenCVLoader.initDebug()) {
             Log.d(TAG, "OpenCV library found inside package. Using it!");
         }
+        binding.tutorial1ActivityJavaSurfaceView.enableView();
+        //binding.tutorial1ActivityJavaSurfaceView.ori/
     }
 
     private void loadPhoto() {
@@ -114,4 +137,58 @@ public class MainActivity extends AppCompatActivity {
         Utils.matToBitmap(mat, bmp);
         return bmp;
     }
+
+    @Override
+    public void onCameraViewStarted(int width, int height) {
+
+    }
+
+    @Override
+    public void onCameraViewStopped() {
+
+    }
+
+    @Override
+    public Mat onCameraFrame(Mat inputFrame) {
+        ReceiptScanner scanner = new ReceiptScanner();
+        if (!isCamMode){
+            return null;
+        } else {
+            Mat matEdges = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
+                    binding.seekBar.getProgress() / 100.0, binding.seekBar2.getProgress() / 100.0);
+            MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(matEdges);
+            scanner.drawLargestSquareOnCannyDetectedImage(matEdges, largestSquare);
+
+            inputFrame.release();
+            return matEdges;
+        }
+    }
+
+    private void setCameraDisplayOrientation(Camera camera) {
+        int cameraId = getCameraId();
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+
+
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+        int rotation = windowManager.getDefaultDisplay().getRotation();
+        int degrees = 0;
+
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        camera.setsetDisplayOrientation((info.orientation - degrees + 360) % 360);
 }

@@ -44,7 +44,7 @@ public class ReceiptScanner {
 
     public Mat applyCannySquareEdgeDetectionOnImage(Mat srcImage, double param1, double param2) {
         final Mat grayImage = new Mat();
-        Imgproc.cvtColor(srcImage, grayImage, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.cvtColor(srcImage, grayImage, Imgproc.COLOR_BGRA2GRAY);
         Imgproc.GaussianBlur(grayImage, grayImage, new Size(5, 5),
                 0.0, 0.0, BORDER_DEFAULT);
         Imgproc.erode(grayImage, grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2, 2)));
@@ -70,7 +70,9 @@ public class ReceiptScanner {
                 seqFounded = m;
             }
         }
-
+        if (null == seqFounded){
+            return new MatOfPoint();
+        }
         MatOfPoint2f thisContour2f = new MatOfPoint2f();
         MatOfPoint out = new MatOfPoint();
         MatOfPoint2f out2f = new MatOfPoint2f();
