@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:opencv="http://schemas.android.com/apk/res-auto">
+        xmlns:opencv="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,96 +17,79 @@
             android:id="@+id/buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
 
             <Button
-                android:text="Photo"
+                android:id="@+id/button_choose_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/button_choose_photo" />
+                android:text="Photo"/>
 
             <Button
-                android:text="Next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/button_next"
-                android:layout_below="@+id/button_choose_photo"
-                android:layout_centerHorizontal="true" />
-
-            <Button
-                android:text="Repeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/button_choose_photo"
+                android:layout_centerHorizontal="true"
+                android:text="Next"/>
+
+            <Button
                 android:id="@+id/button_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/button_choose_photo"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:text="Repeat"/>
 
 
             <Button
-                android:text="Mode"
+                android:id="@+id/button_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/button_mode"
-                android:layout_centerHorizontal="true" />
-
-
+                android:layout_centerHorizontal="true"
+                android:text="Mode"/>
         </LinearLayout>
 
         <SeekBar
+            android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/buttons"
             android:layout_centerHorizontal="true"
-            android:max="100"
-            android:id="@+id/seekBar" />
+            android:max="100"/>
 
         <SeekBar
+            android:id="@+id/seekBar2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seekBar"
             android:layout_centerHorizontal="true"
-            android:max="100"
-            android:id="@+id/seekBar2" />
-
+            android:max="100"/>
 
         <ImageView
+            android:id="@+id/image_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_below="@+id/seekBar2"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:scaleType="fitStart"
-            android:id="@+id/image_img" />
+            android:scaleType="fitStart"/>
 
         <FrameLayout
             android:id="@+id/frame_cams"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/seekBar2">
+            android:layout_below="@+id/seekBar2"
+            android:visibility="gone">
 
             <org.opencv.android.JavaCameraView
+                android:id="@+id/tutorial1_activity_java_surface_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/tutorial1_activity_java_surface_view"
-                opencv:show_fps="true"
-                opencv:camera_id="any" />
-
-            <!--<org.opencv.android.NativeCameraView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:visibility="gone"
-                android:id="@+id/tutorial1_activity_native_surface_view"
-                opencv:show_fps="true"
-                opencv:camera_id="any" />
--->
+                opencv:camera_id="any"
+                opencv:show_fps="true"/>
         </FrameLayout>
-
     </RelativeLayout>
-
-
-
-
 </layout>
