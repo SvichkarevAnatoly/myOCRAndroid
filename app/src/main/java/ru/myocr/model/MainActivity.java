@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import ru.myocr.model.databinding.ActivityMainBinding;
+import ru.myocr.model.ocr.ImageHistory;
 import ru.myocr.model.ocr.ReceiptScanner;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener{
@@ -34,10 +35,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public static final String TAG = "myOcr";
 
     private ActivityMainBinding binding;
-    private Bitmap sourceImg;
-    private Mat mat;
-    private Mat matPrev;
-    private int idx = 0;
+
+    private ImageHistory imageHistory;
+    private int idx;
     private ReceiptScanner scanner;
     private boolean isCamMode = false;
 
@@ -48,13 +48,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonChoosePhoto.setOnClickListener(v -> loadPhoto());
-        binding.buttonNext.setOnClickListener(v -> {
-            idx++;
-            doOperation(false);
-        });
-        binding.buttonRepeat.setOnClickListener(v -> {
-            doOperation(true);
-        });
+        binding.buttonNext.setOnClickListener(v -> doImageOperation(false));
+        binding.buttonRepeat.setOnClickListener(v -> doImageOperation(true));
+        binding.buttonBack.setOnClickListener(v -> backImageOperation());
 
         binding.buttonMode.setOnClickListener(v -> {
             isCamMode = !isCamMode;
@@ -90,10 +86,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     try {
                         Bitmap bitmap = MediaStore.Images.Media
                                 .getBitmap(this.getContentResolver(), selectedImage);
-                        sourceImg = bitmap;
                         binding.imageImg.setImageBitmap(bitmap);
                         scanner = new ReceiptScanner();
-                        mat = scanner.loadImage(sourceImg);
+                        final Mat image = scanner.loadImage(bitmap);
+                        imageHistory = new ImageHistory(image);
                         idx = -1;
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -103,33 +99,48 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         }
     }
 
-    private void doOperation(boolean isRepeated) {
-        Log.d(TAG, "Operation: " + idx + " isRepeated = " + isRepeated);
-        if (isRepeated){
-            mat = matPrev;
-        } else {
-            matPrev = mat.clone();
+    private void doImageOperation(boolean isRepeated) {
+        if (!isRepeated) {
+            idx++;
         }
+        Log.d(TAG, "Operation: " + idx + " isRepeated = " + isRepeated);
+
+        final Mat curImage = imageHistory.getLast(isRepeated);
+
+        final Mat newImage;
         switch (idx) {
             case 0:
-                mat = scanner.downScaleImage(mat, binding.seekBar.getProgress());
-                Log.d(TAG, "down scale new size: width = " + mat.width() +
-                        " height = " + mat.height());
-                binding.imageImg.setImageBitmap(matToBitmap(mat));
+                newImage = scanner.downScaleImage(curImage, binding.seekBar.getProgress());
+
+                Log.d(TAG, "down scale new size: width = " + newImage.width() +
+                        " height = " + newImage.height());
+                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             case 1:
-                mat = scanner.applyCannySquareEdgeDetectionOnImage(this.mat,
-                        binding.seekBar.getProgress() / 100.0, binding.seekBar2.getProgress() / 100.0);
+                newImage = scanner.applyCannySquareEdgeDetectionOnImage(curImage,
+                        binding.seekBar.getProgress() / 100.0,
+                        binding.seekBar2.getProgress() / 100.0);
                 Log.d(TAG, "canny square edge detection");
-                binding.imageImg.setImageBitmap(matToBitmap(mat));
+                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             case 2:
-                MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(this.mat);
+                final MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(curImage);
                 Log.d(TAG, "find largestSquare: " + Arrays.toString(largestSquare.toArray()));
-                scanner.drawLargestSquareOnCannyDetectedImage(this.mat, largestSquare);
-                binding.imageImg.setImageBitmap(matToBitmap(this.mat));
+                newImage = scanner.drawLargestSquareOnCannyDetectedImage(curImage, largestSquare);
+                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
+            default:
+                newImage = curImage;
         }
+
+        imageHistory.change(newImage, isRepeated);
+    }
+
+    private void backImageOperation() {
+        idx--;
+        imageHistory.removeLast();
+        Mat prevImage = imageHistory.getLast();
+        binding.imageImg.setImageBitmap(matToBitmap(prevImage));
     }
 
     private static Bitmap matToBitmap(Mat mat) {
