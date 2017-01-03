@@ -16,6 +16,11 @@ public class ImageHistory {
         return isRepeated ? getPrevious() : getLast();
     }
 
+    public Mat getLast() {
+        final int lastIndex = images.size() - 1;
+        return images.get(lastIndex);
+    }
+
     public void change(Mat newImage, boolean isRepeated) {
         if (isRepeated) {
             replaceLast(newImage);
@@ -24,14 +29,14 @@ public class ImageHistory {
         }
     }
 
+    public void removeLast() {
+        final int lastIndex = images.size() - 1;
+        images.remove(lastIndex);
+    }
+
     private Mat getPrevious() {
         int lastIndex = images.size() - 2;
         lastIndex = lastIndex < 0 ? 0 : lastIndex;
-        return images.get(lastIndex);
-    }
-
-    private Mat getLast() {
-        int lastIndex = images.size() - 1;
         return images.get(lastIndex);
     }
 

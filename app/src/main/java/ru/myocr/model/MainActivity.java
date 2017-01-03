@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         binding.buttonChoosePhoto.setOnClickListener(v -> loadPhoto());
         binding.buttonNext.setOnClickListener(v -> doImageOperation(false));
         binding.buttonRepeat.setOnClickListener(v -> doImageOperation(true));
+        binding.buttonBack.setOnClickListener(v -> backImageOperation());
 
         if (OpenCVLoader.initDebug()) {
             Log.d(TAG, "OpenCV library found inside package. Using it!");
@@ -110,6 +111,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         imageHistory.change(newImage, isRepeated);
+    }
+
+    private void backImageOperation() {
+        idx--;
+        imageHistory.removeLast();
+        Mat prevImage = imageHistory.getLast();
+        binding.imageImg.setImageBitmap(matToBitmap(prevImage));
     }
 
     private static Bitmap matToBitmap(Mat mat) {
