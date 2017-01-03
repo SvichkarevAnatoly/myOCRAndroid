@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class SimpleAlignmentRealDataTest {
+public class SimpleAlignerRealDataTest {
     private final String ocrChicken = "[114ЛЕ Б/К0ЖИ К9РИН0Е 0ХЛ. НА П0187. ММ 187. И";
     final String expectedChickenAlignment = "ФИ--ЛЕ Б/КОЖИ КУРИНОЕ ОХЛ. НА ПО187. 14*1 187. 14";
 
@@ -13,7 +13,7 @@ public class SimpleAlignmentRealDataTest {
     public void chickenWord() throws Exception {
         final String ocr = "К9РИН0Е";
         final String real = "КУРИНОЕ";
-        final SimpleAlignment alignment = new SimpleAlignment();
+        final SimpleAligner alignment = new SimpleAligner();
 
         assertThat(alignment.align(ocr, real), is(3));
 
@@ -30,7 +30,7 @@ public class SimpleAlignmentRealDataTest {
     @Test
     public void chickenFull() throws Exception {
         final String real = "ФИЛЕ Б/КОЖИ КУРИНОЕ ОХЛ. НА ПО187. 14*1 187. 14";
-        final SimpleAlignment alignment = new SimpleAlignment();
+        final SimpleAligner alignment = new SimpleAligner();
 
         System.out.println("score = " + alignment.align(ocrChicken, real));
         assertThat(alignment.align(ocrChicken, real), is(19));
@@ -52,7 +52,7 @@ public class SimpleAlignmentRealDataTest {
         int maxScore = Integer.MIN_VALUE;
         String maxScoreFoodName = "empty";
 
-        final SimpleAlignment alignment = new SimpleAlignment();
+        final SimpleAligner alignment = new SimpleAligner();
         for (String foodName : TestRealData.food30Names) {
             final int score = alignment.align(ocrChicken, foodName);
             System.out.println("score = " + score);

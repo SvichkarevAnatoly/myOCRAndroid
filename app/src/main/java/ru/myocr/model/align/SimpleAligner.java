@@ -1,6 +1,6 @@
 package ru.myocr.model.align;
 
-public class SimpleAlignment {
+public class SimpleAligner {
     // символ делеции
     public final static char DELETE = '-';
 
@@ -32,16 +32,16 @@ public class SimpleAlignment {
     // матрица для восстановления выравнивания
     private char backtrack[][];
 
-    public SimpleAlignment() {
+    public SimpleAligner() {
         this(1, 1, 1);
     }
 
     // от соотношения двух этих параметров зависит выравнивание
-    public SimpleAlignment(int deletion, int mismatch) {
+    public SimpleAligner(int deletion, int mismatch) {
         this(deletion, mismatch, 1);
     }
 
-    public SimpleAlignment(int deletion, int mismatch, int match) {
+    public SimpleAligner(int deletion, int mismatch, int match) {
         this.deletion = deletion;
         this.mismatch = mismatch;
         this.match = match;
