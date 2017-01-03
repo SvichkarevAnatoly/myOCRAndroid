@@ -84,13 +84,15 @@ public class ReceiptScanner {
         return out;
     }
 
-    public void drawLargestSquareOnCannyDetectedImage(Mat image, MatOfPoint largestSquare) {
+    public Mat drawLargestSquareOnCannyDetectedImage(Mat image, MatOfPoint largestSquare) {
+        final Mat destImage = image.clone();
         List<Point> points = largestSquare.toList();
         for (int i = 0; i < largestSquare.total(); i++) {
             final Point v = points.get(i);
             Scalar blue = new Scalar(255);
-            Imgproc.circle(image, v, 5, blue, 20, 8, 0);
+            Imgproc.circle(destImage, v, 5, blue, 20, 8, 0);
         }
+        return destImage;
     }
 
     // TODO: uncomment and use android version of opencv
