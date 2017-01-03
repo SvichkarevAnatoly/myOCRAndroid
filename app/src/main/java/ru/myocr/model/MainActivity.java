@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.Camera;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,10 +17,8 @@ import android.view.WindowManager;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,7 +27,9 @@ import ru.myocr.model.databinding.ActivityMainBinding;
 import ru.myocr.model.ocr.ImageHistory;
 import ru.myocr.model.ocr.ReceiptScanner;
 
-public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener{
+import static android.hardware.Camera.*;
+
+public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener {
 
     private static final int CODE_PICK_PHOTO = 0;
     public static final String TAG = "myOcr";
@@ -50,11 +50,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         binding.buttonChoosePhoto.setOnClickListener(v -> loadPhoto());
         binding.buttonNext.setOnClickListener(v -> doImageOperation(false));
         binding.buttonRepeat.setOnClickListener(v -> doImageOperation(true));
-        binding.buttonBack.setOnClickListener(v -> backImageOperation());
-
         binding.buttonMode.setOnClickListener(v -> {
             isCamMode = !isCamMode;
-            if (isCamMode){
+            if (isCamMode) {
                 binding.frameCams.setVisibility(View.VISIBLE);
                 binding.imageImg.setVisibility(View.GONE);
             } else {
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             Log.d(TAG, "OpenCV library found inside package. Using it!");
         }
         binding.tutorial1ActivityJavaSurfaceView.enableView();
-        //binding.tutorial1ActivityJavaSurfaceView.ori/
     }
 
     private void loadPhoto() {
@@ -162,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public Mat onCameraFrame(Mat inputFrame) {
         ReceiptScanner scanner = new ReceiptScanner();
-        if (!isCamMode){
+        if (!isCamMode) {
             return null;
         } else {
             Mat matEdges = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
@@ -177,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     private void setCameraDisplayOrientation(Camera camera) {
         int cameraId = getCameraId();
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
+        CameraInfo info = new CameraInfo();
+        getCameraInfo(cameraId, info);
 
 
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -201,5 +198,19 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 break;
         }
 
-        camera.setsetDisplayOrientation((info.orientation - degrees + 360) % 360);
+        camera.setDisplayOrientation((info.orientation - degrees + 360) % 360);
+    }
+
+    private int getCameraId() {
+        final int numberOfCameras = getNumberOfCameras();
+
+        CameraInfo cameraInfo = new CameraInfo();
+        for (int i = 0; i < numberOfCameras; i++) {
+            getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
+                return i;
+            }
+        }
+        return 0;
+    }
 }
