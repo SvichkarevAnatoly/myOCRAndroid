@@ -160,11 +160,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         } else {
             Mat filterImageWithDots = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
                     binding.seekBar.getProgress() / 100.0, binding.seekBar2.getProgress() / 100.0);
-            MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(filterImageWithDots);
-            filterImageWithDots = scanner.drawLargestSquareOnCannyDetectedImage(filterImageWithDots, largestSquare);
-
-            inputFrame.release();
-            return filterImageWithDots;
+            scanner.findLines(inputFrame, filterImageWithDots, 0, 0);
+            return inputFrame;
         }
     }
 

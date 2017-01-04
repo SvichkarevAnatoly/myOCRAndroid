@@ -7,6 +7,7 @@ import android.util.Log;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -91,10 +92,28 @@ public class ReceiptScanner {
         List<Point> points = largestSquare.toList();
         for (int i = 0; i < largestSquare.total(); i++) {
             final Point v = points.get(i);
-            Scalar blue = new Scalar(255);
+            Scalar blue = new Scalar(255, 0, 0);
             Imgproc.circle(destImage, v, 5, blue, 20, 8, 0);
         }
         return destImage;
+    }
+
+    public void findLines(Mat rgba, Mat grayImage, double param1, double param2) {
+        Mat lines = new Mat();
+        Imgproc.HoughLinesP(grayImage, lines, 1, Math.PI/180, (int)(255 * 0.5), rgba.width() / 5, rgba.width() / 10);
+
+        for (int x = 0; x < lines.rows(); x++)
+        {
+            double[] vec = lines.get(x, 0);
+            double x1 = vec[0],
+                    y1 = vec[1],
+                    x2 = vec[2],
+                    y2 = vec[3];
+            Point start = new Point(x1, y1);
+            Point end = new Point(x2, y2);
+            Imgproc.line(rgba, start, end, new Scalar(0,255, 0, 255),2);// here initimg is the original image.
+        }
+        lines.release();
     }
 
     // TODO: uncomment and use android version of opencv
