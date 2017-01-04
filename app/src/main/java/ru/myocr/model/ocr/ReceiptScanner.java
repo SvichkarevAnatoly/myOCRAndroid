@@ -208,8 +208,8 @@ public class ReceiptScanner {
 
         final Mat homography = Imgproc.getPerspectiveTransform(srcMat, destMat);
 
-        final Mat destImage = srcImage.clone();
         Size newSize = new Size(resultWidth, resultHeight);
+        final Mat destImage = new Mat(newSize, srcImage.type());
         Imgproc.warpPerspective(srcImage, destImage, homography, newSize);
 
         return cropImage(destImage, 0, 0, resultWidth, resultHeight);
@@ -218,11 +218,9 @@ public class ReceiptScanner {
     public Mat cropImage(Mat srcImage,
                          int fromX, int fromY,
                          double toWidth, double toHeight) {
-        srcImage.adjustROI(fromX, fromY, srcImage.width() - (int) toWidth,
+        return srcImage.adjustROI(fromX, fromY,
+                srcImage.width() - (int) toWidth,
                 srcImage.height() - (int) toHeight);
-        final Mat destImage = srcImage.clone();
-
-        return destImage;
     }
 
     public Mat cleanImageSmoothingForOCR(Mat srcImage) {
