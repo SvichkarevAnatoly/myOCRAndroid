@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCameraBinding;
@@ -39,9 +40,16 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     @Override
     public Mat onCameraFrame(Mat inputFrame) {
-        Mat filterImageWithDots = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
+        Mat imageWithDots = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
                 binding.seekBar.getProgress() / 100.0, binding.seekBar2.getProgress() / 100.0);
-        scanner.findLines(inputFrame, filterImageWithDots, 0, 0);
-        return inputFrame;
+
+        Mat imageWithLines = scanner.findLines(inputFrame, imageWithDots, 0, 0);
+        MatOfPoint contour = scanner.findLargestSquareOnCannyDetectedImage(imageWithDots);
+        Mat resultImage = scanner.drawLargestSquareOnCannyDetectedImage(imageWithLines, contour);
+
+        inputFrame.release();
+        imageWithDots.release();
+        imageWithLines.release();
+        return resultImage;
     }
 }
