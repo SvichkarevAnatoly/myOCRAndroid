@@ -95,20 +95,17 @@ public class PhotoActivity extends AppCompatActivity {
 
                 Log.d(TAG, "down scale new size: width = " + newImage.width() +
                         " height = " + newImage.height());
-                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             case 1:
                 newImage = scanner.applyCannySquareEdgeDetectionOnImage(curImage,
                         binding.seekBar.getProgress() / 100.0,
                         binding.seekBar2.getProgress() / 100.0);
                 Log.d(TAG, "canny square edge detection");
-                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             case 2:
                 contour = scanner.findLargestSquareOnCannyDetectedImage(curImage);
                 newImage = scanner.drawLargestSquareOnCannyDetectedImage(curImage, contour);
                 Log.d(TAG, "find largestSquare: " + Arrays.toString(contour.toArray()));
-                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             case 3:
                 if (!scanner.canReduceTo4Dots(contour)) {
@@ -120,12 +117,12 @@ public class PhotoActivity extends AppCompatActivity {
                 Mat srcImage = imageHistory.getSource();
                 newImage = scanner.transformPerspective(srcImage, downScalePercent, contour);
                 Log.d(TAG, "transform perspective");
-                binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             default:
                 newImage = curImage;
         }
 
+        binding.imageImg.setImageBitmap(matToBitmap(newImage));
         imageHistory.change(newImage, isRepeated);
     }
 
