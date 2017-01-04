@@ -118,6 +118,10 @@ public class PhotoActivity extends AppCompatActivity {
                 newImage = scanner.transformPerspective(srcImage, downScalePercent, contour);
                 Log.d(TAG, "transform perspective");
                 break;
+            case 4:
+                newImage = scanner.smooth(curImage);
+                Log.d(TAG, "smooth");
+                break;
             default:
                 newImage = curImage;
         }

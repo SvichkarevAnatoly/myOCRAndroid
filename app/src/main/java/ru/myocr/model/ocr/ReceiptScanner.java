@@ -223,7 +223,7 @@ public class ReceiptScanner {
                 srcImage.height() - (int) toHeight);
     }
 
-    public Mat cleanImageSmoothingForOCR(Mat srcImage) {
+    public Mat smooth(Mat srcImage) {
         final Mat destImage = new Mat(srcImage.size(), CvType.CV_8U);
         Imgproc.cvtColor(srcImage, destImage, Imgproc.COLOR_BGR2GRAY);
         Imgproc.medianBlur(destImage, destImage, 3);
