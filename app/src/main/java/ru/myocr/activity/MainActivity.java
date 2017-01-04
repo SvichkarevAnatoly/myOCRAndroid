@@ -1,4 +1,4 @@
-package ru.myocr.model;
+package ru.myocr.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +23,7 @@ import org.opencv.core.MatOfPoint;
 import java.io.IOException;
 import java.util.Arrays;
 
+import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 import ru.myocr.model.ocr.ImageHistory;
 import ru.myocr.model.ocr.ReceiptScanner;
