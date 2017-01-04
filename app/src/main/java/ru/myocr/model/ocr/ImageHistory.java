@@ -12,6 +12,10 @@ public class ImageHistory {
         add(image);
     }
 
+    public Mat getSource() {
+        return images.get(0);
+    }
+
     public Mat getLast(boolean isRepeated) {
         return isRepeated ? getPrevious() : getLast();
     }

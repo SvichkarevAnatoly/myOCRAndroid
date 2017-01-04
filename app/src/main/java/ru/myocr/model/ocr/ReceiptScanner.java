@@ -70,7 +70,7 @@ public class ReceiptScanner {
                 seqFounded = m;
             }
         }
-        if (null == seqFounded){
+        if (null == seqFounded) {
             return new MatOfPoint();
         }
         MatOfPoint2f thisContour2f = new MatOfPoint2f();
@@ -92,7 +92,7 @@ public class ReceiptScanner {
         for (int i = 0; i < largestSquare.total(); i++) {
             final Point v = points.get(i);
             Scalar blue = new Scalar(255, 0, 0);
-            Imgproc.circle(destImage, v, 5, blue, 20, 8, 0);
+            Imgproc.circle(destImage, v, 2, blue, 2, 8, 0);
         }
         return destImage;
     }
@@ -100,10 +100,9 @@ public class ReceiptScanner {
     public Mat findLines(Mat rgba, Mat grayImage, double param1, double param2) {
         Mat out = rgba.clone();
         Mat lines = new Mat();
-        Imgproc.HoughLinesP(grayImage, lines, 1, Math.PI/180, (int)(255 * 0.5), rgba.width() / 5, rgba.width() / 10);
+        Imgproc.HoughLinesP(grayImage, lines, 1, Math.PI / 180, (int) (255 * 0.5), rgba.width() / 5, rgba.width() / 10);
 
-        for (int x = 0; x < lines.rows(); x++)
-        {
+        for (int x = 0; x < lines.rows(); x++) {
             double[] vec = lines.get(x, 0);
             double x1 = vec[0],
                     y1 = vec[1],
@@ -117,65 +116,110 @@ public class ReceiptScanner {
         return out;
     }
 
-    // TODO: uncomment and use android version of opencv
-    /*public Mat applyPerspectiveTransformThresholdOnOriginalImage(Mat srcImage, CvSeq contour) {
-        final Mat warpImage = cvCloneImage(srcImage);
+    public boolean canReduceTo4Dots(MatOfPoint contour) {
+        double numberOfDots = contour.size().height;
+        return numberOfDots >= 4;
+    }
 
+    public MatOfPoint reduceTo4Dots(MatOfPoint contour) {
+        if (contour.size().height == 4) {
+            return contour;
+        }
+
+        final int delta = 50;
+
+        final List<Point> contourPoints = contour.toList();
+        final boolean[] isNear = new boolean[contourPoints.size()];
+        for (int i = 0; i < contourPoints.size(); i++) {
+            for (int j = i + 1; j < contourPoints.size(); j++) {
+                Point pi = contourPoints.get(i);
+                Point pj = contourPoints.get(j);
+                if (dist(pi, pj) < delta) {
+                    isNear[j] = true;
+                }
+            }
+        }
+
+        final List<Point> fourContour = new ArrayList<>();
+        for (int i = 0; i < contourPoints.size(); i++) {
+            if (!isNear[i]) {
+                fourContour.add(contourPoints.get(i));
+            }
+        }
+
+        MatOfPoint matOfPoint = new MatOfPoint();
+        matOfPoint.fromList(fourContour);
+        return matOfPoint;
+    }
+
+    private int dist(Point pi, Point pj) {
+        double xDiff = pi.x - pj.x;
+        double yDiff = pi.y - pj.y;
+        return (int) Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    }
+
+    public Mat transformPerspective(Mat srcImage, int resizePercent, MatOfPoint contour) {
         // first, given the percentage, adjust to the original image
-        for (int i = 0; i < contour.total(); i++) {
-            final CvPoint p = new CvPoint(cvGetSeqElem(contour, i));
-            p.x(p.x() * 100 / 30);
-            p.y(p.y() * 100 / 30);
+        List<Point> contourPoints = contour.toList();
+        for (Point p : contourPoints) {
+            p.x = p.x * 100 / resizePercent;
+            p.y = p.y * 100 / resizePercent;
         }
 
         // get each corner point of the image
-        final CvPoint topRightPoint = new CvPoint(cvGetSeqElem(contour, 0));
-        final CvPoint topLeftPoint = new CvPoint(cvGetSeqElem(contour, 1));
-        final CvPoint bottomLeftPoint = new CvPoint(cvGetSeqElem(contour, 2));
-        final CvPoint bottomRightPoint = new CvPoint(cvGetSeqElem(contour, 3));
+        final Point topRightPoint = contourPoints.get(0);
+        final Point topLeftPoint = contourPoints.get(1);
+        final Point bottomLeftPoint = contourPoints.get(2);
+        final Point bottomRightPoint = contourPoints.get(3);
 
-        int resultWidth = topRightPoint.x() - topLeftPoint.x();
-        final int bottomWidht = bottomRightPoint.x() - bottomLeftPoint.x();
+        double resultWidth = topRightPoint.x - topLeftPoint.x;
+        final double bottomWidht = bottomRightPoint.x - bottomLeftPoint.x;
         if (bottomWidht > resultWidth) {
             resultWidth = bottomWidht;
         }
 
-        int resultHeight = bottomLeftPoint.y() - topLeftPoint.y();
-        final int bottomHeight = bottomRightPoint.y() - topRightPoint.y();
+        double resultHeight = bottomLeftPoint.y - topLeftPoint.y;
+        final double bottomHeight = bottomRightPoint.y - topRightPoint.y;
         if (bottomHeight > resultHeight) {
             resultHeight = bottomHeight;
         }
 
-        float[] sourcePoints = {
-                topLeftPoint.x(), topLeftPoint.y(),
-                topRightPoint.x(), topRightPoint.y(),
-                bottomLeftPoint.x(), bottomLeftPoint.y(),
-                bottomRightPoint.x(), bottomRightPoint.y()
+        final float[][] srcFloats = {
+                {(float) topLeftPoint.x, (float) topLeftPoint.y},
+                {(float) topRightPoint.x, (float) topRightPoint.y},
+                {(float) bottomLeftPoint.x, (float) bottomLeftPoint.y},
+                {(float) bottomRightPoint.x, (float) bottomRightPoint.y}
         };
-        float[] destinationPoints = {
-                0, 0, resultWidth,
-                0, 0, resultHeight,
-                resultWidth, resultHeight
+        final Mat srcMat = new Mat(4, 2, CvType.CV_32FC1);
+        for (int i = 0; i < srcFloats.length; i++) {
+            srcMat.put(i, 0, srcFloats[i]);
+        }
+
+        final float[][] destFloats = {
+                {0, 0},
+                {(float) resultWidth, 0},
+                {0, (float) resultHeight},
+                {(float) resultWidth, (float) resultHeight}
         };
+        final Mat destMat = new Mat(4, 2, CvType.CV_32FC1);
+        for (int i = 0; i < destFloats.length; i++) {
+            destMat.put(i, 0, destFloats[i]);
+        }
 
-        final CvMat homography = cvCreateMat(3, 3, CV_32FC1);
-        cvGetPerspectiveTransform(sourcePoints, destinationPoints, homography);
+        final Mat homography = Imgproc.getPerspectiveTransform(srcMat, destMat);
 
-        System.out.println(homography.toString());
+        final Mat destImage = srcImage.clone();
+        Size newSize = new Size(resultWidth, resultHeight);
+        Imgproc.warpPerspective(srcImage, destImage, homography, newSize);
 
-        final Mat destImage = cvCloneImage(warpImage);
-        cvWarpPerspective(warpImage, destImage, homography,
-                CV_INTER_LINEAR, CvScalar.ZERO);
-
-        return cropImage(destImage,
-                0, 0, resultWidth, resultHeight);
-    }*/
+        return cropImage(destImage, 0, 0, resultWidth, resultHeight);
+    }
 
     public Mat cropImage(Mat srcImage,
                          int fromX, int fromY,
-                         int toWidth, int toHeight) {
-        srcImage.adjustROI(fromX, fromY, srcImage.width() - toWidth,
-                srcImage.height() - toHeight);
+                         double toWidth, double toHeight) {
+        srcImage.adjustROI(fromX, fromY, srcImage.width() - (int) toWidth,
+                srcImage.height() - (int) toHeight);
         final Mat destImage = srcImage.clone();
 
         return destImage;

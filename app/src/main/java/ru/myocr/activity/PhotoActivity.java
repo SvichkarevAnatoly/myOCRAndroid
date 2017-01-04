@@ -1,5 +1,6 @@
 package ru.myocr.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -30,6 +32,8 @@ public class PhotoActivity extends AppCompatActivity {
     private ImageHistory imageHistory;
     private int idx;
     private ReceiptScanner scanner;
+    private int downScalePercent;
+    private MatOfPoint contour;
 
     private static Bitmap matToBitmap(Mat mat) {
         Bitmap bmp = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888);
@@ -86,7 +90,8 @@ public class PhotoActivity extends AppCompatActivity {
         final Mat newImage;
         switch (idx) {
             case 0:
-                newImage = scanner.downScaleImage(curImage, binding.seekBar.getProgress());
+                downScalePercent = binding.seekBar.getProgress();
+                newImage = scanner.downScaleImage(curImage, downScalePercent);
 
                 Log.d(TAG, "down scale new size: width = " + newImage.width() +
                         " height = " + newImage.height());
@@ -100,9 +105,21 @@ public class PhotoActivity extends AppCompatActivity {
                 binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             case 2:
-                final MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(curImage);
-                Log.d(TAG, "find largestSquare: " + Arrays.toString(largestSquare.toArray()));
-                newImage = scanner.drawLargestSquareOnCannyDetectedImage(curImage, largestSquare);
+                contour = scanner.findLargestSquareOnCannyDetectedImage(curImage);
+                newImage = scanner.drawLargestSquareOnCannyDetectedImage(curImage, contour);
+                Log.d(TAG, "find largestSquare: " + Arrays.toString(contour.toArray()));
+                binding.imageImg.setImageBitmap(matToBitmap(newImage));
+                break;
+            case 3:
+                if (!scanner.canReduceTo4Dots(contour)) {
+                    toastShow("Dots less than 4");
+                    idx--;
+                }
+                contour = scanner.reduceTo4Dots(contour);
+
+                Mat srcImage = imageHistory.getSource();
+                newImage = scanner.transformPerspective(srcImage, downScalePercent, contour);
+                Log.d(TAG, "transform perspective");
                 binding.imageImg.setImageBitmap(matToBitmap(newImage));
                 break;
             default:
@@ -110,6 +127,14 @@ public class PhotoActivity extends AppCompatActivity {
         }
 
         imageHistory.change(newImage, isRepeated);
+    }
+
+    private void toastShow(String msg) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
     }
 
     private void backImageOperation() {
