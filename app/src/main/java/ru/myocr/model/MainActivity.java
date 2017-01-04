@@ -147,14 +147,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     }
 
     @Override
-    public void onCameraViewStarted(int width, int height) {
-
-    }
+    public void onCameraViewStarted(int width, int height) {}
 
     @Override
-    public void onCameraViewStopped() {
-
-    }
+    public void onCameraViewStopped() {}
 
     @Override
     public Mat onCameraFrame(Mat inputFrame) {
@@ -162,13 +158,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         if (!isCamMode) {
             return null;
         } else {
-            Mat matEdges = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
+            Mat filterImageWithDots = scanner.applyCannySquareEdgeDetectionOnImage(inputFrame,
                     binding.seekBar.getProgress() / 100.0, binding.seekBar2.getProgress() / 100.0);
-            MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(matEdges);
-            scanner.drawLargestSquareOnCannyDetectedImage(matEdges, largestSquare);
+            MatOfPoint largestSquare = scanner.findLargestSquareOnCannyDetectedImage(filterImageWithDots);
+            filterImageWithDots = scanner.drawLargestSquareOnCannyDetectedImage(filterImageWithDots, largestSquare);
 
             inputFrame.release();
-            return matEdges;
+            return filterImageWithDots;
         }
     }
 
