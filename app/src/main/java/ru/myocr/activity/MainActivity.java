@@ -22,17 +22,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
         binding.buttonRunOcrTextScanner.setOnClickListener(v -> runOcrTextScanner());
-        binding.buttonStartIntent.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ReceiptOcrActivity.class);
-            String gigantProducts = getString(R.string.test_gigant_products);
-            intent.putExtra(Intent.EXTRA_TEXT, gigantProducts);
-            startActivity(intent);
-
-            intent = new Intent(this, ReceiptOcrActivity.class);
-            String gigantPrices = getString(R.string.test_gigant_prices);
-            intent.putExtra(Intent.EXTRA_TEXT, gigantPrices);
-            startActivity(intent);
-        });
+        binding.buttonStartIntent.setOnClickListener(v -> goToReceiptDirectly());
     }
 
     private void runCamScanner() {
@@ -42,6 +32,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void runOcrTextScanner() {
         Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
+        startActivity(intent);
+    }
+
+    private void goToReceiptDirectly() {
+        String gigantProducts = getString(R.string.test_gigant_products);
+        startActivityWithText(gigantProducts);
+
+        String gigantPrices = getString(R.string.test_gigant_prices);
+        startActivityWithText(gigantPrices);
+    }
+
+    private void startActivityWithText(String text) {
+        Intent intent = new Intent(this, ReceiptOcrActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(intent);
     }
 }
