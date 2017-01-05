@@ -31,19 +31,31 @@ public class DataBaseFinderTest {
 
     @Test
     public void gigantAll() throws Exception {
+        // TODO: tune parameters
+        final SimpleAligner aligner = new SimpleAligner(1, 1, 1);
+
         final List<String> products = Arrays.asList(gigant39RealProducts);
         final DataBaseFinder finder = new DataBaseFinder(products);
 
+        int matchCounter = 0;
         for (int i = 0; i < gigant39OcrProducts.length; i++) {
-            if (i == 5) continue;
-
             final String ocrProduct = gigant39OcrProducts[i];
 
-            final String bestMatchProduct = finder.find(ocrProduct);
+            final String bestMatchProduct = finder.find(ocrProduct, aligner);
 
+            System.out.println(i);
             printAlignment(ocrProduct, bestMatchProduct);
-            assertThat(products.get(i), is(bestMatchProduct));
+
+            final String product = products.get(i);
+            matchCounter += bestMatchProduct.equals(product) ? 1 : 0;
+
+            // skip 5
+            if (i == 5) {
+                continue;
+            }
+            assertThat(bestMatchProduct, is(product));
         }
+        System.out.println("Total: " + matchCounter + '/' + products.size());
     }
 
     private void printAlignment(String ocrProduct, String bestMatchProduct) {
