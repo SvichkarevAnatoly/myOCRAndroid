@@ -3,8 +3,10 @@ package ru.myocr.model.align;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -58,6 +60,53 @@ public class DataBaseFinderTest {
         System.out.println("Total: " + matchCounter + '/' + products.size());
     }
 
+    @Test
+    public void gigantNproducts() throws Exception {
+        final int N = 100000;
+
+        // TODO: tune parameters
+        final SimpleAligner aligner = new SimpleAligner(1, 1, 1);
+
+        final List<String> products = Arrays.asList(gigant39RealProducts);
+        final List<String> productsWithRandom = new ArrayList<>(products);
+        addRandomProducts(productsWithRandom, N);
+
+        final DataBaseFinder finder = new DataBaseFinder(productsWithRandom);
+
+        int matchCounter = 0;
+        for (int i = 0; i < gigant39OcrProducts.length; i++) {
+            final String ocrProduct = gigant39OcrProducts[i];
+
+            final String bestMatchProduct = finder.find(ocrProduct, aligner);
+            final String product = products.get(i);
+
+            final boolean expectedMatch = bestMatchProduct.equals(product);
+            System.out.println(i + " " + (expectedMatch ? "" : String.valueOf(false)));
+            printAlignment(ocrProduct, bestMatchProduct);
+
+            matchCounter += bestMatchProduct.equals(product) ? 1 : 0;
+        }
+        System.out.println("Total: " + matchCounter + '/' + products.size());
+    }
+
+    private void addRandomProducts(List<String> products, int newSize) {
+        int minLength = Integer.MAX_VALUE;
+        int maxLength = 0;
+        for (String product : products) {
+            minLength = Math.min(minLength, product.length());
+            maxLength = Math.max(maxLength, product.length());
+        }
+        final int diffLength = maxLength - minLength;
+
+        final RandomString stringGenerator = new RandomString(0);
+        final Random randomLength = new Random(0);
+        for (int i = products.size(); i < newSize; i++) {
+            final int length = minLength + randomLength.nextInt(diffLength);
+            final String randomString = stringGenerator.get(length);
+            products.add(randomString);
+        }
+    }
+
     private void printAlignment(String ocrProduct, String bestMatchProduct) {
         final SimpleAligner aligner = new SimpleAligner();
 
@@ -67,5 +116,25 @@ public class DataBaseFinderTest {
 
         System.out.println("score = " + score + '\n' +
                 align1 + '\n' + align2 + "\n");
+    }
+
+    static class RandomString {
+        private static final char[] CHARSET_AZ =
+                "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ    ".toCharArray();
+
+        private Random random;
+
+        RandomString(long seed) {
+            random = new Random(seed);
+        }
+
+        String get(int length) {
+            char[] result = new char[length];
+            for (int i = 0; i < result.length; i++) {
+                int randomCharIndex = random.nextInt(CHARSET_AZ.length);
+                result[i] = CHARSET_AZ[randomCharIndex];
+            }
+            return new String(result);
+        }
     }
 }
