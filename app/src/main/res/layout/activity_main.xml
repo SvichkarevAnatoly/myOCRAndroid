@@ -24,21 +24,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="CamScanner"/>
+                android:text="Cam Scanner"/>
 
             <Button
                 android:id="@+id/button_run_ocr_text_scanner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="OcrTextScanner"/>
+                android:text="Ocr Text Scanner"/>
 
             <Button
                 android:id="@+id/button_start_intent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Intent"/>
+                android:text="Directly receipt"/>
 
         </LinearLayout>
 

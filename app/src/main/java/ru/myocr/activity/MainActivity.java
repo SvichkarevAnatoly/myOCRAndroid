@@ -24,11 +24,13 @@ public class MainActivity extends AppCompatActivity {
         binding.buttonRunOcrTextScanner.setOnClickListener(v -> runOcrTextScanner());
         binding.buttonStartIntent.setOnClickListener(v -> {
             Intent intent = new Intent(this, ReceiptOcrActivity.class);
-            intent.putExtra(Intent.EXTRA_TEXT, "Test");
+            String gigantProducts = getString(R.string.test_gigant_products);
+            intent.putExtra(Intent.EXTRA_TEXT, gigantProducts);
             startActivity(intent);
 
             intent = new Intent(this, ReceiptOcrActivity.class);
-            intent.putExtra(Intent.EXTRA_TEXT, "Test2");
+            String gigantPrices = getString(R.string.test_gigant_prices);
+            intent.putExtra(Intent.EXTRA_TEXT, gigantPrices);
             startActivity(intent);
         });
     }
