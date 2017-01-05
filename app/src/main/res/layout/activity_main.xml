@@ -33,12 +33,12 @@
                 android:layout_gravity="center"
                 android:text="OcrTextScanner"/>
 
-            <EditText
-                android:id="@+id/edit_text"
+            <Button
+                android:id="@+id/button_start_intent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:text="Enter text to me"/>
+                android:layout_gravity="center"
+                android:text="Intent"/>
 
         </LinearLayout>
 

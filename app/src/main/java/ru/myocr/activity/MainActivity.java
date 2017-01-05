@@ -22,8 +22,15 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
         binding.buttonRunOcrTextScanner.setOnClickListener(v -> runOcrTextScanner());
+        binding.buttonStartIntent.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ReceiptOcrActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, "Test");
+            startActivity(intent);
 
-        handleIncomingIntent();
+            intent = new Intent(this, ReceiptOcrActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, "Test2");
+            startActivity(intent);
+        });
     }
 
     private void runCamScanner() {
@@ -34,28 +41,5 @@ public class MainActivity extends AppCompatActivity {
     private void runOcrTextScanner() {
         Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
         startActivity(intent);
-    }
-
-    private void handleIncomingIntent() {
-        // Get intent, action and MIME type
-        Intent intent = getIntent();
-        if (intent != null) {
-            String action = intent.getAction();
-            String type = intent.getType();
-
-            if (Intent.ACTION_SEND.equals(action) && type != null) {
-                if ("text/plain".equals(type)) {
-                    // Handle text being sent
-                    handleSendText(intent);
-                }
-            }
-        }
-    }
-
-    void handleSendText(Intent intent) {
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText != null) {
-            binding.editText.setText(sharedText);
-        }
     }
 }
