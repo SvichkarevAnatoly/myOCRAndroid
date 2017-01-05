@@ -21,8 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
-        binding.editText.setText("asdf");
 
+        handleIncomingIntent();
+    }
+
+    private void handleIncomingIntent() {
         // Get intent, action and MIME type
         Intent intent = getIntent();
         if (intent != null) {
@@ -31,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (Intent.ACTION_SEND.equals(action) && type != null) {
                 if ("text/plain".equals(type)) {
-                    handleSendText(intent); // Handle text being sent
+                    // Handle text being sent
+                    handleSendText(intent);
                 }
             }
         }
