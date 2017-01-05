@@ -6,8 +6,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 public class SimpleAlignerRealDataTest {
-    private final String ocrChicken = "[114ЛЕ Б/К0ЖИ К9РИН0Е 0ХЛ. НА П0187. ММ 187. И";
     final String expectedChickenAlignment = "ФИ--ЛЕ Б/КОЖИ КУРИНОЕ ОХЛ. НА ПО187. 14*1 187. 14";
+    private final String ocrChicken = "[114ЛЕ Б/К0ЖИ К9РИН0Е 0ХЛ. НА П0187. ММ 187. И";
 
     @Test
     public void chickenWord() throws Exception {
@@ -53,7 +53,7 @@ public class SimpleAlignerRealDataTest {
         String maxScoreFoodName = "empty";
 
         final Aligner alignment = new SimpleAligner();
-        for (String foodName : TestRealData.food30Names) {
+        for (String foodName : TestRealData.prisma30RealProductsWithPrices) {
             final int score = alignment.align(ocrChicken, foodName);
             System.out.println("score = " + score);
             System.out.println(alignment.getAlignString2());
