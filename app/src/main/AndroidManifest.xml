@@ -30,9 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="ru.myocr.activity.CameraActivity">
+        <activity android:name="ru.myocr.newfeature.activity.CameraActivity">
         </activity>
-        <activity android:name="ru.myocr.activity.PhotoActivity">
+        <activity android:name="ru.myocr.newfeature.activity.PhotoActivity">
         </activity>
     </application>
 

@@ -1,4 +1,4 @@
-package ru.myocr.activity;
+package ru.myocr.newfeature.activity;
 
 import android.content.Context;
 import android.content.Intent;

@@ -10,6 +10,8 @@ import org.opencv.android.OpenCVLoader;
 
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
+import ru.myocr.newfeature.activity.CameraActivity;
+import ru.myocr.newfeature.activity.PhotoActivity;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package ru.myocr.activity;
+package ru.myocr.newfeature.activity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
