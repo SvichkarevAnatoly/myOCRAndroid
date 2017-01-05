@@ -21,8 +21,19 @@ public class MainActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
+        binding.buttonRunOcrTextScanner.setOnClickListener(v -> runOcrTextScanner());
 
         handleIncomingIntent();
+    }
+
+    private void runCamScanner() {
+        Intent intent = new Intent("com.intsig.camscanner.NEW_DOC");
+        startActivity(intent);
+    }
+
+    private void runOcrTextScanner() {
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
+        startActivity(intent);
     }
 
     private void handleIncomingIntent() {
@@ -39,11 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private void runCamScanner() {
-        Intent intent = new Intent("com.intsig.camscanner.NEW_DOC");
-        startActivity(intent);
     }
 
     void handleSendText(Intent intent) {

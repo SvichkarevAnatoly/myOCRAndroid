@@ -26,6 +26,13 @@
                 android:layout_gravity="center"
                 android:text="CamScanner"/>
 
+            <Button
+                android:id="@+id/button_run_ocr_text_scanner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="OcrTextScanner"/>
+
             <EditText
                 android:id="@+id/edit_text"
                 android:layout_width="wrap_content"
