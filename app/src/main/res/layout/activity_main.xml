@@ -24,23 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="200dp"
                 android:text="CamScanner"/>
-
-            <Button
-                android:id="@+id/button_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:text="Photo"/>
-
-            <Button
-                android:id="@+id/button_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Camera"/>
 
         </LinearLayout>
 
