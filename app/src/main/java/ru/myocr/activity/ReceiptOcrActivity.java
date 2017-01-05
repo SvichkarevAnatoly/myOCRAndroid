@@ -20,6 +20,9 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_receipt_ocr);
         binding.buttonScanPrices.setOnClickListener(v -> runOcrTextScanner());
 
+        binding.editProducts.setHorizontallyScrolling(true);
+        binding.editPrices.setHorizontallyScrolling(true);
+
         handleIncomingIntent(getIntent());
     }
 
