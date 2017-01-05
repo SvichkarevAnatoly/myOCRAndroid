@@ -10,10 +10,14 @@ public class DataBaseFinder {
     }
 
     public String find(String ocrProduct) {
+        final Aligner aligner = new SimpleAligner();
+        return find(ocrProduct, aligner);
+    }
+
+    public String find(String ocrProduct, Aligner aligner) {
         int bestScore = Integer.MIN_VALUE;
         String bestScoreProduct = "";
         for (String product : products) {
-            Aligner aligner = new SimpleAligner();
             int alignScore = aligner.align(ocrProduct, product);
             if (alignScore > bestScore) {
                 bestScore = alignScore;
