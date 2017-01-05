@@ -20,8 +20,8 @@ import java.util.Arrays;
 
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityPhotoBinding;
-import ru.myocr.model.ocr.ImageHistory;
-import ru.myocr.model.ocr.ReceiptScanner;
+import ru.myocr.newfeature.model.ocr.ImageHistory;
+import ru.myocr.newfeature.model.ocr.ReceiptScanner;
 
 public class PhotoActivity extends AppCompatActivity {
 

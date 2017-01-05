@@ -10,7 +10,7 @@ import org.opencv.core.MatOfPoint;
 
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCameraBinding;
-import ru.myocr.model.ocr.ReceiptScanner;
+import ru.myocr.newfeature.model.ocr.ReceiptScanner;
 
 public class CameraActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener {
 

@@ -1,4 +1,4 @@
-package ru.myocr.model.ocr;
+package ru.myocr.newfeature.model.ocr;
 
 import android.content.Context;
 import android.graphics.Bitmap;

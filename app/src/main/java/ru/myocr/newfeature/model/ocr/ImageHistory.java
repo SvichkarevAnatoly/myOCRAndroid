@@ -1,4 +1,4 @@
-package ru.myocr.model.ocr;
+package ru.myocr.newfeature.model.ocr;
 
 import org.opencv.core.Mat;
 
