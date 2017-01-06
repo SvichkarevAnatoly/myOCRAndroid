@@ -59,21 +59,30 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             if (!hasProducts) {
-                parser = new OcrParser(sharedText);
-                final List<String> products = parser.parseProductList();
-                receiptData = new ReceiptDataImpl(products);
+                updateProducts(sharedText);
                 hasProducts = true;
             } else {
-                parser.setPricesText(sharedText);
-                final List<String> products = receiptData.getProducts();
-                final List<String> prices = parser.parsePriceList();
-                receiptData = new ReceiptDataImpl(products, prices);
+                updatePrices(sharedText);
             }
         }
-        updateReceiptDataView();
     }
 
-    private void updateReceiptDataView() {
+    private void updateProducts(String sharedText) {
+        parser = new OcrParser(sharedText);
+        final List<String> products = parser.parseProductList();
+        receiptData = new ReceiptDataImpl(products);
+        updateProductsView();
+    }
+
+    private void updatePrices(String sharedText) {
+        parser.setPricesText(sharedText);
+        final List<String> products = receiptData.getProducts();
+        final List<String> prices = parser.parsePriceList();
+        receiptData = new ReceiptDataImpl(products, prices);
+        updatePricesView();
+    }
+
+    private void updateProductsView() {
         final ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(this, 0, receiptData.getProducts()) {
                     @NonNull
@@ -87,8 +96,10 @@ public class ReceiptOcrActivity extends AppCompatActivity {
                     }
                 };
         binding.listReceiptProducts.setAdapter(adapter);
+    }
 
-        final ArrayAdapter<String> adapter2 =
+    private void updatePricesView() {
+        final ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(this, 0, receiptData.getPrices()) {
                     @NonNull
                     @Override
@@ -100,6 +111,6 @@ public class ReceiptOcrActivity extends AppCompatActivity {
                         return binding.getRoot();
                     }
                 };
-        binding.listReceiptPrices.setAdapter(adapter2);
+        binding.listReceiptPrices.setAdapter(adapter);
     }
 }
