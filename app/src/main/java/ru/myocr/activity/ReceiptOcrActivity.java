@@ -50,17 +50,8 @@ public class ReceiptOcrActivity extends AppCompatActivity {
     }
 
     private void handleIncomingIntent(Intent intent) {
-        // Get intent, action and MIME type
         if (intent != null) {
-            String action = intent.getAction();
-            String type = intent.getType();
-
-            // if (Intent.ACTION_SEND.equals(action) && type != null) {
-            //     if ("text/plain".equals(type)) {
-            // Handle text being sent
             handleSendText(intent);
-            // }
-            // }
         }
     }
 
