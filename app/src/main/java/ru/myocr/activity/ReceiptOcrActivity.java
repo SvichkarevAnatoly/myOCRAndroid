@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,8 @@ import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptDataImpl;
 import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
-import ru.myocr.model.databinding.ReceiptDataItemBinding;
+import ru.myocr.model.databinding.ReceiptPriceItemBinding;
+import ru.myocr.model.databinding.ReceiptProductItemBinding;
 
 public class ReceiptOcrActivity extends AppCompatActivity {
 
@@ -57,8 +57,8 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
             // if (Intent.ACTION_SEND.equals(action) && type != null) {
             //     if ("text/plain".equals(type)) {
-                    // Handle text being sent
-                    handleSendText(intent);
+            // Handle text being sent
+            handleSendText(intent);
             // }
             // }
         }
@@ -83,18 +83,32 @@ public class ReceiptOcrActivity extends AppCompatActivity {
     }
 
     private void updateReceiptDataView() {
-        final ArrayAdapter<Pair<String, String>> adapter =
-                new ArrayAdapter<Pair<String, String>>(this, 0, receiptData.getProductsPricesPairs()) {
+        final ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, 0, receiptData.getProducts()) {
                     @NonNull
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
-                        final ReceiptDataItemBinding binding =
-                                DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_data_item, parent, false);
-                        final Pair<String, String> item = getItem(position);
-                        binding.textProductPricePair.setText(item.first + item.second);
+                        final ReceiptProductItemBinding binding =
+                                DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_product_item, parent, false);
+                        final String item = getItem(position);
+                        binding.textProduct.setText(item);
                         return binding.getRoot();
                     }
                 };
-        binding.listReceiptData.setAdapter(adapter);
+        binding.listReceiptProducts.setAdapter(adapter);
+
+        final ArrayAdapter<String> adapter2 =
+                new ArrayAdapter<String>(this, 0, receiptData.getPrices()) {
+                    @NonNull
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        final ReceiptPriceItemBinding binding =
+                                DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_price_item, parent, false);
+                        final String item = getItem(position);
+                        binding.textPrice.setText(item);
+                        return binding.getRoot();
+                    }
+                };
+        binding.listReceiptPrices.setAdapter(adapter2);
     }
 }

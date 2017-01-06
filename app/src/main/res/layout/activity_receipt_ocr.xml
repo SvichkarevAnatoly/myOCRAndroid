@@ -12,13 +12,28 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="ru.myocr.activity.ReceiptOcrActivity">
 
-        <ListView
-            android:id="@+id/list_receipt_data"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button_scan_prices">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_scan_prices"
+            android:orientation="horizontal">
 
-        </ListView>
+            <ListView
+                android:id="@+id/list_receipt_products"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+            </ListView>
+
+            <ListView
+                android:id="@+id/list_receipt_prices"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right">
+            </ListView>
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_scan_prices"
@@ -27,7 +42,5 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="Get prices"/>
-
-
     </RelativeLayout>
 </layout>

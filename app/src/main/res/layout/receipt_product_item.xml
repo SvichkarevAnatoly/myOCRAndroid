@@ -7,7 +7,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_product_price_pair"
+            android:id="@+id/text_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
