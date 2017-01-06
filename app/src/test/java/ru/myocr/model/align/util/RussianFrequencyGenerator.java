@@ -1,8 +1,6 @@
 package ru.myocr.model.align.util;
 
 
-import java.util.Random;
-
 public class RussianFrequencyGenerator extends WordGeneratorAbstract {
     static final char[] ALPHABET =
             "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".toCharArray();
@@ -16,10 +14,9 @@ public class RussianFrequencyGenerator extends WordGeneratorAbstract {
             331, 639, 2001,
     };
     private final int[] cumulativeFrequency;
-    private Random random;
 
     public RussianFrequencyGenerator(long seed) {
-        random = new Random(seed);
+        super(seed);
         cumulativeFrequency = getCumulativeFrequency();
     }
 

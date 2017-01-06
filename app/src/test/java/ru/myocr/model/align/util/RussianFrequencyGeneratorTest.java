@@ -22,7 +22,7 @@ public class RussianFrequencyGeneratorTest {
 
     @Test
     public void getCharacter() throws Exception {
-        final RussianFrequencyGenerator generator = new RussianFrequencyGenerator(0);
+        final WordGenerator generator = new RussianFrequencyGenerator(0);
         final String alphabetStr = new String(ALPHABET);
 
         final int[] alphabetCounters = new int[ALPHABET.length];
@@ -40,7 +40,7 @@ public class RussianFrequencyGeneratorTest {
 
     @Test
     public void getWord() throws Exception {
-        final RussianFrequencyGenerator generator = new RussianFrequencyGenerator(0);
+        final WordGenerator generator = new RussianFrequencyGenerator(0);
 
         final int[] alphabetCounters = new int[ALPHABET.length];
         for (int i = 0; i < 10000; i++) {
