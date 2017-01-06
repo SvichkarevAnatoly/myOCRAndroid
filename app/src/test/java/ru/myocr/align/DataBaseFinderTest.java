@@ -1,4 +1,4 @@
-package ru.myocr.model.align;
+package ru.myocr.align;
 
 
 import org.junit.Test;
@@ -9,16 +9,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import ru.myocr.model.align.util.RussianAlphabetGenerator;
-import ru.myocr.model.align.util.RussianFrequencyGenerator;
-import ru.myocr.model.align.util.ShuffleGenerator;
-import ru.myocr.model.align.util.WordGenerator;
+import ru.myocr.align.util.RussianAlphabetGenerator;
+import ru.myocr.align.util.RussianFrequencyGenerator;
+import ru.myocr.align.util.ShuffleGenerator;
+import ru.myocr.align.util.WordGenerator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
-import static ru.myocr.model.align.TestRealData.gigant39OcrProducts;
-import static ru.myocr.model.align.TestRealData.gigant39RealProducts;
+import static ru.myocr.align.TestRealData.gigant39OcrProducts;
+import static ru.myocr.align.TestRealData.gigant39RealProducts;
 
 public class DataBaseFinderTest {
     @Test

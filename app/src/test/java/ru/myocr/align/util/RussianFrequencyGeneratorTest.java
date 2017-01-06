@@ -1,4 +1,4 @@
-package ru.myocr.model.align.util;
+package ru.myocr.align.util;
 
 
 import org.junit.Test;
@@ -6,8 +6,8 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
-import static ru.myocr.model.align.util.RussianFrequencyGenerator.ALPHABET;
-import static ru.myocr.model.align.util.RussianFrequencyGenerator.FREQUENCIES;
+import static ru.myocr.align.util.RussianFrequencyGenerator.ALPHABET;
+import static ru.myocr.align.util.RussianFrequencyGenerator.FREQUENCIES;
 
 public class RussianFrequencyGeneratorTest {
     @Test

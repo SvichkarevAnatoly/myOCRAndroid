@@ -1,4 +1,4 @@
-package ru.myocr.model.align;
+package ru.myocr.align;
 
 import java.util.List;
 

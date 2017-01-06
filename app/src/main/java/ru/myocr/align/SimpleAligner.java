@@ -1,4 +1,4 @@
-package ru.myocr.model.align;
+package ru.myocr.align;
 
 public class SimpleAligner implements Aligner {
     // символ делеции

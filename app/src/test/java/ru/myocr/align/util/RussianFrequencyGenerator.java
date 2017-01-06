@@ -1,4 +1,4 @@
-package ru.myocr.model.align.util;
+package ru.myocr.align.util;
 
 
 public class RussianFrequencyGenerator extends WordGeneratorAbstract {

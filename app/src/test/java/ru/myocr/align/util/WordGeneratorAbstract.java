@@ -1,4 +1,4 @@
-package ru.myocr.model.align.util;
+package ru.myocr.align.util;
 
 import java.util.Random;
 

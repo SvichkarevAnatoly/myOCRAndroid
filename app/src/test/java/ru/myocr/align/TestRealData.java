@@ -1,4 +1,4 @@
-package ru.myocr.model.align;
+package ru.myocr.align;
 
 public class TestRealData {
     public static final String[] prisma30RealProductsWithPrices = {
