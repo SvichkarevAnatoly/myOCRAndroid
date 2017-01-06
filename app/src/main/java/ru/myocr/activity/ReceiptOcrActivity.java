@@ -27,6 +27,9 @@ public class ReceiptOcrActivity extends AppCompatActivity {
     private ReceiptData receiptData;
     private OcrParser parser;
 
+    private ArrayAdapter<String> productsAdapter;
+    private ArrayAdapter<String> pricesAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,10 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_receipt_ocr);
         binding.buttonScanPrices.setOnClickListener(v -> runOcrTextScanner());
+        binding.listReceiptProducts.setOnItemClickListener(
+                (parent, view, position, arg3) -> removeProduct(position));
+        binding.listReceiptPrices.setOnItemClickListener(
+                (parent, view, position, arg3) -> removePrice(position));
 
         handleIncomingIntent(getIntent());
     }
@@ -47,6 +54,18 @@ public class ReceiptOcrActivity extends AppCompatActivity {
     private void runOcrTextScanner() {
         Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
         startActivity(intent);
+    }
+
+    private void removeProduct(int position) {
+        final List<String> products = receiptData.getProducts();
+        products.remove(position);
+        productsAdapter.notifyDataSetChanged();
+    }
+
+    private void removePrice(int position) {
+        final List<String> prices = receiptData.getPrices();
+        prices.remove(position);
+        pricesAdapter.notifyDataSetChanged();
     }
 
     private void handleIncomingIntent(Intent intent) {
@@ -83,34 +102,32 @@ public class ReceiptOcrActivity extends AppCompatActivity {
     }
 
     private void updateProductsView() {
-        final ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, 0, receiptData.getProducts()) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
-                        final ReceiptProductItemBinding binding =
-                                DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_product_item, parent, false);
-                        final String item = getItem(position);
-                        binding.textProduct.setText(item);
-                        return binding.getRoot();
-                    }
-                };
-        binding.listReceiptProducts.setAdapter(adapter);
+        productsAdapter = new ArrayAdapter<String>(this, 0, receiptData.getProducts()) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                final ReceiptProductItemBinding binding =
+                        DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_product_item, parent, false);
+                final String item = getItem(position);
+                binding.textProduct.setText(item);
+                return binding.getRoot();
+            }
+        };
+        binding.listReceiptProducts.setAdapter(productsAdapter);
     }
 
     private void updatePricesView() {
-        final ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, 0, receiptData.getPrices()) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
-                        final ReceiptPriceItemBinding binding =
-                                DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_price_item, parent, false);
-                        final String item = getItem(position);
-                        binding.textPrice.setText(item);
-                        return binding.getRoot();
-                    }
-                };
-        binding.listReceiptPrices.setAdapter(adapter);
+        pricesAdapter = new ArrayAdapter<String>(this, 0, receiptData.getPrices()) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                final ReceiptPriceItemBinding binding =
+                        DataBindingUtil.inflate(getLayoutInflater(), R.layout.receipt_price_item, parent, false);
+                final String item = getItem(position);
+                binding.textPrice.setText(item);
+                return binding.getRoot();
+            }
+        };
+        binding.listReceiptPrices.setAdapter(pricesAdapter);
     }
 }
