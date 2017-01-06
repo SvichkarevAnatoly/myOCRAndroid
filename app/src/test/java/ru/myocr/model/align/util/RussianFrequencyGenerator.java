@@ -3,7 +3,7 @@ package ru.myocr.model.align.util;
 
 import java.util.Random;
 
-public class RussianFrequencyGenerator {
+public class RussianFrequencyGenerator extends WordGeneratorAbstract {
     static final char[] ALPHABET =
             "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".toCharArray();
     static final int[] FREQUENCIES = new int[]{
@@ -23,16 +23,7 @@ public class RussianFrequencyGenerator {
         cumulativeFrequency = getCumulativeFrequency();
     }
 
-    public String getWord(int length) {
-        final StringBuilder sb = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            sb.append(getChar());
-        }
-
-        return sb.toString();
-    }
-
+    @Override
     public char getChar() {
         final int frequencySum = cumulativeFrequency[cumulativeFrequency.length - 1];
         final int cumFreqChar = random.nextInt(frequencySum);

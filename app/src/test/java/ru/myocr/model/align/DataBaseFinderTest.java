@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import ru.myocr.model.align.util.RussianStringGenerator;
+import ru.myocr.model.align.util.RussianAlphabetGenerator;
+import ru.myocr.model.align.util.WordGenerator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -64,7 +65,7 @@ public class DataBaseFinderTest {
 
     @Test
     public void gigantNproducts() throws Exception {
-        final int N = 100000;
+        final int N = 1000;
 
         // TODO: tune parameters
         final SimpleAligner aligner = new SimpleAligner(1, 1, 1);
@@ -100,11 +101,11 @@ public class DataBaseFinderTest {
         }
         final int diffLength = maxLength - minLength;
 
-        final RussianStringGenerator stringGenerator = new RussianStringGenerator(0);
+        final WordGenerator stringGenerator = new RussianAlphabetGenerator(0);
         final Random randomLength = new Random(0);
         for (int i = products.size(); i < newSize; i++) {
             final int length = minLength + randomLength.nextInt(diffLength);
-            final String randomString = stringGenerator.get(length);
+            final String randomString = stringGenerator.getWord(length);
             products.add(randomString);
         }
     }
