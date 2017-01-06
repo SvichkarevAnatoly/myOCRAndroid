@@ -11,6 +11,7 @@ import java.util.Random;
 
 import ru.myocr.model.align.util.RussianAlphabetGenerator;
 import ru.myocr.model.align.util.RussianFrequencyGenerator;
+import ru.myocr.model.align.util.ShuffleGenerator;
 import ru.myocr.model.align.util.WordGenerator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -77,6 +78,15 @@ public class DataBaseFinderTest {
     public void gigantNRussianProducts() throws Exception {
         final int N = 1000;
         final WordGenerator generator = new RussianFrequencyGenerator(0);
+
+        assertGeneratedDataset(N, generator);
+    }
+
+    @Test
+    public void gigantNShuffleProducts() throws Exception {
+        final int N = 1000;
+        final List<String> products = Arrays.asList(gigant39RealProducts);
+        final WordGenerator generator = new ShuffleGenerator(0, products);
 
         assertGeneratedDataset(N, generator);
     }
