@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import ru.myocr.model.align.util.RussianStringGenerator;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static ru.myocr.model.align.TestRealData.gigant39OcrProducts;
@@ -98,7 +100,7 @@ public class DataBaseFinderTest {
         }
         final int diffLength = maxLength - minLength;
 
-        final RandomString stringGenerator = new RandomString(0);
+        final RussianStringGenerator stringGenerator = new RussianStringGenerator(0);
         final Random randomLength = new Random(0);
         for (int i = products.size(); i < newSize; i++) {
             final int length = minLength + randomLength.nextInt(diffLength);
@@ -116,25 +118,5 @@ public class DataBaseFinderTest {
 
         System.out.println("score = " + score + '\n' +
                 align1 + '\n' + align2 + "\n");
-    }
-
-    static class RandomString {
-        private static final char[] CHARSET_AZ =
-                "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ    ".toCharArray();
-
-        private Random random;
-
-        RandomString(long seed) {
-            random = new Random(seed);
-        }
-
-        String get(int length) {
-            char[] result = new char[length];
-            for (int i = 0; i < result.length; i++) {
-                int randomCharIndex = random.nextInt(CHARSET_AZ.length);
-                result[i] = CHARSET_AZ[randomCharIndex];
-            }
-            return new String(result);
-        }
     }
 }
