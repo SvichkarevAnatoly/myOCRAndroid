@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertTrue;
 import static ru.myocr.model.align.util.RussianFrequencyGenerator.ALPHABET;
 import static ru.myocr.model.align.util.RussianFrequencyGenerator.FREQUENCIES;
 
@@ -52,6 +53,31 @@ public class RussianFrequencyGeneratorTest {
 
         assertThat(maxChar(alphabetCounters), is('О'));
         assertThat(minChar(alphabetCounters), is('Ё'));
+    }
+
+    @Test
+    public void getString() throws Exception {
+        final int averageWordLength = 4;
+        final WordGenerator generator = new RussianFrequencyGenerator(0);
+
+        int wordsCounter = 0;
+        int cumulativeWordsLength = 0;
+        for (int i = 0; i < 1000; i++) {
+            final String randString = generator.getString(10, averageWordLength);
+            wordsCounter += countWords(randString);
+            cumulativeWordsLength += wordsLength(randString);
+        }
+
+        final int actualAverageWordLength = cumulativeWordsLength / wordsCounter;
+        assertTrue(actualAverageWordLength < averageWordLength);
+    }
+
+    private int wordsLength(String string) {
+        return string.length() - countWords(string) + 1;
+    }
+
+    private int countWords(String string) {
+        return string.split("\\s+").length;
     }
 
     private void countCharInWord(String word, int[] alphabetCounters) {

@@ -5,5 +5,5 @@ public interface WordGenerator {
 
     String getWord(int length);
 
-    // String getString(int length);
+    String getString(int length, int averageWordLength);
 }
