@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Random;
 
 import ru.myocr.model.align.util.RussianAlphabetGenerator;
+import ru.myocr.model.align.util.RussianFrequencyGenerator;
 import ru.myocr.model.align.util.WordGenerator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertTrue;
 import static ru.myocr.model.align.TestRealData.gigant39OcrProducts;
 import static ru.myocr.model.align.TestRealData.gigant39RealProducts;
 
@@ -36,8 +38,7 @@ public class DataBaseFinderTest {
 
     @Test
     public void gigantAll() throws Exception {
-        // TODO: tune parameters
-        final SimpleAligner aligner = new SimpleAligner(1, 1, 1);
+        final SimpleAligner aligner = new SimpleAligner();
 
         final List<String> products = Arrays.asList(gigant39RealProducts);
         final DataBaseFinder finder = new DataBaseFinder(products);
@@ -67,12 +68,13 @@ public class DataBaseFinderTest {
     public void gigantNproducts() throws Exception {
         final int N = 1000;
 
-        // TODO: tune parameters
-        final SimpleAligner aligner = new SimpleAligner(1, 1, 1);
+        final SimpleAligner aligner = new SimpleAligner();
 
         final List<String> products = Arrays.asList(gigant39RealProducts);
         final List<String> productsWithRandom = new ArrayList<>(products);
-        addRandomProducts(productsWithRandom, N);
+
+        final WordGenerator generator = new RussianAlphabetGenerator(0);
+        addRandomProducts(productsWithRandom, N, generator);
 
         final DataBaseFinder finder = new DataBaseFinder(productsWithRandom);
 
@@ -90,9 +92,42 @@ public class DataBaseFinderTest {
             matchCounter += bestMatchProduct.equals(product) ? 1 : 0;
         }
         System.out.println("Total: " + matchCounter + '/' + products.size());
+        assertTrue(matchCounter >= products.size() - 2);
     }
 
-    private void addRandomProducts(List<String> products, int newSize) {
+    @Test
+    public void gigantNRussianProducts() throws Exception {
+        final int N = 1000;
+
+        final SimpleAligner aligner = new SimpleAligner();
+
+        final List<String> products = Arrays.asList(gigant39RealProducts);
+        final List<String> productsWithRandom = new ArrayList<>(products);
+
+        final WordGenerator generator = new RussianFrequencyGenerator(0);
+        addRandomProducts(productsWithRandom, N, generator);
+
+        final DataBaseFinder finder = new DataBaseFinder(productsWithRandom);
+
+        int matchCounter = 0;
+        for (int i = 0; i < gigant39OcrProducts.length; i++) {
+            final String ocrProduct = gigant39OcrProducts[i];
+
+            final String bestMatchProduct = finder.find(ocrProduct, aligner);
+            final String product = products.get(i);
+
+            final boolean expectedMatch = bestMatchProduct.equals(product);
+            System.out.println(i + " " + (expectedMatch ? "" : String.valueOf(false)));
+            printAlignment(ocrProduct, bestMatchProduct);
+
+            matchCounter += bestMatchProduct.equals(product) ? 1 : 0;
+        }
+
+        System.out.println("Total: " + matchCounter + '/' + products.size());
+        assertTrue(matchCounter >= products.size() - 2);
+    }
+
+    private void addRandomProducts(List<String> products, int newSize, WordGenerator generator) {
         int minLength = Integer.MAX_VALUE;
         int maxLength = 0;
         for (String product : products) {
@@ -101,11 +136,10 @@ public class DataBaseFinderTest {
         }
         final int diffLength = maxLength - minLength;
 
-        final WordGenerator stringGenerator = new RussianAlphabetGenerator(0);
         final Random randomLength = new Random(0);
         for (int i = products.size(); i < newSize; i++) {
             final int length = minLength + randomLength.nextInt(diffLength);
-            final String randomString = stringGenerator.getWord(length);
+            final String randomString = generator.getString(length, 6);
             products.add(randomString);
         }
     }
