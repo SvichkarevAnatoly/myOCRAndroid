@@ -68,47 +68,26 @@ public class DataBaseFinderTest {
     @Test
     public void gigantNproducts() throws Exception {
         final int N = 1000;
-
-        final SimpleAligner aligner = new SimpleAligner();
-
-        final List<String> products = Arrays.asList(gigant39RealProducts);
-        final List<String> productsWithRandom = new ArrayList<>(products);
-
         final WordGenerator generator = new RussianAlphabetGenerator(0);
-        addRandomProducts(productsWithRandom, N, generator);
-        Collections.shuffle(productsWithRandom);
-        printFirst(productsWithRandom, 15);
 
-        final DataBaseFinder finder = new DataBaseFinder(productsWithRandom);
-
-        int matchCounter = 0;
-        for (int i = 0; i < gigant39OcrProducts.length; i++) {
-            final String ocrProduct = gigant39OcrProducts[i];
-
-            final String bestMatchProduct = finder.find(ocrProduct, aligner);
-            final String product = products.get(i);
-
-            final boolean expectedMatch = bestMatchProduct.equals(product);
-            System.out.println(i + " " + (expectedMatch ? "" : String.valueOf(false)));
-            printAlignment(ocrProduct, bestMatchProduct);
-
-            matchCounter += bestMatchProduct.equals(product) ? 1 : 0;
-        }
-        System.out.println("Total: " + matchCounter + '/' + products.size());
-        assertTrue(matchCounter >= products.size() - 2);
+        assertGeneratedDataset(N, generator);
     }
 
     @Test
     public void gigantNRussianProducts() throws Exception {
         final int N = 1000;
+        final WordGenerator generator = new RussianFrequencyGenerator(0);
 
+        assertGeneratedDataset(N, generator);
+    }
+
+    private void assertGeneratedDataset(int n, WordGenerator generator) {
         final SimpleAligner aligner = new SimpleAligner();
 
         final List<String> products = Arrays.asList(gigant39RealProducts);
         final List<String> productsWithRandom = new ArrayList<>(products);
 
-        final WordGenerator generator = new RussianFrequencyGenerator(0);
-        addRandomProducts(productsWithRandom, N, generator);
+        addRandomProducts(productsWithRandom, n, generator);
         Collections.shuffle(productsWithRandom);
         printFirst(productsWithRandom, 15);
 
@@ -127,7 +106,6 @@ public class DataBaseFinderTest {
 
             matchCounter += bestMatchProduct.equals(product) ? 1 : 0;
         }
-
         System.out.println("Total: " + matchCounter + '/' + products.size());
         assertTrue(matchCounter >= products.size() - 2);
     }
