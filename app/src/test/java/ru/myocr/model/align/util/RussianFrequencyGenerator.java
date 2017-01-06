@@ -23,8 +23,14 @@ public class RussianFrequencyGenerator {
         cumulativeFrequency = getCumulativeFrequency();
     }
 
-    public String getString(int length) {
-        return null;
+    public String getWord(int length) {
+        final StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            sb.append(getChar());
+        }
+
+        return sb.toString();
     }
 
     public char getChar() {

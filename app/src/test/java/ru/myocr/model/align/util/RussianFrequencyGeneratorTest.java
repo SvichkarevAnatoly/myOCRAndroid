@@ -38,6 +38,32 @@ public class RussianFrequencyGeneratorTest {
         assertThat(minChar(alphabetCounters), is('Ё'));
     }
 
+    @Test
+    public void getWord() throws Exception {
+        final RussianFrequencyGenerator generator = new RussianFrequencyGenerator(0);
+
+        final int[] alphabetCounters = new int[ALPHABET.length];
+        for (int i = 0; i < 10000; i++) {
+            final String randWord = generator.getWord(6);
+            countCharInWord(randWord, alphabetCounters);
+        }
+
+        printAlphabetCounters(alphabetCounters);
+
+        assertThat(maxChar(alphabetCounters), is('О'));
+        assertThat(minChar(alphabetCounters), is('Ё'));
+    }
+
+    private void countCharInWord(String word, int[] alphabetCounters) {
+        final String alphabetStr = new String(ALPHABET);
+
+        for (int i = 0; i < word.length(); i++) {
+            final char wordChar = word.charAt(i);
+            final int indexOfChar = alphabetStr.indexOf(wordChar);
+            alphabetCounters[indexOfChar]++;
+        }
+    }
+
     private void printCumulativeFrequency(int[] cumulativeFrequency) {
         for (int i = 0; i < cumulativeFrequency.length; i++) {
             System.out.println(ALPHABET[i] + " - " +
