@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -75,6 +76,8 @@ public class DataBaseFinderTest {
 
         final WordGenerator generator = new RussianAlphabetGenerator(0);
         addRandomProducts(productsWithRandom, N, generator);
+        Collections.shuffle(productsWithRandom);
+        printFirst(productsWithRandom, 15);
 
         final DataBaseFinder finder = new DataBaseFinder(productsWithRandom);
 
@@ -106,6 +109,8 @@ public class DataBaseFinderTest {
 
         final WordGenerator generator = new RussianFrequencyGenerator(0);
         addRandomProducts(productsWithRandom, N, generator);
+        Collections.shuffle(productsWithRandom);
+        printFirst(productsWithRandom, 15);
 
         final DataBaseFinder finder = new DataBaseFinder(productsWithRandom);
 
@@ -142,6 +147,13 @@ public class DataBaseFinderTest {
             final String randomString = generator.getString(length, 6);
             products.add(randomString);
         }
+    }
+
+    private void printFirst(List<String> stringList, int n) {
+        for (int i = 0; i < n; i++) {
+            System.out.println(i + " " + stringList.get(i));
+        }
+        System.out.println();
     }
 
     private void printAlignment(String ocrProduct, String bestMatchProduct) {
