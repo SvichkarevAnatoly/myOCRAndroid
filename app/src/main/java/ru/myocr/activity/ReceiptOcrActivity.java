@@ -42,13 +42,13 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         binding.listReceiptPrices.setOnItemClickListener(
                 (parent, view, position, arg3) -> removePrice(position));
 
-        handleIncomingIntent(getIntent());
+        handleIncomingText(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        handleIncomingIntent(intent);
+        handleIncomingText(intent);
     }
 
     private void runOcrTextScanner() {
@@ -68,13 +68,13 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         pricesAdapter.notifyDataSetChanged();
     }
 
-    private void handleIncomingIntent(Intent intent) {
+    private void handleIncomingText(Intent intent) {
         if (intent != null) {
-            handleSendText(intent);
+            handleText(intent);
         }
     }
 
-    void handleSendText(Intent intent) {
+    void handleText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             if (!hasProducts) {
