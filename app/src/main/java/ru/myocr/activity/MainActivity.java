@@ -2,7 +2,6 @@ package ru.myocr.activity;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -59,19 +58,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIncomingImage(Intent intent) {
-        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
+        if (intent != null) {
             // sent to TextScanner to OCR
-            final String intentType = intent.getType();
-            runOcrTextScanner(imageUri, intentType);
+            runOcrTextScanner(intent);
         }
     }
 
-    private void runOcrTextScanner(Uri imageUri, String intentType) {
-        final Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        intent.setType(intentType);
+    private void runOcrTextScanner(Intent intent) {
+        intent.setPackage("com.offline.ocr.english.image.to.text");
         startActivity(intent);
     }
 }
