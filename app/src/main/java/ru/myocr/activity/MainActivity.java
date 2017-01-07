@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
@@ -60,7 +59,10 @@ public class MainActivity extends AppCompatActivity {
     private void handleIncomingImage(Intent intent) {
         if (intent != null) {
             // sent to TextScanner to OCR
-            runOcrTextScanner(intent);
+            final String type = intent.getType();
+            if (type != null && type.startsWith("image/")) {
+                runOcrTextScanner(intent);
+            }
         }
     }
 
