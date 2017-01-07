@@ -53,10 +53,13 @@ public class BigRealDBTest {
 
         final DataBaseFinder finder = new DataBaseFinder(products);
 
-        for (String productOcr : productsOcr) {
-            final String match = finder.find(productOcr);
-            printAlignment(productOcr, match);
+        final List<String> matches = finder.findAll(productsOcr);
+        for (int i = 0; i < matches.size(); i++) {
+            printAlignment(productsOcr.get(i), matches.get(i));
         }
+
+        // TODO
+        // assertThat();
     }
 
     private String readText(String fileName) throws IOException {

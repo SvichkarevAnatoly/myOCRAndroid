@@ -1,5 +1,6 @@
 package ru.myocr.align;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseFinder {
@@ -26,5 +27,14 @@ public class DataBaseFinder {
         }
 
         return bestScoreProduct;
+    }
+
+    public List<String> findAll(List<String> ocrProducts) {
+        final ArrayList<String> bestScoreProducts = new ArrayList<>(ocrProducts.size());
+        for (String ocrProduct : ocrProducts) {
+            final String bestScoreProduct = find(ocrProduct);
+            bestScoreProducts.add(bestScoreProduct);
+        }
+        return bestScoreProducts;
     }
 }
