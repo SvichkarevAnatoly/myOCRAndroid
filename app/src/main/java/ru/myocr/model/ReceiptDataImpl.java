@@ -17,6 +17,7 @@ public class ReceiptDataImpl implements ReceiptData {
     public ReceiptDataImpl(List<String> products, List<String> prices) {
         this.products = products;
         this.prices = prices;
+
     }
 
     @Override
