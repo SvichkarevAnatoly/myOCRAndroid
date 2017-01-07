@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToReceiptDirectly() {
-        String gigantProducts = getString(R.string.test_gigant_products);
+        String gigantProducts = getString(R.string.test_south_products);
         startActivityWithText(gigantProducts);
 
         String gigantPrices = getString(R.string.test_gigant_prices);
