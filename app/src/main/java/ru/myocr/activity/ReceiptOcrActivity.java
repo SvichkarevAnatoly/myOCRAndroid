@@ -143,20 +143,32 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
 
     @Override
     public void onClickProductEdit(int pos) {
-        EditText editText = new EditText(this);
-        editText.setText(receiptData.getProducts().get(pos));
-        new AlertDialog.Builder(this)
-                .setView(editText)
-                .setPositiveButton("Ok", (dialog, which) ->
-                {
-                    receiptData.getProducts().set(pos, editText.getText().toString());
-                    updateProductsView();
-                })
-                .show();
+        showEditTextDialog(receiptData.getProducts().get(pos), text -> {
+            receiptData.getProducts().set(pos, text);
+            updateProductsView();
+        });
     }
 
     @Override
     public void onClickPriceEdit(int pos) {
+        showEditTextDialog(receiptData.getPrices().get(pos), text -> {
+            receiptData.getPrices().set(pos, text);
+            updateProductsView();
+        });
+    }
 
+
+    public void showEditTextDialog(String text, OnEditTextListener callback) {
+        EditText editText = new EditText(this);
+        editText.setText(text);
+        new AlertDialog.Builder(this)
+                .setView(editText)
+                .setPositiveButton("Ok",
+                        (dialog, which) -> callback.onEdit(editText.getText().toString()))
+                .show();
+    }
+
+    private interface OnEditTextListener {
+        void onEdit(String text);
     }
 }
