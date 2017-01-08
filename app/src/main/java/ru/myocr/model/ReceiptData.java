@@ -9,6 +9,8 @@ public interface ReceiptData {
 
     List<String> getProducts();
 
+    void setProducts(List<String> products);
+
     List<String> getPrices();
 
     List<Pair<String, String>> getProductsPricesPairs();

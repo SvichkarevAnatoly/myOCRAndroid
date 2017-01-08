@@ -8,9 +8,8 @@ import java.util.List;
 
 public class ReceiptDataImpl implements ReceiptData {
     private final static String EMPTY_LINE = "";
-
-    private final List<String> products;
     private final List<String> prices;
+    private List<String> products;
 
     public ReceiptDataImpl(List<String> products) {
         this(products, new ArrayList<>());
@@ -25,6 +24,11 @@ public class ReceiptDataImpl implements ReceiptData {
     @Override
     public List<String> getProducts() {
         return products;
+    }
+
+    @Override
+    public void setProducts(List<String> products) {
+        this.products = products;
     }
 
     @Override

@@ -10,5 +10,5 @@ public interface Api {
     public static final String SERVER_URL = "http://193.169.0.103:8080/";
 
     @POST("findAll")
-    Call<SimpleResponse> findAll(@Body FindAllRequest request);
+    Call<FindAllResponse> findAll(@Body FindAllRequest request);
 }

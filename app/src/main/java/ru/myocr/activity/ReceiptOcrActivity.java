@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,14 +21,13 @@ import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.align.DataBaseFinder;
 import ru.myocr.api.Api;
 import ru.myocr.api.FindAllRequest;
-import ru.myocr.api.SimpleResponse;
+import ru.myocr.api.FindAllResponse;
 import ru.myocr.db.DbStub;
 import ru.myocr.model.OcrParser;
 import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptDataImpl;
 import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
-
 public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptDataViewAdapter.OnItemClickListener {
 
     private ActivityReceiptOcrBinding binding;
@@ -55,19 +53,19 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     }
 
     private void findInServer() {
-        new AsyncTask<Void, Void, String>() {
+        new AsyncTask<Void, Void, List<String>>() {
             @Override
-            protected String doInBackground(Void... params) {
+            protected List<String> doInBackground(Void... params) {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(Api.SERVER_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);
                 final FindAllRequest request = new FindAllRequest(receiptData.getProducts());
-                final Call<SimpleResponse> responseCall = api.findAll(request);
+                final Call<FindAllResponse> responseCall = api.findAll(request);
                 try {
-                    final Response<SimpleResponse> response = responseCall.execute();
-                    return response.body().body;
+                    final Response<FindAllResponse> response = responseCall.execute();
+                    return response.body().match;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -75,9 +73,11 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
             }
 
             @Override
-            protected void onPostExecute(String res) {
+            protected void onPostExecute(List<String> res) {
                 super.onPostExecute(res);
-                Toast.makeText(ReceiptOcrActivity.this, "" + res, Toast.LENGTH_LONG).show();
+                //Toast.makeText(ReceiptOcrActivity.this, "" + res, Toast.LENGTH_LONG).show();
+                receiptData.setProducts(res);
+                updateProductsView();
             }
         }.execute();
     }
