@@ -19,9 +19,9 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
     - 'extra-android-support-.+'
-    - 'android-sdk-license-c81a61d9'
 
 before_script:
-  - android update sdk --no-ui --filter extra-android-m2repository,extra-google-m2repository
+  - echo "y" | android update sdk --no--ui --filter extra-android-m2repository
+  - echo "y" | android update sdk --no--ui --filter extra-google-m2repository
 
 script: ./gradlew test -i
