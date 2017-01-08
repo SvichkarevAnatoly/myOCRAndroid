@@ -46,18 +46,6 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         handleIncomingText(intent);
     }
 
-    private void removeProduct(int position) {
-        final List<String> products = receiptData.getProducts();
-        products.remove(position);
-        updateProductsView();
-    }
-
-    private void removePrice(int position) {
-        final List<String> prices = receiptData.getPrices();
-        prices.remove(position);
-        updateProductsView();
-    }
-
     private void handleIncomingText(Intent intent) {
         if (intent != null) {
             handleText(intent);
@@ -79,8 +67,9 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     private void updateProducts(String sharedText) {
         parser = new OcrParser(sharedText);
         final List<String> products = parser.parseProductList();
-        final List<String> matchesProducts = replaceMatchesInDB(products);
-        receiptData = new ReceiptDataImpl(matchesProducts);
+        // final List<String> matchesProducts = replaceMatchesInDB(products);
+        // receiptData = new ReceiptDataImpl(matchesProducts);
+        receiptData = new ReceiptDataImpl(products);
         updateProductsView();
     }
 
@@ -120,12 +109,32 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     }
 
     @Override
-    public void onClickProduct(int pos) {
-        removeProduct(pos);
+    public void onClickProductRemove(int pos) {
+        receiptData.removeProduct(pos);
+        updateProductsView();
     }
 
     @Override
-    public void onClickPrice(int pos) {
-        removePrice(pos);
+    public void onClickPriceRemove(int pos) {
+        receiptData.removePrice(pos);
+        updateProductsView();
+    }
+
+    @Override
+    public void onClickProductDown(int pos) {
+        receiptData.shiftProductDown(pos);
+        updateProductsView();
+    }
+
+    @Override
+    public void onClickProductUp(int pos) {
+        receiptData.shiftProductUp(pos);
+        updateProductsView();
+    }
+
+    @Override
+    public void onClickPriceDown(int pos) {
+        receiptData.shiftPriceDown(pos);
+        updateProductsView();
     }
 }

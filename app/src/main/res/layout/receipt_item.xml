@@ -6,18 +6,69 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/button_product_up"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_weight="0"
+            android:text="↑"/>
+
+        <Button
+            android:id="@+id/button_product_down"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_weight="0"
+            android:text="↓"/>
+
+        <Button
+            android:id="@+id/button_product_remove"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_weight="0"
+            android:text="R"/>
+
         <TextView
             android:id="@+id/text_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"/>
 
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#000"/>
+
+        <Button
+            android:id="@+id/button_price_down"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_weight="0"
+            android:text="↓"/>
+
+        <Button
+            android:id="@+id/button_price_remove"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_weight="0"
+            android:text="R"/>
+
         <TextView
             android:id="@+id/text_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_weight="1"/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="right"/>
 
     </LinearLayout>
 </layout>

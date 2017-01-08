@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReceiptDataImpl implements ReceiptData {
+    private final static String EMPTY_LINE = "";
+
     private final List<String> products;
     private final List<String> prices;
 
@@ -43,12 +45,43 @@ public class ReceiptDataImpl implements ReceiptData {
         return pairs;
     }
 
+    @Override
+    public void removeProduct(int idx) {
+        products.remove(idx);
+    }
+
+    @Override
+    public void removePrice(int idx) {
+        prices.remove(idx);
+    }
+
+    @Override
+    public void shiftProductUp(int idx) {
+        final String curProduct = products.get(idx);
+        final String prevProduct = products.get(idx - 1);
+        products.set(idx - 1, prevProduct + ' ' + curProduct);
+        removeProduct(idx);
+    }
+
+    @Override
+    public void shiftProductDown(int idx) {
+        final String curProduct = products.get(idx);
+        final String nextProduct = products.get(idx + 1);
+        products.set(idx + 1, curProduct + ' ' + nextProduct);
+        removeProduct(idx);
+    }
+
+    @Override
+    public void shiftPriceDown(int idx) {
+        prices.add(idx, EMPTY_LINE);
+    }
+
     private String getPrice(int index) {
         return index >= prices.size() ? "" : prices.get(index);
     }
 
     private String getProduct(int index) {
-        return index >= products.size() ? "" : products.get(index);
+        return index >= products.size() ? EMPTY_LINE : products.get(index);
     }
 
     @Override

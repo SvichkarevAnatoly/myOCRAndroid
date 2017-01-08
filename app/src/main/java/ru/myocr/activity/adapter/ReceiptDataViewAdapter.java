@@ -32,15 +32,34 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
         final Pair<String, String> item = getItem(position);
         binding.textProduct.setText(item.first);
         binding.textPrice.setText(item.second);
-        binding.textProduct.setOnClickListener(v -> listener.onClickProduct(position));
-        binding.textPrice.setOnClickListener(v -> listener.onClickPrice(position));
+
+        binding.buttonProductUp.setOnClickListener(v -> listener.onClickProductUp(position));
+        binding.buttonProductDown.setOnClickListener(v -> listener.onClickProductDown(position));
+        binding.buttonProductRemove.setOnClickListener(v -> listener.onClickProductRemove(position));
+
+        binding.buttonPriceDown.setOnClickListener(v -> listener.onClickPriceDown(position));
+        binding.buttonPriceRemove.setOnClickListener(v -> listener.onClickPriceRemove(position));
+
+        if (position == 0) {
+            binding.buttonProductUp.setVisibility(View.INVISIBLE);
+        }
+        if (position == getCount() - 1) {
+            binding.buttonProductDown.setVisibility(View.INVISIBLE);
+            binding.buttonPriceDown.setVisibility(View.INVISIBLE);
+        }
         return binding.getRoot();
     }
 
     public interface OnItemClickListener {
 
-        void onClickProduct(int pos);
+        void onClickProductRemove(int pos);
 
-        void onClickPrice(int pos);
+        void onClickPriceRemove(int pos);
+
+        void onClickProductDown(int pos);
+
+        void onClickProductUp(int pos);
+
+        void onClickPriceDown(int pos);
     }
 }

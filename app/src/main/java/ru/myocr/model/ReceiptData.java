@@ -13,5 +13,15 @@ public interface ReceiptData {
 
     List<Pair<String, String>> getProductsPricesPairs();
 
+    void removeProduct(int idx);
+
+    void removePrice(int idx);
+
+    void shiftProductUp(int idx);
+
+    void shiftProductDown(int idx);
+
+    void shiftPriceDown(int idx);
+
     void setProductItem(String productItem, int index);
 }
