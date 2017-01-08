@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 public class BigRealDBTest {
     @Test
     public void pashaCheck() throws Exception {
-        final String fileName = "/home/anatoly/Documents/self/fan/OCR/myOCRAndroid/app/src/main/assets/south.txt";
+        final String fileName = "src/main/assets/south.txt";
         final String productsText = readText(fileName);
 
         final OcrParser parser = new OcrParser(productsText);
@@ -36,7 +36,7 @@ public class BigRealDBTest {
 
     @Test
     public void photoOcr() throws Exception {
-        final String path = "/home/anatoly/Documents/self/fan/OCR/myOCRAndroid/app/src/main/assets/";
+        final String path = "src/main/assets/";
         final String productsDBFileName = path + "south.txt";
         final String productsText = readText(productsDBFileName);
 
