@@ -13,6 +13,10 @@ public interface ReceiptData {
 
     List<Pair<String, String>> getProductsPricesPairs();
 
+    int getProductSize();
+
+    int getPriceSize();
+
     void removeProduct(int idx);
 
     void removePrice(int idx);

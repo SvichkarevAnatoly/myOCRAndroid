@@ -100,7 +100,8 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         } else {
             receiptViewAdapter.notifyDataSetChanged();
         }
-
+        receiptViewAdapter.setProductSize(receiptData.getProductSize());
+        receiptViewAdapter.setPriceSize(receiptData.getPriceSize());
     }
 
     private void runOcrTextScanner() {

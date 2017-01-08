@@ -46,6 +46,16 @@ public class ReceiptDataImpl implements ReceiptData {
     }
 
     @Override
+    public int getProductSize() {
+        return products.size();
+    }
+
+    @Override
+    public int getPriceSize() {
+        return prices.size();
+    }
+
+    @Override
     public void removeProduct(int idx) {
         products.remove(idx);
     }
@@ -77,11 +87,11 @@ public class ReceiptDataImpl implements ReceiptData {
     }
 
     private String getPrice(int index) {
-        return index >= prices.size() ? "" : prices.get(index);
+        return index >= prices.size() ? null : prices.get(index);
     }
 
     private String getProduct(int index) {
-        return index >= products.size() ? EMPTY_LINE : products.get(index);
+        return index >= products.size() ? null : products.get(index);
     }
 
     @Override
