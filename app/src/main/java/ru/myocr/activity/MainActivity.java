@@ -2,19 +2,9 @@ package ru.myocr.activity;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import ru.myocr.api.Api;
-import ru.myocr.api.SimpleResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 
@@ -34,35 +24,6 @@ public class MainActivity extends AppCompatActivity {
         binding.buttonStartIntent.setOnClickListener(v -> goToReceiptDirectly());
 
         handleIncomingImage(getIntent());
-
-
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Api.SERVER_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                final Api api = retrofit.create(Api.class);
-                final Call<SimpleResponse> tolya = api.simpleMethod();
-                try {
-                    final Response<SimpleResponse> response = tolya.execute();
-                    return response.body().body;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String res) {
-                super.onPostExecute(res);
-                Toast.makeText(MainActivity.this, "" + res, Toast.LENGTH_LONG).show();
-            }
-        }.execute();
-
-
-
     }
 
     @Override

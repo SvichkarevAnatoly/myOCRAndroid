@@ -3,16 +3,26 @@ package ru.myocr.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.align.DataBaseFinder;
+import ru.myocr.api.Api;
+import ru.myocr.api.FindAllRequest;
+import ru.myocr.api.SimpleResponse;
 import ru.myocr.db.DbStub;
 import ru.myocr.model.OcrParser;
 import ru.myocr.model.R;
@@ -38,8 +48,38 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_receipt_ocr);
         binding.buttonScanPrices.setOnClickListener(v -> runOcrTextScanner());
+        binding.buttonFindAll.setOnClickListener(v -> findInServer());
 
         handleIncomingText(getIntent());
+
+    }
+
+    private void findInServer() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(Api.SERVER_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                final Api api = retrofit.create(Api.class);
+                final FindAllRequest request = new FindAllRequest(receiptData.getProducts());
+                final Call<SimpleResponse> responseCall = api.findAll(request);
+                try {
+                    final Response<SimpleResponse> response = responseCall.execute();
+                    return response.body().body;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String res) {
+                super.onPostExecute(res);
+                Toast.makeText(ReceiptOcrActivity.this, "" + res, Toast.LENGTH_LONG).show();
+            }
+        }.execute();
     }
 
     @Override

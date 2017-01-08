@@ -16,16 +16,30 @@
             android:id="@+id/list_receipt_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button_scan_prices"
+            android:layout_above="@+id/buttons"
             android:layout_centerHorizontal="true">
         </ListView>
 
-        <Button
-            android:id="@+id/button_scan_prices"
+        <LinearLayout
+            android:id="@+id/buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:text="Get prices"/>
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/button_scan_prices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get prices"/>
+
+            <Button
+                android:id="@+id/button_find_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find all"/>
+
+        </LinearLayout>
+
     </RelativeLayout>
 </layout>
