@@ -1,10 +1,12 @@
 package ru.myocr.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,5 +139,24 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     public void onClickPriceDown(int pos) {
         receiptData.shiftPriceDown(pos);
         updateProductsView();
+    }
+
+    @Override
+    public void onClickProductEdit(int pos) {
+        EditText editText = new EditText(this);
+        editText.setText(receiptData.getProducts().get(pos));
+        new AlertDialog.Builder(this)
+                .setView(editText)
+                .setPositiveButton("Ok", (dialog, which) ->
+                {
+                    receiptData.getProducts().set(pos, editText.getText().toString());
+                    updateProductsView();
+                })
+                .show();
+    }
+
+    @Override
+    public void onClickPriceEdit(int pos) {
+
     }
 }
