@@ -1,9 +1,13 @@
 package ru.myocr.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -11,6 +15,18 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
+import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import ru.myocr.api.Api;
+import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 
@@ -36,17 +52,15 @@ public class MainActivity extends AppCompatActivity {
                 case PICK_IMAGE_REQUEST:
                     if (data != null && data.getData() != null) {
                         final Uri imageUri = data.getData();
-                        startCropImageActivity(imageUri);
+                        Toast.makeText(MainActivity.this, imageUri.toString(), Toast.LENGTH_LONG).show();
+                        requestOcr(imageUri);
+                        // startCropImageActivity(imageUri);
                     }
                     break;
                 case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
                     final CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     final Uri imageUri = result.getUri();
-                    binding.imagePreview.setImageURI(imageUri);
-                    Toast.makeText(this,
-                            "Cropping successful, Sample: " + result.getSampleSize(),
-                            Toast.LENGTH_LONG)
-                            .show();
+                    requestOcr(imageUri);
                     break;
             }
         }
@@ -97,8 +111,56 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null) {
             final String type = intent.getType();
             final Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-            if (type != null && type.startsWith("image/") && imageUri != null) {
+            if (type != null && type.startsWith("ocr/") && imageUri != null) {
                 startCropImageActivity(imageUri);
+            }
+        }
+    }
+
+    private void requestOcr(Uri imageUri) {
+        new AsyncTask<Uri, Void, String>() {
+            @Override
+            protected String doInBackground(Uri... params) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(Api.SERVER_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                final Api api = retrofit.create(Api.class);
+
+                String path = getRealPathFromURI(MainActivity.this, params[0]);
+                final File imageFile = new File(path);
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("imageUri", imageFile.getName(), requestFile);
+
+                final Call<OcrResponse> responseCall = api.ocr(body);
+                try {
+                    final Response<OcrResponse> response = responseCall.execute();
+                    return response.body().ocrText;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String res) {
+                super.onPostExecute(res);
+                Toast.makeText(MainActivity.this, res, Toast.LENGTH_LONG).show();
+            }
+        }.execute(imageUri);
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
         }
     }
