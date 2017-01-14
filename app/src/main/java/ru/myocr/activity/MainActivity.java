@@ -2,8 +2,14 @@ package ru.myocr.activity;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
@@ -14,16 +20,37 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    private int PICK_IMAGE_REQUEST = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
-        binding.buttonRunOcrTextScanner.setOnClickListener(v -> runOcrTextScanner());
+        binding.buttonSelectImage.setOnClickListener(v -> selectImage());
         binding.buttonStartIntent.setOnClickListener(v -> goToReceiptDirectly());
 
         handleIncomingImage(getIntent());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // handle result of CropImageActivity
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                ((ImageView) findViewById(R.id.quick_start_cropped_image)).setImageURI(result.getUri());
+                Toast.makeText(this, "Cropping successful, Sample: " + result.getSampleSize(), Toast.LENGTH_LONG).show();
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == PICK_IMAGE_REQUEST
+                && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            startCropImageActivity(imageUri);
+        }
     }
 
     @Override
@@ -37,9 +64,20 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void runOcrTextScanner() {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
-        startActivity(intent);
+    private void selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        // Always show the chooser (if there are multiple options available)
+        final Intent chooser = Intent.createChooser(intent, "Select Picture");
+        startActivityForResult(chooser, PICK_IMAGE_REQUEST);
+    }
+
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .start(this);
     }
 
     private void goToReceiptDirectly() {
@@ -58,16 +96,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleIncomingImage(Intent intent) {
         if (intent != null) {
-            // sent to TextScanner to OCR
             final String type = intent.getType();
-            if (type != null && type.startsWith("image/")) {
-                runOcrTextScanner(intent);
+            final Uri imageUri = intent.getData();
+            if (type != null && type.startsWith("image/") && imageUri != null) {
+                startCropImageActivity(imageUri);
             }
         }
-    }
-
-    private void runOcrTextScanner(Intent intent) {
-        intent.setPackage("com.offline.ocr.english.image.to.text");
-        startActivity(intent);
     }
 }

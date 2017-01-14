@@ -27,11 +27,11 @@
                 android:text="Cam Scanner"/>
 
             <Button
-                android:id="@+id/button_run_ocr_text_scanner"
+                android:id="@+id/button_select_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Ocr Text Scanner"/>
+                android:text="Select Image"/>
 
             <Button
                 android:id="@+id/button_start_intent"
@@ -40,7 +40,12 @@
                 android:layout_gravity="center"
                 android:text="Directly receipt"/>
 
+            <ImageView
+                android:id="@+id/quick_start_cropped_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:contentDescription="crop result"/>
         </LinearLayout>
-
     </RelativeLayout>
 </layout>
