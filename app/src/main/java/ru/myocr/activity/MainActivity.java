@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -24,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.buttonRunCamScanner.setOnClickListener(v -> runCamScanner());
-        binding.buttonSelectImage.setOnClickListener(v -> selectImage());
-        binding.buttonStartIntent.setOnClickListener(v -> goToReceiptDirectly());
 
         handleIncomingImage(getIntent());
     }
@@ -60,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
         handleIncomingImage(intent);
     }
 
-    private void runCamScanner() {
+    public void runCamScanner(View view) {
         Intent intent = new Intent("com.intsig.camscanner.NEW_DOC");
         startActivity(intent);
     }
 
-    private void selectImage() {
+    public void selectImage(View view) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -74,19 +72,19 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(chooser, PICK_IMAGE_REQUEST);
     }
 
-    private void startCropImageActivity(Uri imageUri) {
-        CropImage.activity(imageUri)
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setMultiTouchEnabled(true)
-                .start(this);
-    }
-
-    private void goToReceiptDirectly() {
+    public void goToReceiptDirectly(View view) {
         String gigantProducts = getString(R.string.test_south_products);
         startActivityWithText(gigantProducts);
 
         String gigantPrices = getString(R.string.test_gigant_prices);
         startActivityWithText(gigantPrices);
+    }
+
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .start(this);
     }
 
     private void startActivityWithText(String text) {
