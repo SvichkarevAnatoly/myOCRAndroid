@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleIncomingImage(Intent intent) {
         if (intent != null) {
             final String type = intent.getType();
-            final Uri imageUri = intent.getData();
+            final Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
             if (type != null && type.startsWith("image/") && imageUri != null) {
                 startCropImageActivity(imageUri);
             }
