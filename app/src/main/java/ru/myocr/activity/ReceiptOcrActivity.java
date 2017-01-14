@@ -18,11 +18,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
-import ru.myocr.align.DataBaseFinder;
 import ru.myocr.api.Api;
 import ru.myocr.api.FindAllRequest;
 import ru.myocr.api.FindAllResponse;
-import ru.myocr.db.DbStub;
 import ru.myocr.model.OcrParser;
 import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
@@ -109,20 +107,8 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     private void updateProducts(String sharedText) {
         parser = new OcrParser(sharedText);
         final List<String> products = parser.parseProductList();
-        // final List<String> matchesProducts = replaceMatchesInDB(products);
-        // receiptData = new ReceiptDataImpl(matchesProducts);
         receiptData = new ReceiptDataImpl(products);
         updateProductsView();
-    }
-
-    private List<String> replaceMatchesInDB(List<String> ocrProducts) {
-        final DbStub db = new DbStub();
-        final List<String> allProducts = db.getAllProducts(this);
-
-        final DataBaseFinder finder = new DataBaseFinder(allProducts);
-        final List<String> matchProducts = finder.findAll(ocrProducts);
-
-        return matchProducts;
     }
 
     private void updatePrices(String sharedText) {
