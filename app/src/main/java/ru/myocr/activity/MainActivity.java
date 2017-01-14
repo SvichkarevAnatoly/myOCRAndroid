@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -38,14 +37,18 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case PICK_IMAGE_REQUEST:
                     if (data != null && data.getData() != null) {
-                        Uri imageUri = data.getData();
+                        final Uri imageUri = data.getData();
                         startCropImageActivity(imageUri);
                     }
                     break;
                 case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                    ((ImageView) findViewById(R.id.quick_start_cropped_image)).setImageURI(result.getUri());
-                    Toast.makeText(this, "Cropping successful, Sample: " + result.getSampleSize(), Toast.LENGTH_LONG).show();
+                    final CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    final Uri imageUri = result.getUri();
+                    binding.imagePreview.setImageURI(imageUri);
+                    Toast.makeText(this,
+                            "Cropping successful, Sample: " + result.getSampleSize(),
+                            Toast.LENGTH_LONG)
+                            .show();
                     break;
             }
         }
