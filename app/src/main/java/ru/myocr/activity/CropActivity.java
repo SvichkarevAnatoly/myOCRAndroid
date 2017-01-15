@@ -19,7 +19,6 @@ import com.theartofdev.edmodo.cropper.CropImageOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -34,27 +33,17 @@ import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
 
-public class CropActivity extends AppCompatActivity implements CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
+public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {
 
-    /**
-     * The crop image view library widget used in the activity
-     */
     private CropImageView mCropImageView;
 
-    /**
-     * Persist URI image to crop URI if specific permissions are required
-     */
     private Uri mCropImageUri;
 
-    /**
-     * the options that were set for the crop image
-     */
     private CropImageOptions mOptions;
 
     private boolean isProductCropped = false;
     private ActivityCropBinding binding;
 
-    private Uri croppedProductImage;
     private String products;
     private String prices;
 
@@ -104,14 +93,12 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
     @Override
     protected void onStart() {
         super.onStart();
-        mCropImageView.setOnSetImageUriCompleteListener(this);
         mCropImageView.setOnCropImageCompleteListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mCropImageView.setOnSetImageUriCompleteListener(null);
         mCropImageView.setOnCropImageCompleteListener(null);
     }
 
@@ -129,20 +116,6 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
     public void onBackPressed() {
         super.onBackPressed();
         setResultCancel();
-    }
-
-    @Override
-    public void onSetImageUriComplete(CropImageView view, Uri uri, Exception error) {
-        if (error == null) {
-            if (mOptions.initialCropWindowRectangle != null) {
-                mCropImageView.setCropRect(mOptions.initialCropWindowRectangle);
-            }
-            if (mOptions.initialRotation > -1) {
-                mCropImageView.setRotatedDegrees(mOptions.initialRotation);
-            }
-        } else {
-            setResult(null, error, 1);
-        }
     }
 
     @Override
@@ -208,71 +181,14 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
         intent.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(intent);
     }
-    //region: Private methods
 
-    /**
-     * Execute crop image and save the result tou output uri.
-     */
     protected void cropImage() {
-        if (mOptions.noOutputImage) {
-            setResult(null, null, 1);
-        } else {
-            mCropImageView.getCroppedImageAsync();
-        }
+        mCropImageView.getCroppedImageAsync();
     }
 
-    /**
-     * Get Android uri to save the cropped image into.<br>
-     * Use the given in options or create a temp file.
-     */
-    protected Uri getOutputUri() {
-        Uri outputUri = mOptions.outputUri;
-        if (outputUri.equals(Uri.EMPTY)) {
-            try {
-                String ext = mOptions.outputCompressFormat == Bitmap.CompressFormat.JPEG ? ".jpg" :
-                        mOptions.outputCompressFormat == Bitmap.CompressFormat.PNG ? ".png" : ".webp";
-                outputUri = Uri.fromFile(File.createTempFile("cropped" + (isProductCropped ? "Product" : "Price")
-                        , ext, getCacheDir()));
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create temp file for output image", e);
-            }
-        }
-        return outputUri;
-    }
-
-    /**
-     * Result with cropped image data or error if failed.
-     */
-    protected void setResult(Uri uri, Exception error, int sampleSize) {
-        int resultCode = error == null ? RESULT_OK : CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE;
-        setResult(resultCode, getResultIntent(uri, error, sampleSize));
-        finish();
-    }
-
-    /**
-     * Cancel of cropping activity.
-     */
     protected void setResultCancel() {
         setResult(RESULT_CANCELED);
         finish();
     }
-
-    /**
-     * Get intent instance to be used for the result of this activity.
-     */
-    protected Intent getResultIntent(Uri uriProduct, Exception error, int sampleSize) {
-        CropImage.ActivityResult result = new CropImage.ActivityResult(null,
-                uriProduct,
-                error,
-                mCropImageView.getCropPoints(),
-                mCropImageView.getCropRect(),
-                mCropImageView.getRotatedDegrees(),
-                sampleSize);
-        Intent intent = new Intent();
-        intent.putExtra(CropImage.CROP_IMAGE_EXTRA_RESULT, result);
-        return intent;
-    }
-
-    //endregion
 }
 
