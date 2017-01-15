@@ -93,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCropImageActivity(Uri imageUri) {
-        CropImage.activity(imageUri)
+        final CropImage.ActivityBuilder activityBuilder = CropImage.activity(imageUri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMaxZoom(16)
-                .setMultiTouchEnabled(true)
-                .start(this);
+                .setMultiTouchEnabled(true);
+        final Intent intent = activityBuilder.getIntent(this);
+        intent.setClass(this, CropActivity.class);
+        startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     private void startActivityWithText(String text) {
