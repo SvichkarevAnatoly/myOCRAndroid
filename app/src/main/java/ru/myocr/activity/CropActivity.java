@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +18,19 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import ru.myocr.api.Api;
+import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
 
@@ -44,6 +55,8 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
     private ActivityCropBinding binding;
 
     private Uri croppedProductImage;
+    private String products;
+    private String prices;
 
     @Override
     @SuppressLint("NewApi")
@@ -59,14 +72,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
         mOptions = intent.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_OPTIONS);
 
         if (savedInstanceState == null) {
-            if (mCropImageUri == null || mCropImageUri.equals(Uri.EMPTY)) {
-                if (CropImage.isExplicitCameraPermissionRequired(this)) {
-                    // request permissions and handle the result in onRequestPermissionsResult()
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
-                } else {
-                    CropImage.startPickImageActivity(this);
-                }
-            } else if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
+            if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
                 // request permissions and handle the result in onRequestPermissionsResult()
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
             } else {
@@ -143,12 +149,65 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
     public void onCropImageComplete(CropImageView view, CropImageView.CropResult result) {
         if (!isProductCropped) {
             isProductCropped = true;
-            croppedProductImage = result.getUri();
+            Bitmap productsBmp = result.getBitmap();
+            requestOcr(productsBmp, true);
         } else {
-            setResult(result.getUri(), result.getError(), result.getSampleSize());
+            Bitmap pricesBmp = result.getBitmap();
+            requestOcr(pricesBmp, false);
         }
     }
 
+    private void requestOcr(Bitmap bmp, boolean isProducts) {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(Api.SERVER_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                final Api api = retrofit.create(Api.class);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] inputImage = stream.toByteArray();
+
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), inputImage);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("imageUri", "testname", requestFile);
+
+                final Call<OcrResponse> responseCall = api.ocr(body);
+                try {
+                    final Response<OcrResponse> response = responseCall.execute();
+                    return response.body().ocrText;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String res) {
+                super.onPostExecute(res);
+                Toast.makeText(CropActivity.this, res, Toast.LENGTH_LONG).show();
+                if (isProducts) {
+                    products = res;
+                } else {
+                    prices = res;
+                    goToReceiptDirectly();
+                }
+            }
+        }.execute();
+    }
+
+    public void goToReceiptDirectly() {
+        startActivityWithText(products);
+        startActivityWithText(prices);
+    }
+
+    private void startActivityWithText(String text) {
+        Intent intent = new Intent(this, ReceiptOcrActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(intent);
+    }
     //region: Private methods
 
     /**
@@ -158,13 +217,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnS
         if (mOptions.noOutputImage) {
             setResult(null, null, 1);
         } else {
-            Uri outputUri = getOutputUri();
-            mCropImageView.saveCroppedImageAsync(outputUri,
-                    mOptions.outputCompressFormat,
-                    mOptions.outputCompressQuality,
-                    mOptions.outputRequestWidth,
-                    mOptions.outputRequestHeight,
-                    mOptions.outputRequestSizeOptions);
+            mCropImageView.getCroppedImageAsync();
         }
     }
 

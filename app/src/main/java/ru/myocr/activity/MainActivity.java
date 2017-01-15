@@ -3,7 +3,6 @@ package ru.myocr.activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,20 +11,6 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import ru.myocr.api.Api;
-import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 
@@ -54,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, imageUri.toString(), Toast.LENGTH_LONG).show();
                         startCropImageActivity(imageUri);
                     }
-                    break;
-                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-                    final CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                    final Uri imageUri = result.getUri();
-                    requestOcr(imageUri);
                     break;
             }
         }
@@ -116,60 +96,5 @@ public class MainActivity extends AppCompatActivity {
                 startCropImageActivity(imageUri);
             }
         }
-    }
-
-    private void requestOcr(Uri imageUri) {
-        new AsyncTask<Uri, Void, String>() {
-            @Override
-            protected String doInBackground(Uri... params) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Api.SERVER_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                final Api api = retrofit.create(Api.class);
-
-                InputStream iStream = null;
-                try {
-                    iStream = getContentResolver().openInputStream(params[0]);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                byte[] inputImage = getBytes(iStream);
-
-                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), inputImage);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("imageUri", "testname", requestFile);
-
-                final Call<OcrResponse> responseCall = api.ocr(body);
-                try {
-                    final Response<OcrResponse> response = responseCall.execute();
-                    return response.body().ocrText;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String res) {
-                super.onPostExecute(res);
-                Toast.makeText(MainActivity.this, res, Toast.LENGTH_LONG).show();
-            }
-        }.execute(imageUri);
-    }
-
-    public byte[] getBytes(InputStream inputStream) {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        int len = 0;
-        try {
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return byteBuffer.toByteArray();
     }
 }
