@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null) {
             final String type = intent.getType();
             final Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-            if (type != null && type.startsWith("ocr/") && imageUri != null) {
+            if (type != null && type.startsWith("image/") && imageUri != null) {
                 startCropImageActivity(imageUri);
             }
         }
