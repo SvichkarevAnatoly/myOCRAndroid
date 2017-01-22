@@ -28,12 +28,6 @@
             android:layout_centerHorizontal="true">
 
             <Button
-                android:id="@+id/button_scan_prices"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Get prices"/>
-
-            <Button
                 android:id="@+id/button_find_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

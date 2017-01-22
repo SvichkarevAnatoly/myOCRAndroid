@@ -44,7 +44,6 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         setContentView(R.layout.activity_receipt_ocr);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_receipt_ocr);
-        binding.buttonScanPrices.setOnClickListener(v -> runOcrTextScanner());
         binding.buttonFindAll.setOnClickListener(v -> findInServer());
 
         handleIncomingText(getIntent());
@@ -131,11 +130,6 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         }
         receiptViewAdapter.setProductSize(receiptData.getProductSize());
         receiptViewAdapter.setPriceSize(receiptData.getPriceSize());
-    }
-
-    private void runOcrTextScanner() {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.offline.ocr.english.image.to.text");
-        startActivity(intent);
     }
 
     @Override
