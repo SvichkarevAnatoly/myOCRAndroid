@@ -19,6 +19,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.api.Api;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.api.FindAllRequest;
 import ru.myocr.api.FindAllResponse;
 import ru.myocr.model.OcrParser;
@@ -55,7 +56,7 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
             @Override
             protected List<String> doInBackground(Void... params) {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Api.SERVER_URL)
+                        .baseUrl(ApiHelper.getCurrentServerUrl())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);

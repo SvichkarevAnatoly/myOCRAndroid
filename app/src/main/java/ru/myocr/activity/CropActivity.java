@@ -29,6 +29,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.api.Api;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
@@ -135,7 +136,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             @Override
             protected String doInBackground(Void... params) {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Api.SERVER_URL)
+                        .baseUrl(ApiHelper.getCurrentServerUrl())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);

@@ -43,12 +43,21 @@
                 android:onClick="goToReceiptDirectly"
                 android:text="Directly receipt"/>
 
+            <Button
+                android:id="@+id/button_start_change_server"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="changeServer"
+                android:text="S: LOCAL" />
+
             <ImageView
                 android:id="@+id/image_preview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:contentDescription="crop result"/>
+
         </LinearLayout>
     </RelativeLayout>
 </layout>

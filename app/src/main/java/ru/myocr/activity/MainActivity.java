@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import ru.myocr.api.Api;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         handleIncomingImage(getIntent());
+        updateServerButtonText();
     }
 
     @Override
@@ -70,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
 
         String gigantPrices = getString(R.string.test_gigant_prices);
         startActivityWithText(gigantPrices);
+    }
+
+    public void changeServer(View view) {
+        boolean isLocal = ApiHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
+        ApiHelper.setCurrentServerUrl(isLocal ? Api.SERVER_URL_AMAZON : Api.SERVER_URL_LOCAL);
+        updateServerButtonText();
+    }
+
+    private void updateServerButtonText() {
+        boolean isLocal = ApiHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
+        binding.buttonStartChangeServer.setText("S: " + (isLocal ? "LOCAL" : "AMAZON"));
     }
 
     private void startCropImageActivity(Uri imageUri) {
