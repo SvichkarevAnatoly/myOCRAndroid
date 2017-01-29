@@ -7,7 +7,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,8 +22,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.api.Api;
 import ru.myocr.api.ApiHelper;
-import ru.myocr.api.FindAllRequest;
-import ru.myocr.api.FindAllResponse;
+import ru.myocr.api.FindRequest;
+import ru.myocr.api.FindResponse;
+import ru.myocr.api.InsertRequest;
+import ru.myocr.api.InsertResponse;
 import ru.myocr.model.OcrParser;
 import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
@@ -44,13 +48,11 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         setContentView(R.layout.activity_receipt_ocr);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_receipt_ocr);
-        binding.buttonFindAll.setOnClickListener(v -> findInServer());
 
         handleIncomingText(getIntent());
-
     }
 
-    private void findInServer() {
+    public void findInServer(View view) {
         new AsyncTask<Void, Void, List<String>>() {
             @Override
             protected List<String> doInBackground(Void... params) {
@@ -59,10 +61,10 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);
-                final FindAllRequest request = new FindAllRequest(receiptData.getProducts());
-                final Call<FindAllResponse> responseCall = api.findAll(request);
+                final FindRequest request = new FindRequest(receiptData.getProducts());
+                final Call<FindResponse> responseCall = api.find(request);
                 try {
-                    final Response<FindAllResponse> response = responseCall.execute();
+                    final Response<FindResponse> response = responseCall.execute();
                     return response.body().match;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -78,6 +80,48 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
                 updateProductsView();
             }
         }.execute();
+    }
+
+    public void addToDb(View view) {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(ApiHelper.getCurrentServerUrl())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                final Api api = retrofit.create(Api.class);
+
+                List<InsertRequest.ProductDataSet> productDataSets = convert(productPricePairs);
+
+                final InsertRequest request = new InsertRequest(productDataSets);
+                final Call<InsertResponse> responseCall = api.insert(request);
+                try {
+                    final Response<InsertResponse> response = responseCall.execute();
+                    return response.body().lastIndex;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer res) {
+                super.onPostExecute(res);
+                Toast.makeText(ReceiptOcrActivity.this, "Last: " + res, Toast.LENGTH_LONG).show();
+            }
+        }.execute();
+    }
+
+    private List<InsertRequest.ProductDataSet> convert(List<Pair<String, String>> productPricePairs) {
+        List<InsertRequest.ProductDataSet> productDataSets = new ArrayList<>();
+        for (Pair<String, String> pair : productPricePairs) {
+            if (pair.first == null || pair.second == null) {
+                break;
+            }
+            productDataSets.add(new InsertRequest.ProductDataSet(pair.first, pair.second));
+        }
+        return productDataSets;
     }
 
     @Override
