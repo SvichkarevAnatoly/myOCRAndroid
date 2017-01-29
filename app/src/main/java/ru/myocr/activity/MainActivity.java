@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         final CropImage.ActivityBuilder activityBuilder = CropImage.activity(imageUri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMaxZoom(16)
+                .setMinCropWindowSize(0, 0) // remove minimum restriction
+                .setBorderCornerThickness(0) // remove border corners
                 .setMultiTouchEnabled(true);
         final Intent intent = activityBuilder.getIntent(this);
         intent.setClass(this, CropActivity.class);
