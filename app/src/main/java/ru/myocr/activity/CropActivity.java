@@ -35,6 +35,7 @@ import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
 
 public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {
+    private static final int DEGREE = 1;
 
     private CropImageView mCropImageView;
 
@@ -56,7 +57,6 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding = DataBindingUtil.setContentView(this, R.layout.activity_crop);
 
         mCropImageView = (CropImageView) findViewById(R.id.cropImageView);
-
         Intent intent = getIntent();
         mCropImageUri = intent.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_SOURCE);
         mOptions = intent.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_OPTIONS);
@@ -105,11 +105,21 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.crop_activity_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_rotate_left:
+                mCropImageView.rotateImage(360 - DEGREE);
+                break;
+            case R.id.action_rotate_right:
+                mCropImageView.rotateImage(DEGREE);
+                break;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
