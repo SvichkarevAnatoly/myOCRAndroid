@@ -6,12 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.util.Arrays;
+import java.util.List;
 
 import ru.myocr.api.Api;
 import ru.myocr.api.ApiHelper;
@@ -37,8 +38,12 @@ public class MainActivity extends AppCompatActivity {
         ApiHelper.makeApiRequest(null, ApiHelper::getAllCities,
                 throwable -> {
                 },
-                cities -> Toast.makeText(this, "Cities: " + Arrays.toString(cities.toArray()),
-                        Toast.LENGTH_LONG).show(), null);
+                this::onLoadCities, null);
+    }
+
+    private void onLoadCities(List<String> cities) {
+        binding.spinnerCities.setAdapter(
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cities));
     }
 
     @Override
