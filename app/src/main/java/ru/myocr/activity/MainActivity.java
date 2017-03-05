@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -44,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
     private void onLoadCities(List<String> cities) {
         binding.spinnerCities.setAdapter(
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cities));
+        binding.spinnerCities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                PreferenceHelper.setString(PreferenceHelper.KEY_CITY, cities.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     @Override

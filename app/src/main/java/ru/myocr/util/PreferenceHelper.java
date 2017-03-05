@@ -9,6 +9,7 @@ public class PreferenceHelper {
 
     public static final String APP_PREFS = "APP_PREFS";
     public static final String KEY_SERVER_URL = "KEY_SERVER_URL";
+    public static final String KEY_CITY = "KEY_CITY";
 
     public static String getCurrentServerUrl() {
         SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
@@ -18,5 +19,15 @@ public class PreferenceHelper {
     public static void setCurrentServerUrl(String url) {
         SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
         sharedPreferences.edit().putString(KEY_SERVER_URL, url).apply();
+    }
+
+    public static void setString(String key, String value) {
+        SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
+        sharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public static String getString(String key) {
+        SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
+        return sharedPreferences.getString(key, null);
     }
 }
