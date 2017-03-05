@@ -12,9 +12,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import ru.myocr.api.Api;
-import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
+import ru.myocr.util.PreferenceHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeServer(View view) {
-        boolean isLocal = ApiHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
-        ApiHelper.setCurrentServerUrl(isLocal ? Api.SERVER_URL_AMAZON : Api.SERVER_URL_LOCAL);
+        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
+        PreferenceHelper.setCurrentServerUrl(isLocal ? Api.SERVER_URL_AMAZON : Api.SERVER_URL_LOCAL);
         updateServerButtonText();
     }
 
     private void updateServerButtonText() {
-        boolean isLocal = ApiHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
+        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
         binding.buttonStartChangeServer.setText("S: " + (isLocal ? "LOCAL" : "AMAZON"));
     }
 
