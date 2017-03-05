@@ -12,6 +12,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -20,6 +23,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -29,6 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.api.Api;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
@@ -82,6 +87,25 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
 
         binding.buttonOk.setOnClickListener(v -> onClickCrop());
         Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
+
+        ApiHelper.makeApiRequest(PreferenceHelper.getString(PreferenceHelper.KEY_CITY), ApiHelper::getShops,
+                throwable -> {
+                },
+                this::onLoadShops, null);
+    }
+
+    private void onLoadShops(List<String> shops) {
+        binding.spinnerShop.setAdapter(
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shops));
+        binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void onClickCrop() {

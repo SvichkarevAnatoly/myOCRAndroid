@@ -18,7 +18,14 @@
             android:id="@+id/cropImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button_ok"/>
+            android:layout_above="@+id/button_ok"
+            android:layout_below="@+id/spinner_shop" />
+
+        <Spinner
+            android:id="@+id/spinner_shop"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
 
         <Button
             android:id="@+id/button_ok"

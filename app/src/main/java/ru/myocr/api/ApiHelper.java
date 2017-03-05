@@ -80,6 +80,11 @@ public class ApiHelper {
         return makeRequest(call);
     }
 
+    public List<String> getShops(String city) {
+        Call<List<String>> call = api.getShops(city);
+        return makeRequest(call);
+    }
+
     private <T> T makeRequest(Call<T> httpCall) {
         Response<T> response = null;
         try {
