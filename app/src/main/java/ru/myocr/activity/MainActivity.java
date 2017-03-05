@@ -11,7 +11,10 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.Arrays;
+
 import ru.myocr.api.Api;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 import ru.myocr.util.PreferenceHelper;
@@ -30,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
         handleIncomingImage(getIntent());
         updateServerButtonText();
+
+        ApiHelper.makeApiRequest(null, ApiHelper::getAllCities,
+                throwable -> {
+                },
+                cities -> Toast.makeText(this, "Cities: " + Arrays.toString(cities.toArray()),
+                        Toast.LENGTH_LONG).show(), null);
     }
 
     @Override
