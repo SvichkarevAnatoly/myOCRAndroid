@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeServer(View view) {
         boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
-        PreferenceHelper.setCurrentServerUrl(isLocal ? Api.SERVER_URL_AMAZON : Api.SERVER_URL_LOCAL);
+        PreferenceHelper.setString(PreferenceHelper.KEY_SERVER_URL,
+                isLocal ? Api.SERVER_URL_AMAZON : Api.SERVER_URL_LOCAL);
         updateServerButtonText();
     }
 

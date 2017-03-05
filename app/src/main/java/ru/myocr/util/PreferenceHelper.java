@@ -16,11 +16,6 @@ public class PreferenceHelper {
         return sharedPreferences.getString(KEY_SERVER_URL, Api.SERVER_URL_LOCAL);
     }
 
-    public static void setCurrentServerUrl(String url) {
-        SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
-        sharedPreferences.edit().putString(KEY_SERVER_URL, url).apply();
-    }
-
     public static void setString(String key, String value) {
         SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
         sharedPreferences.edit().putString(key, value).apply();
