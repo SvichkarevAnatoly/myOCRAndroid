@@ -33,6 +33,8 @@ import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptDataImpl;
 import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
 import ru.myocr.util.Preference;
+import ru.myocr.util.PriceUtil;
+
 public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptDataViewAdapter.OnItemClickListener {
 
     public static final String ARG_OCR_RESPONSE = "ARG_OCR_RESPONSE";
@@ -160,7 +162,8 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     private List<String> getPrices(List<ParsedPrice> parsedPrices) {
         final ArrayList<String> prices = new ArrayList<>(parsedPrices.size());
         for (ParsedPrice price : parsedPrices) {
-            prices.add(price.getStringValue());
+            final String priceValue = PriceUtil.getValue(price);
+            prices.add(priceValue);
         }
         return prices;
     }
