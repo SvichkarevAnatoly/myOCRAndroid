@@ -16,6 +16,6 @@ public class BitmapUtil {
         byte[] inputImage = stream.toByteArray();
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), inputImage);
-        return MultipartBody.Part.createFormData(paramName, "testname", requestFile);
+        return MultipartBody.Part.createFormData(paramName, paramName, requestFile);
     }
 }
