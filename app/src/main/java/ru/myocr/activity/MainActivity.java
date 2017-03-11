@@ -19,6 +19,7 @@ import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
 import ru.myocr.util.Preference;
+import ru.myocr.util.Server;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,15 +101,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeServer(View view) {
-        boolean isLocal = Preference.getCurrentServerUrl().equals(getString(R.string.localhost));
-        Preference.setString(Preference.SERVER_URL,
-                isLocal ? getString(R.string.amazon) : getString(R.string.localhost));
+        Preference.setString(Preference.SERVER_URL, getString(
+                Server.isLocal() ? R.string.remote : R.string.localhost));
         updateServerButtonText();
     }
 
     private void updateServerButtonText() {
-        boolean isLocal = Preference.getCurrentServerUrl().equals(getString(R.string.localhost));
-        binding.buttonStartChangeServer.setText("S: " + (isLocal ? "LOCAL" : "AMAZON"));
+        binding.buttonStartChangeServer.setText("Server: " + (Server.isLocal() ? "LOCAL" : "AMAZON"));
     }
 
     private void startCropImageActivity(Uri imageUri) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="localhost">http://192.168.1.105:8080/</string>
-    <string name="amazon">http://Sample-env.323rjbfqpy.us-west-2.elasticbeanstalk.com:8080/</string>
+    <string name="remote">http://Sample-env.323rjbfqpy.us-west-2.elasticbeanstalk.com:8080/</string>
 </resources>
