@@ -3,7 +3,7 @@ package ru.myocr.util;
 import android.content.SharedPreferences;
 
 import ru.myocr.OcrApplication;
-import ru.myocr.api.Api;
+import ru.myocr.model.R;
 
 public class PreferenceHelper {
 
@@ -13,7 +13,7 @@ public class PreferenceHelper {
 
     public static String getCurrentServerUrl() {
         SharedPreferences sharedPreferences = OcrApplication.getAppContext().getSharedPreferences(APP_PREFS, 0);
-        return sharedPreferences.getString(KEY_SERVER_URL, Api.SERVER_URL_LOCAL);
+        return sharedPreferences.getString(KEY_SERVER_URL, OcrApplication.getAppContext().getString(R.string.localhost));
     }
 
     public static void setString(String key, String value) {

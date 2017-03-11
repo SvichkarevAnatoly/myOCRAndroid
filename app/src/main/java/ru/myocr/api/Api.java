@@ -14,9 +14,6 @@ import retrofit2.http.Path;
 
 public interface Api {
 
-    String SERVER_URL_LOCAL = "http://192.168.1.105:8080/";
-    String SERVER_URL_AMAZON = "http://Sample-env.323rjbfqpy.us-west-2.elasticbeanstalk.com:8080/";
-
     @POST("find")
     Call<FindResponse> find(@Body FindRequest request);
 

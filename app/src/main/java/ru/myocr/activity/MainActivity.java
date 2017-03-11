@@ -15,7 +15,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.List;
 
-import ru.myocr.api.Api;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
@@ -101,14 +100,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeServer(View view) {
-        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
+        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(getString(R.string.localhost));
         PreferenceHelper.setString(PreferenceHelper.KEY_SERVER_URL,
-                isLocal ? Api.SERVER_URL_AMAZON : Api.SERVER_URL_LOCAL);
+                isLocal ? getString(R.string.amazon) : getString(R.string.localhost));
         updateServerButtonText();
     }
 
     private void updateServerButtonText() {
-        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(Api.SERVER_URL_LOCAL);
+        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(getString(R.string.localhost));
         binding.buttonStartChangeServer.setText("S: " + (isLocal ? "LOCAL" : "AMAZON"));
     }
 
