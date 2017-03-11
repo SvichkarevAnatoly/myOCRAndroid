@@ -19,7 +19,7 @@ public interface Api {
     Call<FindResponse> find(@Body FindRequest request);
 
     @Multipart
-    @POST("ocr/image/{city}/{shop}")
+    @POST("ocr/{city}/{shop}")
     Call<OcrReceiptResponse> ocr(
             @Part MultipartBody.Part receiptItemsImage,
             @Part MultipartBody.Part pricesImage,
