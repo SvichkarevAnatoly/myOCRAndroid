@@ -88,7 +88,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.buttonOk.setOnClickListener(v -> onClickCrop());
         Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        ApiHelper.makeApiRequest(PreferenceHelper.getString(PreferenceHelper.KEY_CITY), ApiHelper::getShops,
+        ApiHelper.makeApiRequest(PreferenceHelper.getString(PreferenceHelper.CITY), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);

@@ -7,14 +7,15 @@ import ru.myocr.model.R;
 
 public class PreferenceHelper {
 
-    public static final String KEY_CITY = "KEY_CITY";
-    public static final String APP_PREFS = "APP_PREFS";
-    public static final String KEY_SERVER_URL = "KEY_SERVER_URL";
+    public static final String SERVER_URL = "SERVER_URL";
+    public static final String CITY = "CITY";
+
+    private static final String APP_PREFS = "APP_PREFS";
 
     private static SharedPreferences sharedPreferences = App.getAppContext().getSharedPreferences(APP_PREFS, 0);
 
     public static String getCurrentServerUrl() {
-        return sharedPreferences.getString(KEY_SERVER_URL, App.getAppContext().getString(R.string.localhost));
+        return sharedPreferences.getString(SERVER_URL, App.getAppContext().getString(R.string.localhost));
     }
 
     public static void setString(String key, String value) {

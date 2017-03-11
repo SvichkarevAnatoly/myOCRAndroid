@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         binding.spinnerCities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                PreferenceHelper.setString(PreferenceHelper.KEY_CITY, cities.get(position));
+                PreferenceHelper.setString(PreferenceHelper.CITY, cities.get(position));
             }
 
             @Override
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeServer(View view) {
         boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(getString(R.string.localhost));
-        PreferenceHelper.setString(PreferenceHelper.KEY_SERVER_URL,
+        PreferenceHelper.setString(PreferenceHelper.SERVER_URL,
                 isLocal ? getString(R.string.amazon) : getString(R.string.localhost));
         updateServerButtonText();
     }
