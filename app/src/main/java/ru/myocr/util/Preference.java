@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import ru.myocr.App;
 import ru.myocr.model.R;
 
-public class PreferenceHelper {
+public class Preference {
 
     public static final String SERVER_URL = "SERVER_URL";
     public static final String CITY = "CITY";

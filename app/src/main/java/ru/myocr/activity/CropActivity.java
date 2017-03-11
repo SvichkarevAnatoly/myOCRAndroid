@@ -37,7 +37,7 @@ import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
-import ru.myocr.util.PreferenceHelper;
+import ru.myocr.util.Preference;
 
 public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {
 
@@ -88,7 +88,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.buttonOk.setOnClickListener(v -> onClickCrop());
         Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        ApiHelper.makeApiRequest(PreferenceHelper.getString(PreferenceHelper.CITY), ApiHelper::getShops,
+        ApiHelper.makeApiRequest(Preference.getString(Preference.CITY), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);
@@ -160,7 +160,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             @Override
             protected String doInBackground(Void... params) {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(PreferenceHelper.getCurrentServerUrl())
+                        .baseUrl(Preference.getCurrentServerUrl())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);

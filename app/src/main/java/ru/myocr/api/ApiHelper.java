@@ -10,7 +10,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.myocr.util.PreferenceHelper;
+import ru.myocr.util.Preference;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -25,7 +25,7 @@ public class ApiHelper {
 
     public ApiHelper() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PreferenceHelper.getCurrentServerUrl())
+                .baseUrl(Preference.getCurrentServerUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api = retrofit.create(Api.class);

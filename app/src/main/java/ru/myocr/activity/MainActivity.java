@@ -18,7 +18,7 @@ import java.util.List;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
-import ru.myocr.util.PreferenceHelper;
+import ru.myocr.util.Preference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         binding.spinnerCities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                PreferenceHelper.setString(PreferenceHelper.CITY, cities.get(position));
+                Preference.setString(Preference.CITY, cities.get(position));
             }
 
             @Override
@@ -100,14 +100,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeServer(View view) {
-        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(getString(R.string.localhost));
-        PreferenceHelper.setString(PreferenceHelper.SERVER_URL,
+        boolean isLocal = Preference.getCurrentServerUrl().equals(getString(R.string.localhost));
+        Preference.setString(Preference.SERVER_URL,
                 isLocal ? getString(R.string.amazon) : getString(R.string.localhost));
         updateServerButtonText();
     }
 
     private void updateServerButtonText() {
-        boolean isLocal = PreferenceHelper.getCurrentServerUrl().equals(getString(R.string.localhost));
+        boolean isLocal = Preference.getCurrentServerUrl().equals(getString(R.string.localhost));
         binding.buttonStartChangeServer.setText("S: " + (isLocal ? "LOCAL" : "AMAZON"));
     }
 

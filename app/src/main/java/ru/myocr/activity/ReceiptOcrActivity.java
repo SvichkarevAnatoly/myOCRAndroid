@@ -30,7 +30,7 @@ import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptDataImpl;
 import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
-import ru.myocr.util.PreferenceHelper;
+import ru.myocr.util.Preference;
 public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptDataViewAdapter.OnItemClickListener {
 
     private ActivityReceiptOcrBinding binding;
@@ -57,7 +57,7 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
             @Override
             protected List<String> doInBackground(Void... params) {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(PreferenceHelper.getCurrentServerUrl())
+                        .baseUrl(Preference.getCurrentServerUrl())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);
@@ -87,7 +87,7 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
             @Override
             protected Integer doInBackground(Void... params) {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(PreferenceHelper.getCurrentServerUrl())
+                        .baseUrl(Preference.getCurrentServerUrl())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 final Api api = retrofit.create(Api.class);
