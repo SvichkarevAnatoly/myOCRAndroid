@@ -25,7 +25,9 @@ import ru.myocr.api.FindRequest;
 import ru.myocr.api.FindResponse;
 import ru.myocr.api.InsertRequest;
 import ru.myocr.api.InsertResponse;
-import ru.myocr.model.OcrParser;
+import ru.myocr.api.ocr.OcrReceiptResponse;
+import ru.myocr.api.ocr.ParsedPrice;
+import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptDataImpl;
@@ -33,11 +35,11 @@ import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
 import ru.myocr.util.Preference;
 public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptDataViewAdapter.OnItemClickListener {
 
+    public static final String ARG_OCR_RESPONSE = "ARG_OCR_RESPONSE";
+
     private ActivityReceiptOcrBinding binding;
 
-    private boolean hasProducts;
     private ReceiptData receiptData;
-    private OcrParser parser;
 
     private ReceiptDataViewAdapter receiptViewAdapter;
     private List<Pair<String, String>> productPricePairs = new ArrayList<>();
@@ -137,30 +139,30 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     }
 
     void handleText(Intent intent) {
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText != null) {
-            if (!hasProducts) {
-                updateProducts(sharedText);
-                hasProducts = true;
-            } else {
-                updatePrices(sharedText);
-            }
+        OcrReceiptResponse response = (OcrReceiptResponse) intent.getSerializableExtra(ARG_OCR_RESPONSE);
+        if (response != null) {
+            List<String> receiptItems = getReceiptItems(response.getItemMatches());
+            List<String> prices = getPrices(response.getPrices());
+
+            receiptData = new ReceiptDataImpl(receiptItems, prices);
+            updateProductsView();
         }
     }
 
-    private void updateProducts(String sharedText) {
-        parser = new OcrParser(sharedText);
-        final List<String> products = parser.parseProductList();
-        receiptData = new ReceiptDataImpl(products);
-        updateProductsView();
+    private List<String> getReceiptItems(List<ReceiptItemMatches> itemMatches) {
+        final ArrayList<String> receiptItems = new ArrayList<>(itemMatches.size());
+        for (ReceiptItemMatches itemMatch : itemMatches) {
+            receiptItems.add(itemMatch.getMatches().get(0).getMatch());
+        }
+        return receiptItems;
     }
 
-    private void updatePrices(String sharedText) {
-        parser.setPricesText(sharedText);
-        final List<String> products = receiptData.getProducts();
-        final List<String> prices = parser.parsePriceList();
-        receiptData = new ReceiptDataImpl(products, prices);
-        updateProductsView();
+    private List<String> getPrices(List<ParsedPrice> parsedPrices) {
+        final ArrayList<String> prices = new ArrayList<>(parsedPrices.size());
+        for (ParsedPrice price : parsedPrices) {
+            prices.add(price.getStringValue());
+        }
+        return prices;
     }
 
     private void updateProductsView() {

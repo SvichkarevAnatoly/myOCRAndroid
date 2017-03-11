@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.myocr.api.ocr.OcrReceiptResponse;
+import ru.myocr.util.BitmapUtil;
 import ru.myocr.util.Preference;
 import rx.Observable;
 import rx.Subscription;
@@ -77,6 +80,14 @@ public class ApiHelper {
 
     public List<String> getAllCities(Void v) {
         Call<List<String>> call = api.getAllCities();
+        return makeRequest(call);
+    }
+
+    public OcrReceiptResponse ocr(OcrRequest request) {
+        final MultipartBody.Part receiptItemsPart = BitmapUtil.buildMultipartBody(request.receiptItems, "receiptItemsImage");
+        final MultipartBody.Part pricesPart = BitmapUtil.buildMultipartBody(request.prices, "pricesImage");
+
+        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.city, request.shop);
         return makeRequest(call);
     }
 

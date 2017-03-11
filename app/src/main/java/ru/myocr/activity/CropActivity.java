@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,20 +20,11 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import ru.myocr.api.Api;
 import ru.myocr.api.ApiHelper;
-import ru.myocr.api.OcrResponse;
+import ru.myocr.api.OcrRequest;
+import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
 import ru.myocr.util.Preference;
@@ -50,8 +40,8 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
     private boolean isProductCropped = false;
     private ActivityCropBinding binding;
 
-    private String products;
-    private String prices;
+    private Bitmap receiptItem;
+    private String shop;
 
     @Override
     @SuppressLint("NewApi")
@@ -100,6 +90,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                shop = shops.get(position);
             }
 
             @Override
@@ -147,63 +138,23 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
     public void onCropImageComplete(CropImageView view, CropImageView.CropResult result) {
         if (!isProductCropped) {
             isProductCropped = true;
-            Bitmap productsBmp = result.getBitmap();
-            requestOcr(productsBmp, true);
+            receiptItem = result.getBitmap();
+            Toast.makeText(CropActivity.this, "Изображение продуктов получено", Toast.LENGTH_LONG).show();
         } else {
-            Bitmap pricesBmp = result.getBitmap();
-            requestOcr(pricesBmp, false);
+            Bitmap prices = result.getBitmap();
+            // requestOcr(prices, false);
+            ApiHelper.makeApiRequest(new OcrRequest(receiptItem, prices,
+                            Preference.getString(Preference.CITY), shop), ApiHelper::ocr,
+                    throwable -> {
+                        Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
+                    },
+                    this::startActivity, null);
         }
     }
 
-    private void requestOcr(Bitmap bmp, boolean isProducts) {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Preference.getCurrentServerUrl())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                final Api api = retrofit.create(Api.class);
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] inputImage = stream.toByteArray();
-
-                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), inputImage);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("imageUri", "testname", requestFile);
-
-                final Call<OcrResponse> responseCall = api.ocr(body);
-                try {
-                    final Response<OcrResponse> response = responseCall.execute();
-                    return response.body().ocrText;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String res) {
-                super.onPostExecute(res);
-                Toast.makeText(CropActivity.this, res, Toast.LENGTH_LONG).show();
-                if (isProducts) {
-                    products = res;
-                } else {
-                    prices = res;
-                    goToReceiptDirectly();
-                }
-            }
-        }.execute();
-    }
-
-    public void goToReceiptDirectly() {
-        startActivityWithText(products);
-        startActivityWithText(prices);
-    }
-
-    private void startActivityWithText(String text) {
+    private void startActivity(OcrReceiptResponse response) {
         Intent intent = new Intent(this, ReceiptOcrActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, text);
+        intent.putExtra(ReceiptOcrActivity.ARG_OCR_RESPONSE, response);
         startActivity(intent);
     }
 
