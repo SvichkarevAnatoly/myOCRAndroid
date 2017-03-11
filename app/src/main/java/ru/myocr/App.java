@@ -3,11 +3,11 @@ package ru.myocr;
 import android.app.Application;
 import android.content.Context;
 
-public class OcrApplication extends Application {
+public class App extends Application {
 
-    private static OcrApplication instance;
+    private static App instance;
 
-    public static OcrApplication getInstance() {
+    public static App getInstance() {
         return instance;
     }
 
