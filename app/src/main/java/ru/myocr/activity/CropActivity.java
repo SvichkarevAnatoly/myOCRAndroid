@@ -41,7 +41,6 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
     private ActivityCropBinding binding;
 
     private Bitmap receiptItem;
-    private String shop;
 
     @Override
     @SuppressLint("NewApi")
@@ -90,7 +89,8 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                shop = shops.get(position);
+                final String shop = shops.get(position);
+                Preference.setString(Preference.SHOP, shop);
             }
 
             @Override
@@ -144,6 +144,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             Bitmap prices = result.getBitmap();
 
             final String city = Preference.getString(Preference.CITY);
+            final String shop = Preference.getString(Preference.SHOP);
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
             ApiHelper.makeApiRequest(ocrRequest, ApiHelper::ocr,

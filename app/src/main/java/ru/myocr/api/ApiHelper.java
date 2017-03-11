@@ -91,6 +91,11 @@ public class ApiHelper {
         return makeRequest(call);
     }
 
+    public Integer save(SavePriceRequest request) {
+        final Call<Integer> call = api.save(request);
+        return makeRequest(call);
+    }
+
     public List<String> getShops(String city) {
         Call<List<String>> call = api.getShops(city);
         return makeRequest(call);

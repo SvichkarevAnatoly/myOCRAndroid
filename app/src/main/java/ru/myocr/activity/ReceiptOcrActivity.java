@@ -21,10 +21,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.api.Api;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.api.FindRequest;
 import ru.myocr.api.FindResponse;
-import ru.myocr.api.InsertRequest;
-import ru.myocr.api.InsertResponse;
+import ru.myocr.api.SavePriceRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
@@ -87,45 +87,27 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     }
 
     public void addToDb(View view) {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Preference.getCurrentServerUrl())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                final Api api = retrofit.create(Api.class);
-
-                List<InsertRequest.ProductDataSet> productDataSets = convert(productPricePairs);
-
-                final InsertRequest request = new InsertRequest(productDataSets);
-                final Call<InsertResponse> responseCall = api.insert(request);
-                try {
-                    final Response<InsertResponse> response = responseCall.execute();
-                    return response.body().lastIndex;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Integer res) {
-                super.onPostExecute(res);
-                Toast.makeText(ReceiptOcrActivity.this, "Last: " + res, Toast.LENGTH_LONG).show();
-            }
-        }.execute();
+        final SavePriceRequest savePriceRequest = convert(productPricePairs);
+        ApiHelper.makeApiRequest(savePriceRequest, ApiHelper::save,
+                throwable -> Toast.makeText(this, "Ошибка сохранения", Toast.LENGTH_SHORT).show(),
+                integer -> Toast.makeText(this, "Успешно сохранено " + integer + " записей",
+                        Toast.LENGTH_SHORT).show(), null);
     }
 
-    private List<InsertRequest.ProductDataSet> convert(List<Pair<String, String>> productPricePairs) {
-        List<InsertRequest.ProductDataSet> productDataSets = new ArrayList<>();
+    private SavePriceRequest convert(List<Pair<String, String>> productPricePairs) {
+        final String city = Preference.getString(Preference.CITY);
+        final String shop = Preference.getString(Preference.SHOP);
+
+        final ArrayList<SavePriceRequest.ReceiptPriceItem> items = new ArrayList<>();
         for (Pair<String, String> pair : productPricePairs) {
             if (pair.first == null || pair.second == null) {
                 break;
             }
-            productDataSets.add(new InsertRequest.ProductDataSet(pair.first, pair.second));
+            final int price = Integer.parseInt(pair.second.replace(".", ""));
+            items.add(new SavePriceRequest.ReceiptPriceItem(pair.first, price));
         }
-        return productDataSets;
+
+        return new SavePriceRequest(city, shop, items);
     }
 
     @Override

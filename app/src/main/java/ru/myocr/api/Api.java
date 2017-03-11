@@ -26,8 +26,8 @@ public interface Api {
             @Path("city") String city,
             @Path("shop") String shop);
 
-    @POST("add")
-    Call<InsertResponse> insert(@Body InsertRequest request);
+    @POST("prices/save")
+    Call<Integer> save(@Body SavePriceRequest request);
 
     @GET("cities/all")
     Call<List<String>> getAllCities();
