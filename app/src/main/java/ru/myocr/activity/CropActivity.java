@@ -142,12 +142,12 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             Toast.makeText(CropActivity.this, "Изображение продуктов получено", Toast.LENGTH_LONG).show();
         } else {
             Bitmap prices = result.getBitmap();
-            // requestOcr(prices, false);
-            ApiHelper.makeApiRequest(new OcrRequest(receiptItem, prices,
-                            Preference.getString(Preference.CITY), shop), ApiHelper::ocr,
-                    throwable -> {
-                        Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show();
-                    },
+
+            final String city = Preference.getString(Preference.CITY);
+            final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
+
+            ApiHelper.makeApiRequest(ocrRequest, ApiHelper::ocr,
+                    throwable -> Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show(),
                     this::startActivity, null);
         }
     }
