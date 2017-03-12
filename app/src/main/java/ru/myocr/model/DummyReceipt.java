@@ -16,7 +16,7 @@ public class DummyReceipt {
         RANDOM = new Random();
 
         for (int i = 0; i < 3 + RANDOM.nextInt(3); i++) {
-            buildItem();
+            LIST.add(buildItem());
         }
     }
 
