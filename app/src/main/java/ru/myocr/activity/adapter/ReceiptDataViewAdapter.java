@@ -43,8 +43,8 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
         binding.buttonPriceDown.setOnClickListener(v -> listener.onClickPriceDown(position));
         binding.buttonPriceRemove.setOnClickListener(v -> listener.onClickPriceRemove(position));
 
-        binding.textProduct.setOnClickListener(v -> listener.onClickReceiptItemEdit(position));
-        binding.textPrice.setOnClickListener(v -> listener.onClickPriceEdit(position));
+        binding.textProduct.setOnClickListener(v -> listener.onClickItemEdit(position));
+        binding.textPrice.setOnClickListener(v -> listener.onClickItemEdit(position));
 
         restrictVisibility(position, binding);
         return binding.getRoot();
@@ -94,8 +94,6 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
 
         void onClickPriceDown(int pos);
 
-        void onClickReceiptItemEdit(int pos);
-
-        void onClickPriceEdit(int pos);
+        void onClickItemEdit(int pos);
     }
 }

@@ -6,10 +6,28 @@
                   android:layout_height="match_parent"
                   android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/receipt_item_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/receipt_item_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:lines="1"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/price_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned"
+                android:lines="1"
+                android:textSize="14sp"/>
+        </LinearLayout>
 
         <Spinner
             android:id="@+id/receipt_item_matches"

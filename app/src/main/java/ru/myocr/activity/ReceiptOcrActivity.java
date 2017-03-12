@@ -9,7 +9,6 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -185,30 +184,13 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
     }
 
     @Override
-    public void onClickReceiptItemEdit(int pos) {
-        showEditReceiptItemDialog(receiptData.getReceiptItemPriceViewItem(pos), text -> {
-            receiptData.getReceiptItemPriceViewItem(pos).setReceiptItem(text);
-            updateProductsView();
-        });
-    }
-
-    @Override
-    public void onClickPriceEdit(int pos) {
-        /*showEditPriceDialog(receiptData.getPrices().get(pos), text -> {
-            receiptData.getPrices().set(pos, text);
-            updateProductsView();
-        });*/
-    }
-
-
-    public void showEditPriceDialog(String text, OnEditTextListener callback) {
-        EditText editText = new EditText(this);
-        editText.setText(text);
-        new AlertDialog.Builder(this)
-                .setView(editText)
-                .setPositiveButton("Ok",
-                        (dialog, which) -> callback.onEdit(editText.getText().toString()))
-                .show();
+    public void onClickItemEdit(int pos) {
+        showEditReceiptItemDialog(receiptData.getReceiptItemPriceViewItem(pos),
+                (receiptItem, price) -> {
+                    receiptData.getReceiptItemPriceViewItem(pos).setReceiptItem(receiptItem);
+                    receiptData.getReceiptItemPriceViewItem(pos).setPrice(price);
+                    updateProductsView();
+                });
     }
 
     public void showEditReceiptItemDialog(ReceiptItemPriceViewItem item, OnEditTextListener callback) {
@@ -217,6 +199,7 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
                 R.layout.receipt_item_edit_dialog, null, false);
 
         binding.receiptItemEditText.setText(item.getReceiptItem());
+        binding.priceEditText.setText(item.getPrice());
         binding.receiptItemMatches.setAdapter(new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1, item.getMatches()
         ));
@@ -240,13 +223,13 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         new AlertDialog.Builder(this)
                 .setView(binding.getRoot())
                 .setPositiveButton("Ok",
-                        (dialog, which) -> {
-                            callback.onEdit(binding.receiptItemEditText.getText().toString());
-                        })
+                        (dialog, which) -> callback.onEdit(
+                                binding.receiptItemEditText.getText().toString(),
+                                binding.priceEditText.getText().toString()))
                 .show();
     }
 
     private interface OnEditTextListener {
-        void onEdit(String text);
+        void onEdit(String receiptItem, String price);
     }
 }
