@@ -28,11 +28,11 @@ import ru.myocr.api.SavePriceRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
-import ru.myocr.model.R;
-import ru.myocr.model.ReceiptData;
-import ru.myocr.model.ReceiptDataImpl;
-import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
-import ru.myocr.preference.Preference;
+import ru.myocr.test.R;
+import ru.myocr.test.ReceiptData;
+import ru.myocr.test.ReceiptDataImpl;
+import ru.myocr.test.databinding.ActivityReceiptOcrBinding;
+import ru.myocr.util.Preference;
 import ru.myocr.preference.Server;
 import ru.myocr.util.PriceUtil;
 

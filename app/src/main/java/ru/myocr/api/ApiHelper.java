@@ -13,6 +13,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.preference.Server;
+import ru.myocr.model.DummyReceipt;
+import ru.myocr.model.Receipt;
 import ru.myocr.util.BitmapUtil;
 import rx.Observable;
 import rx.Subscription;
@@ -81,6 +83,10 @@ public class ApiHelper {
     public List<String> getAllCities(Void v) {
         Call<List<String>> call = api.getAllCities();
         return makeRequest(call);
+    }
+
+    public List<Receipt> getAllReceipt(Void v) {
+        return DummyReceipt.LIST;
     }
 
     public OcrReceiptResponse ocr(OcrRequest request) {

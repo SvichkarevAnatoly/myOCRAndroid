@@ -25,8 +25,8 @@ import java.util.List;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
-import ru.myocr.model.R;
-import ru.myocr.model.databinding.ActivityCropBinding;
+import ru.myocr.test.R;
+import ru.myocr.test.databinding.ActivityCropBinding;
 import ru.myocr.preference.Preference;
 
 public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {

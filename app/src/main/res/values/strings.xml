@@ -2,4 +2,11 @@
     <string name="app_name">MyOcrAndroid</string>
     <string name="menu_toggle_tile_numbers">Show/hide tile numbers</string>
     <string name="menu_start_new_game">Start new game</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_ticket_parser">TicketParserActivity</string>
+    <string name="title_activity_ticket">TicketActivity</string>
 </resources>
