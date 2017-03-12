@@ -1,4 +1,4 @@
-package ru.myocr.test;
+package ru.myocr.model;
 
 
 import java.util.ArrayList;

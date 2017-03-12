@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ru.myocr.R;
 import ru.myocr.model.Receipt;
-import ru.myocr.test.R;
 
 public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecyclerViewAdapter.ViewHolder> {
 

@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.model.Receipt;
-import ru.myocr.test.R;
 import rx.Subscription;
 
 /**

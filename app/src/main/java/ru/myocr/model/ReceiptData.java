@@ -1,4 +1,4 @@
-package ru.myocr.test;
+package ru.myocr.model;
 
 
 import android.util.Pair;
