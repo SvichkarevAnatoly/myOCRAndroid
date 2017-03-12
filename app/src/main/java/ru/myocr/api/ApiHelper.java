@@ -13,7 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.util.BitmapUtil;
-import ru.myocr.util.Preference;
+import ru.myocr.util.Server;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,7 +28,7 @@ public class ApiHelper {
 
     public ApiHelper() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Preference.getCurrentServerUrl())
+                .baseUrl(Server.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api = retrofit.create(Api.class);

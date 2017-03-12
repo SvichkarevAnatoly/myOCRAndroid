@@ -101,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeServer(View view) {
-        Preference.setString(Preference.SERVER_URL, getString(
-                Server.isLocal() ? R.string.remote : R.string.localhost));
+        Server.change();
         updateServerButtonText();
     }
 

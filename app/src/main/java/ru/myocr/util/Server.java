@@ -2,10 +2,29 @@ package ru.myocr.util;
 
 
 import ru.myocr.App;
-import ru.myocr.model.R;
+
+import static ru.myocr.model.R.string.localhost;
+import static ru.myocr.model.R.string.remote;
+import static ru.myocr.util.Preference.SERVER;
 
 public class Server {
+
+    private static String localhostUrl = App.getContext().getString(localhost);
+
+    static {
+        Preference.setString(SERVER, localhostUrl);
+    }
+
     public static boolean isLocal() {
-        return Preference.getCurrentServerUrl().equals(App.getAppContext().getString(R.string.localhost));
+        return getUrl().equals(localhostUrl);
+    }
+
+    public static String getUrl() {
+        return Preference.getString(SERVER, localhostUrl);
+    }
+
+    public static void change() {
+        final int newUrl = isLocal() ? remote : localhost;
+        Preference.setString(SERVER, App.getContext().getString(newUrl));
     }
 }
