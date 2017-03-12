@@ -1,4 +1,4 @@
-package ru.myocr.util;
+package ru.myocr.preference;
 
 import android.content.SharedPreferences;
 

@@ -27,7 +27,7 @@ import ru.myocr.api.OcrRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityCropBinding;
-import ru.myocr.util.Preference;
+import ru.myocr.preference.Preference;
 
 public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {
 

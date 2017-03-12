@@ -32,9 +32,9 @@ import ru.myocr.model.R;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptDataImpl;
 import ru.myocr.model.databinding.ActivityReceiptOcrBinding;
-import ru.myocr.util.Preference;
+import ru.myocr.preference.Preference;
+import ru.myocr.preference.Server;
 import ru.myocr.util.PriceUtil;
-import ru.myocr.util.Server;
 
 public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptDataViewAdapter.OnItemClickListener {
 

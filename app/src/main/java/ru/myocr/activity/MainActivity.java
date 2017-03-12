@@ -18,8 +18,8 @@ import java.util.List;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.model.R;
 import ru.myocr.model.databinding.ActivityMainBinding;
-import ru.myocr.util.Preference;
-import ru.myocr.util.Server;
+import ru.myocr.preference.Preference;
+import ru.myocr.preference.Server;
 
 public class MainActivity extends AppCompatActivity {
 
