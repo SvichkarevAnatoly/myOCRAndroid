@@ -19,14 +19,11 @@ import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.SavePriceRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
-import ru.myocr.api.ocr.ParsedPrice;
-import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.databinding.ActivityReceiptOcrBinding;
 import ru.myocr.databinding.ReceiptItemEditDialogBinding;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItemPriceViewItem;
 import ru.myocr.preference.Preference;
-import ru.myocr.util.PriceUtil;
 
 public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptDataViewAdapter.OnItemClickListener {
 
@@ -48,36 +45,6 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
 
         handleIncomingText(getIntent());
     }
-
-    /*public void findInServer(View view) {
-        new AsyncTask<Void, Void, List<String>>() {
-            @Override
-            protected List<String> doInBackground(Void... params) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(Server.getUrl())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                final Api api = retrofit.create(Api.class);
-                final FindRequest request = new FindRequest(receiptData.getReceiptItemMatches());
-                final Call<FindResponse> responseCall = api.find(request);
-                try {
-                    final Response<FindResponse> response = responseCall.execute();
-                    return response.body().match;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(List<String> res) {
-                super.onPostExecute(res);
-                //Toast.makeText(ReceiptOcrActivity.this, "" + res, Toast.LENGTH_LONG).show();
-                receiptData.setProducts(res);
-                updateProductsView();
-            }
-        }.execute();
-    }*/
 
     public void addToDb(View view) {
         final SavePriceRequest savePriceRequest = convert(productPricePairs);
@@ -123,23 +90,6 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         }
     }
 
-    private List<String> getReceiptItems(List<ReceiptItemMatches> itemMatches) {
-        final ArrayList<String> receiptItems = new ArrayList<>(itemMatches.size());
-        for (ReceiptItemMatches itemMatch : itemMatches) {
-            receiptItems.add(itemMatch.getMatches().get(0).getMatch());
-        }
-        return receiptItems;
-    }
-
-    private List<String> getPrices(List<ParsedPrice> parsedPrices) {
-        final ArrayList<String> prices = new ArrayList<>(parsedPrices.size());
-        for (ParsedPrice price : parsedPrices) {
-            final String priceValue = PriceUtil.getValue(price);
-            prices.add(priceValue);
-        }
-        return prices;
-    }
-
     private void updateProductsView() {
         productPricePairs.clear();
         productPricePairs.addAll(receiptData.getProductsPricesPairs());
@@ -155,7 +105,7 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
 
     @Override
     public void onClickReceiptItemRemove(int pos) {
-        receiptData.removeProduct(pos);
+        receiptData.removeReceiptItem(pos);
         updateProductsView();
     }
 

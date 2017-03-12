@@ -10,7 +10,9 @@ import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.util.PriceUtil;
 
 public class ReceiptItemPriceViewItem {
-    private final ReceiptItemMatches receiptItemMatches;
+    private final static String EMPTY_LINE = "";
+
+    private ReceiptItemMatches receiptItemMatches;
 
     private String receiptItem;
     private String price;
@@ -31,6 +33,15 @@ public class ReceiptItemPriceViewItem {
         return receiptItemMatches.getSource();
     }
 
+    public List<String> getMatches() {
+        final List<String> matches = new ArrayList<>();
+        for (Match match : receiptItemMatches.getMatches()) {
+            matches.add(match.getMatch());
+        }
+
+        return matches;
+    }
+
     public String getReceiptItem() {
         return receiptItem;
     }
@@ -47,12 +58,23 @@ public class ReceiptItemPriceViewItem {
         this.price = price;
     }
 
-    public List<String> getMatches() {
-        final List<String> matches = new ArrayList<>();
-        for (Match match : receiptItemMatches.getMatches()) {
-            matches.add(match.getMatch());
-        }
+    public ReceiptItemMatches getReceiptItemMatches() {
+        return receiptItemMatches;
+    }
 
-        return matches;
+    public void setReceiptItemMatches(ReceiptItemMatches receiptItemMatches) {
+        this.receiptItemMatches = receiptItemMatches;
+    }
+
+    public void replaceReceiptItemInfo(ReceiptItemPriceViewItem item) {
+        setReceiptItem(item.getReceiptItem());
+        setReceiptItemMatches(item.getReceiptItemMatches());
+        item.setReceiptItem(EMPTY_LINE);
+        item.setReceiptItemMatches(new ReceiptItemMatches(EMPTY_LINE, new ArrayList<>()));
+    }
+
+    public void replacePrice(ReceiptItemPriceViewItem item) {
+        setPrice(item.getPrice());
+        item.setPrice(EMPTY_LINE);
     }
 }

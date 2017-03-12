@@ -56,26 +56,38 @@ public class ReceiptData {
         return pairs;
     }
 
-    public void removeProduct(int idx) {
-        // products.remove(idx);
+    public void removeReceiptItem(int idx) {
+        final int size = receiptItemPriceViewItems.size();
+        final int lastIndex = size - 1;
+        for (int i = idx; i < lastIndex; i++) {
+            final ReceiptItemPriceViewItem item = receiptItemPriceViewItems.get(i);
+            final ReceiptItemPriceViewItem nextItem = receiptItemPriceViewItems.get(i + 1);
+            item.replaceReceiptItemInfo(nextItem);
+        }
     }
 
     public void removePrice(int idx) {
-        // prices.remove(idx);
+        final int size = receiptItemPriceViewItems.size();
+        final int lastIndex = size - 1;
+        for (int i = idx; i < lastIndex; i++) {
+            final ReceiptItemPriceViewItem item = receiptItemPriceViewItems.get(i);
+            final ReceiptItemPriceViewItem nextItem = receiptItemPriceViewItems.get(i + 1);
+            item.replacePrice(nextItem);
+        }
     }
 
     public void shiftProductUp(int idx) {
         /*final String curProduct = products.get(idx);
         final String prevProduct = products.get(idx - 1);
         products.set(idx - 1, prevProduct + ' ' + curProduct);
-        removeProduct(idx);*/
+        removeReceiptItem(idx);*/
     }
 
     public void shiftProductDown(int idx) {
         /*final String curProduct = products.get(idx);
         final String nextProduct = products.get(idx + 1);
         products.set(idx + 1, curProduct + ' ' + nextProduct);
-        removeProduct(idx);*/
+        removeReceiptItem(idx);*/
     }
 
     public void shiftPriceDown(int idx) {
