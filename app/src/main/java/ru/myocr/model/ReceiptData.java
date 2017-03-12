@@ -1,6 +1,7 @@
 package ru.myocr.model;
 
 
+import android.text.TextUtils;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class ReceiptData {
         }
 
         if (receiptItemMatches.size() > n) {
-            for (int i = 0; i < receiptItemMatches.size(); i++) {
+            for (int i = n; i < receiptItemMatches.size(); i++) {
                 final ReceiptItemPriceViewItem item = new ReceiptItemPriceViewItem(
                         receiptItemMatches.get(i), new ParsedPrice(EMPTY_LINE));
                 receiptItemPriceViewItems.add(item);
@@ -35,7 +36,7 @@ public class ReceiptData {
         }
 
         if (parsedPrices.size() > n) {
-            for (int i = 0; i < parsedPrices.size(); i++) {
+            for (int i = n; i < parsedPrices.size(); i++) {
                 final ReceiptItemPriceViewItem item = new ReceiptItemPriceViewItem(
                         new ReceiptItemMatches(EMPTY_LINE, new ArrayList<>()), parsedPrices.get(i));
                 receiptItemPriceViewItems.add(item);
@@ -50,7 +51,9 @@ public class ReceiptData {
     public List<Pair<String, String>> getProductsPricesPairs() {
         final List<Pair<String, String>> pairs = new ArrayList<>();
         for (ReceiptItemPriceViewItem item : receiptItemPriceViewItems) {
-            pairs.add(new Pair<>(item.getReceiptItem(), item.getPrice()));
+            final String receiptItem = item.getReceiptItem();
+            final String price = item.getPrice();
+            pairs.add(new Pair<>(receiptItem, price));
         }
 
         return pairs;
@@ -59,20 +62,38 @@ public class ReceiptData {
     public void removeReceiptItem(int idx) {
         final int size = receiptItemPriceViewItems.size();
         final int lastIndex = size - 1;
-        for (int i = idx; i < lastIndex; i++) {
-            final ReceiptItemPriceViewItem item = receiptItemPriceViewItems.get(i);
-            final ReceiptItemPriceViewItem nextItem = receiptItemPriceViewItems.get(i + 1);
-            item.replaceReceiptItemInfo(nextItem);
+        if (idx == lastIndex) {
+            final ReceiptItemPriceViewItem lastItem = receiptItemPriceViewItems.get(idx);
+            lastItem.setReceiptItem(EMPTY_LINE);
+            lastItem.setReceiptItemMatches(new ReceiptItemMatches(EMPTY_LINE, new ArrayList<>()));
+        } else {
+            for (int i = idx; i < lastIndex; i++) {
+                final ReceiptItemPriceViewItem item = receiptItemPriceViewItems.get(i);
+                final ReceiptItemPriceViewItem nextItem = receiptItemPriceViewItems.get(i + 1);
+                item.replaceReceiptItemInfo(nextItem);
+            }
+        }
+
+        if (isEmpty(receiptItemPriceViewItems.get(lastIndex))) {
+            receiptItemPriceViewItems.remove(lastIndex);
         }
     }
 
     public void removePrice(int idx) {
         final int size = receiptItemPriceViewItems.size();
         final int lastIndex = size - 1;
-        for (int i = idx; i < lastIndex; i++) {
-            final ReceiptItemPriceViewItem item = receiptItemPriceViewItems.get(i);
-            final ReceiptItemPriceViewItem nextItem = receiptItemPriceViewItems.get(i + 1);
-            item.replacePrice(nextItem);
+        if (idx == lastIndex) {
+            receiptItemPriceViewItems.get(idx).setPrice(EMPTY_LINE);
+        } else {
+            for (int i = idx; i < lastIndex; i++) {
+                final ReceiptItemPriceViewItem item = receiptItemPriceViewItems.get(i);
+                final ReceiptItemPriceViewItem nextItem = receiptItemPriceViewItems.get(i + 1);
+                item.replacePrice(nextItem);
+            }
+        }
+
+        if (isEmpty(receiptItemPriceViewItems.get(lastIndex))) {
+            receiptItemPriceViewItems.remove(lastIndex);
         }
     }
 
@@ -96,5 +117,9 @@ public class ReceiptData {
 
     public int size() {
         return receiptItemPriceViewItems.size();
+    }
+
+    private boolean isEmpty(ReceiptItemPriceViewItem item) {
+        return TextUtils.isEmpty(item.getReceiptItem()) && TextUtils.isEmpty(item.getPrice());
     }
 }
