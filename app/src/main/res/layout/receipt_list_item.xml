@@ -1,51 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:paddingLeft="16dp"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:background="?android:attr/selectableItemBackground">
 
-            <TextView
-                android:id="@+id/market"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:lines="1"
-                android:text="Быстроном"
-                android:textColor="#000"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/market"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:lines="1"
+                    android:text="Быстроном"
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:lines="1"
+                    android:text="13 jan 2013"
+                    android:textColor="#8e8e8e"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/sum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginRight="16dp"
                 android:lines="1"
-                android:text="13 jan 2013"
-                android:textColor="#8e8e8e"
+                android:text="1800 руб."
+                android:textColor="#000"
                 android:textSize="14sp" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/sum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:lines="1"
-            android:text="1800 руб."
-            android:layout_marginRight="16dp"
-            android:textColor="#000"
-            android:textSize="14sp" />
-
-    </LinearLayout>
+    </RelativeLayout>
 </layout>
