@@ -16,6 +16,7 @@ import java.util.List;
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.model.Receipt;
+import ru.myocr.view.ReceiptView;
 import rx.Subscription;
 
 /**
@@ -88,14 +89,10 @@ public class TicketFragment extends Fragment {
 
 
     private void onClickTicketItem(Receipt item) {
-        String[] strItems = new String[item.items.size()];
-        for (int i = 0; i < item.items.size(); i++) {
-            strItems[i] = item.items.get(i).toString();
-        }
+        ReceiptView receiptView = new ReceiptView(getActivity());
+        receiptView.setReceipt(item);
         new AlertDialog.Builder(getActivity())
-                .setTitle(item.market.title)
-                .setItems(strItems, (dialog, which) -> {
-                })
+                .setView(receiptView)
                 .show();
     }
 
