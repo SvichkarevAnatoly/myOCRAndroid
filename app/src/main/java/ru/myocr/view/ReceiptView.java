@@ -41,6 +41,8 @@ public class ReceiptView extends LinearLayout {
             itemBinding.price.setText(String.format("%.2f", item.price / 100.));
             binding.items.addView(itemBinding.getRoot());
         }
+
+        binding.sum.setText(String.format("=%.2f", receipt.total_cost_sum / 100.));
     }
 
     public ReceiptView(Context context) {

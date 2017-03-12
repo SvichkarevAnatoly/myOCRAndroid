@@ -37,7 +37,7 @@ public class DummyReceipt {
 
         receipt.cashier = "Иванова Н. А";
         receipt.date = new Date(System.currentTimeMillis() - RANDOM.nextInt(100000000));
-        receipt.total_cost_sum = RANDOM.nextInt(100) * 100;
+        receipt.total_cost_sum = RANDOM.nextInt(200) * 1000;
         receipt.market = new Receipt.Market();
         receipt.market.title = DUMMY_SHOPS.get(RANDOM.nextInt(DUMMY_SHOPS.size()));
         receipt.market.inn = "" + (100000 + RANDOM.nextInt(100000));
