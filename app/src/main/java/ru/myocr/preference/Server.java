@@ -3,9 +3,9 @@ package ru.myocr.preference;
 
 import ru.myocr.App;
 
-import static ru.myocr.model.R.string.localhost;
-import static ru.myocr.model.R.string.remote;
 import static ru.myocr.preference.Preference.SERVER;
+import static ru.myocr.test.R.string.localhost;
+import static ru.myocr.test.R.string.remote;
 
 public class Server {
 
