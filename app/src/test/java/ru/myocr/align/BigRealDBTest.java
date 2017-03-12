@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import ru.myocr.model.OcrParser;
+import ru.myocr.test.OcrParser;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

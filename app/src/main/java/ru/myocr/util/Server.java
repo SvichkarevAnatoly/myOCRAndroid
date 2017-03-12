@@ -2,7 +2,7 @@ package ru.myocr.util;
 
 
 import ru.myocr.App;
-import ru.myocr.model.R;
+import ru.myocr.test.R;
 
 public class Server {
     public static boolean isLocal() {

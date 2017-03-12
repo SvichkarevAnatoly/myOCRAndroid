@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter;
 
 import java.util.List;
 
-import ru.myocr.model.R;
-import ru.myocr.model.databinding.ReceiptItemBinding;
+import ru.myocr.test.R;
+import ru.myocr.test.databinding.ReceiptItemBinding;
 
 public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
 

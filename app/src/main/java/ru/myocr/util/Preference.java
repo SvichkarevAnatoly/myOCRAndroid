@@ -3,7 +3,7 @@ package ru.myocr.util;
 import android.content.SharedPreferences;
 
 import ru.myocr.App;
-import ru.myocr.model.R;
+import ru.myocr.test.R;
 
 public class Preference {
 

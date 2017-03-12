@@ -16,8 +16,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.List;
 
 import ru.myocr.api.ApiHelper;
-import ru.myocr.model.R;
-import ru.myocr.model.databinding.ActivityMainBinding;
+import ru.myocr.test.R;
+import ru.myocr.test.databinding.ActivityMainBinding;
 import ru.myocr.util.Preference;
 import ru.myocr.util.Server;
 
