@@ -36,14 +36,14 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
         binding.textProduct.setText(item.first != null ? item.first : "");
         binding.textPrice.setText(item.second != null ? item.second : "");
 
-        binding.buttonProductUp.setOnClickListener(v -> listener.onClickProductUp(position));
-        binding.buttonProductDown.setOnClickListener(v -> listener.onClickProductDown(position));
-        binding.buttonProductRemove.setOnClickListener(v -> listener.onClickProductRemove(position));
+        binding.buttonProductUp.setOnClickListener(v -> listener.onClickReceiptItemUp(position));
+        binding.buttonProductDown.setOnClickListener(v -> listener.onClickReceiptItemDown(position));
+        binding.buttonProductRemove.setOnClickListener(v -> listener.onClickReceiptItemRemove(position));
 
         binding.buttonPriceDown.setOnClickListener(v -> listener.onClickPriceDown(position));
         binding.buttonPriceRemove.setOnClickListener(v -> listener.onClickPriceRemove(position));
 
-        binding.textProduct.setOnClickListener(v -> listener.onClickProductEdit(position));
+        binding.textProduct.setOnClickListener(v -> listener.onClickReceiptItemEdit(position));
         binding.textPrice.setOnClickListener(v -> listener.onClickPriceEdit(position));
 
         restrictVisibility(position, binding);
@@ -84,17 +84,17 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
 
     public interface OnItemClickListener {
 
-        void onClickProductRemove(int pos);
+        void onClickReceiptItemRemove(int pos);
 
         void onClickPriceRemove(int pos);
 
-        void onClickProductDown(int pos);
+        void onClickReceiptItemDown(int pos);
 
-        void onClickProductUp(int pos);
+        void onClickReceiptItemUp(int pos);
 
         void onClickPriceDown(int pos);
 
-        void onClickProductEdit(int pos);
+        void onClickReceiptItemEdit(int pos);
 
         void onClickPriceEdit(int pos);
     }
