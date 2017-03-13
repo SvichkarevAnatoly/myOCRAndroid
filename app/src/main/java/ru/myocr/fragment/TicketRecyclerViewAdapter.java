@@ -47,6 +47,13 @@ public class TicketRecyclerViewAdapter extends CursorRecyclerViewAdapter<TicketR
             }
         });
 
+        holder.binding.getRoot().setOnLongClickListener(v -> {
+            if (null != mListener) {
+                mListener.onLongClickTicketItem(holder.mItem);
+            }
+            return true;
+        });
+
         holder.binding.getRoot().setBackgroundColor(App.getContext().getResources()
                 .getColor(cursor.getPosition() % 2 == 0
                         ? R.color.receipt_item_bg_light

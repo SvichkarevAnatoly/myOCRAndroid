@@ -20,6 +20,7 @@ import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.model.Receipt;
 import ru.myocr.view.ReceiptView;
 
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import static ru.myocr.model.DummyReceipt.addToDb;
 
 /**
@@ -63,7 +64,19 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter = new TicketRecyclerViewAdapter(getActivity(), null, this::onClickTicketItem);
+            adapter = new TicketRecyclerViewAdapter(getActivity(), null, new TicketFragmentInteractionListener() {
+                @Override
+                public void onClickTicketItem(Receipt item) {
+                    TicketFragment.this.onClickTicketItem(item);
+                }
+
+                @Override
+                public void onLongClickTicketItem(Receipt item) {
+                    cupboard().withContext(getActivity())
+                            .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
+                                    item);
+                }
+            });
             recyclerView.setAdapter(adapter);
         }
         return view;
@@ -104,5 +117,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
     public interface TicketFragmentInteractionListener {
         void onClickTicketItem(Receipt item);
+
+        void onLongClickTicketItem(Receipt item);
     }
 }
