@@ -29,9 +29,10 @@
                 android:textSize="14sp"/>
         </LinearLayout>
 
-        <Spinner
+        <ListView
             android:id="@+id/receipt_item_matches"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+        </ListView>
     </LinearLayout>
 </layout>

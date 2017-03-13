@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -153,23 +152,13 @@ public class ReceiptOcrActivity extends AppCompatActivity implements ReceiptData
         binding.receiptItemMatches.setAdapter(new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1, item.getMatches()
         ));
-        final boolean[] isSelected = {false};
-        binding.receiptItemMatches.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isSelected[0]) {
-                    isSelected[0] = true;
-                    return;
-                }
-                final String newText = item.getMatches().get(position);
-                binding.receiptItemEditText.setText(newText);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+        binding.receiptItemMatches.setOnItemClickListener(
+                (parent, view, position, id) -> {
+                    final String newText = item.getMatches().get(position);
+                    binding.receiptItemEditText.setText(newText);
+                });
 
-            }
-        });
         new AlertDialog.Builder(this)
                 .setView(binding.getRoot())
                 .setPositiveButton("Ok",
