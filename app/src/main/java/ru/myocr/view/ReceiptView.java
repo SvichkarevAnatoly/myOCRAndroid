@@ -21,6 +21,26 @@ public class ReceiptView extends LinearLayout {
     private ReceiptViewLayoutBinding binding;
     private Receipt receipt;
 
+    public ReceiptView(Context context) {
+        super(context);
+        init();
+    }
+
+    public ReceiptView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public ReceiptView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    public ReceiptView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
     public Receipt getReceipt() {
         return receipt;
     }
@@ -42,27 +62,7 @@ public class ReceiptView extends LinearLayout {
             binding.items.addView(itemBinding.getRoot());
         }
 
-        binding.sum.setText(String.format("=%.2f", receipt.total_cost_sum / 100.));
-    }
-
-    public ReceiptView(Context context) {
-        super(context);
-        init();
-    }
-
-    public ReceiptView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public ReceiptView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    public ReceiptView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        binding.sum.setText(String.format("=%.2f", receipt.totalCostSum / 100.));
     }
 
     private void init(){

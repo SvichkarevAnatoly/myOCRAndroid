@@ -1,11 +1,19 @@
 package ru.myocr.model;
 
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import nl.littlerobots.cupboard.tools.provider.UriHelper;
+import ru.myocr.App;
+import ru.myocr.db.ReceiptContentProvider;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class DummyReceipt {
 
@@ -31,13 +39,30 @@ public class DummyReceipt {
 
     }
 
+    public static void addToDb() {
+        Receipt receipt = buildItem();
+
+        Uri uri = cupboard().withContext(App.getContext())
+                .put(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
+                        receipt);
+        Long id = Long.valueOf(uri.getLastPathSegment());
+
+        for (ReceiptItem item : receipt.items) {
+            item.receiptId = id;
+        }
+
+        cupboard().withContext(App.getContext())
+                .put(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
+                        ReceiptItem.class, receipt.items);
+    }
+
     private static Receipt buildItem() {
 
         Receipt receipt = new Receipt();
 
         receipt.cashier = "Иванова Н. А";
         receipt.date = new Date(System.currentTimeMillis() - RANDOM.nextInt(100000000));
-        receipt.total_cost_sum = RANDOM.nextInt(200) * 1000;
+        receipt.totalCostSum = RANDOM.nextInt(200) * 1000;
         receipt.market = new Receipt.Market();
         receipt.market.title = DUMMY_SHOPS.get(RANDOM.nextInt(DUMMY_SHOPS.size()));
         receipt.market.inn = "" + (100000 + RANDOM.nextInt(100000));

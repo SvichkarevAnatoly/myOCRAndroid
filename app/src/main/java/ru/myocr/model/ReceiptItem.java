@@ -3,6 +3,8 @@ package ru.myocr.model;
 import com.google.gson.annotations.SerializedName;
 
 public class ReceiptItem {
+
+    public Long _id;
     @SerializedName("number")
     public int number;
     @SerializedName("title")
@@ -13,6 +15,7 @@ public class ReceiptItem {
     public float amount;
     @SerializedName("cost")
     public int cost;
+    public long receiptId;
 
     public ReceiptItem() {
     }
