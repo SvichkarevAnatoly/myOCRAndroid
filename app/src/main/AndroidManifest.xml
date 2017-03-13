@@ -41,6 +41,10 @@
 
         <activity android:name="ru.myocr.activity.CropActivity"></activity>
 
+        <provider
+            android:name=".db.ReceiptContentProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false" />
     </application>
 
 </manifest>

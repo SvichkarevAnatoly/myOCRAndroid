@@ -49,6 +49,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.github.clans:fab:1.6.4'
-
+    compile 'nl.qbusict:cupboard:2.2.0'
+    compile 'nl.littlerobots.cupboard-tools:provider:0.3.1'
+    compile 'nl.littlerobots.cupboard-tools:gson:0.3.1'
     testCompile 'junit:junit:4.12'
 }
