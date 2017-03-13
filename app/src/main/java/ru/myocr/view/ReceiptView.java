@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import ru.myocr.R;
 import ru.myocr.databinding.ReceiptViewItemBinding;
 import ru.myocr.databinding.ReceiptViewLayoutBinding;
@@ -50,6 +53,8 @@ public class ReceiptView extends LinearLayout {
         binding.marketName.setText(receipt.market.title);
         binding.marketAddress.setText(receipt.market.address);
         binding.inn.setText("ИНН" + receipt.market.inn);
+
+        binding.date.setText(new SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(receipt.date));
 
         for (int i = 0; i < receipt.items.size(); i++) {
             ReceiptViewItemBinding itemBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
