@@ -1,13 +1,23 @@
 package ru.myocr.model;
 
+import android.content.Context;
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import nl.littlerobots.cupboard.tools.provider.UriHelper;
+import nl.qbusict.cupboard.annotation.Ignore;
+import ru.myocr.db.ReceiptContentProvider;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+
 public class Receipt implements Serializable {
 
+    public Long _id;
     @SerializedName("receipt_number")
     public long id;
     @SerializedName("shift_number")
@@ -19,17 +29,27 @@ public class Receipt implements Serializable {
     @SerializedName("cashier")
     public String cashier;
 
+    @Ignore
     @SerializedName("items")
     public List<ReceiptItem> items;
 
-    @SerializedName("total_cost_sum")
-    public int total_cost_sum;
-    @SerializedName("payment_sum")
-    public int payment_sum;
-    @SerializedName("change_sum")
-    public int change_sum;
-    @SerializedName("discount_sum")
-    public int discount_sum;
+    @SerializedName("totalCostSum")
+    public int totalCostSum;
+    @SerializedName("paymentSum")
+    public int paymentSum;
+    @SerializedName("changeSum")
+    public int changeSum;
+    @SerializedName("discountSum")
+    public int discountSum;
+
+    public void loadReceiptItems(Context context) {
+        UriHelper helper = UriHelper.with(ReceiptContentProvider.AUTHORITY);
+        Uri cheeseUri = helper.getUri(ReceiptItem.class);
+        items = cupboard()
+                .withContext(context)
+                .query(cheeseUri, ReceiptItem.class)
+                .withSelection("receiptId = ?", String.valueOf(_id)).list();
+    }
 
     @Override
     public String toString() {
@@ -40,10 +60,10 @@ public class Receipt implements Serializable {
                 ", market=" + market.title +
                 ", cashier='" + cashier + '\'' +
                 ", items=" + items.size() +
-                ", total_cost_sum=" + total_cost_sum +
-                ", payment_sum=" + payment_sum +
-                ", change_sum=" + change_sum +
-                ", discount_sum=" + discount_sum +
+                ", totalCostSum=" + totalCostSum +
+                ", paymentSum=" + paymentSum +
+                ", changeSum=" + changeSum +
+                ", discountSum=" + discountSum +
                 '}';
     }
 

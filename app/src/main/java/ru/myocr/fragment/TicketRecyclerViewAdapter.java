@@ -1,5 +1,7 @@
 package ru.myocr.fragment;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,39 +9,36 @@ import android.view.ViewGroup;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.databinding.ReceiptListItemBinding;
 import ru.myocr.model.Receipt;
+import ru.myocr.util.CursorRecyclerViewAdapter;
 
-public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecyclerViewAdapter.ViewHolder> {
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-    private final List<Receipt> mValues;
+public class TicketRecyclerViewAdapter extends CursorRecyclerViewAdapter<TicketRecyclerViewAdapter.ViewHolder> {
+
     private final TicketFragment.TicketFragmentInteractionListener mListener;
 
-    public TicketRecyclerViewAdapter(List<Receipt> items,
-                                     TicketFragment.TicketFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    public TicketRecyclerViewAdapter(Context context, Cursor cursor,
+                                     TicketFragment.TicketFragmentInteractionListener mListener) {
+        super(context, cursor);
+        this.mListener = mListener;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ReceiptListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.receipt_list_item, parent, false);
-        return new ViewHolder(binding);
-    }
+    public void onBindViewHolder(TicketRecyclerViewAdapter.ViewHolder holder, Cursor cursor) {
+        Receipt receipt = cupboard().withCursor(cursor).get(Receipt.class);
+        receipt.loadReceiptItems(App.getContext());
 
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.binding.market.setText(mValues.get(position).market.title);
-        holder.binding.sum.setText(String.format("%.2f руб.", mValues.get(position).total_cost_sum / 100.));
+        holder.mItem = receipt;
+        holder.binding.market.setText(receipt.market.title);
+        holder.binding.sum.setText(String.format("%.2f руб.", receipt.totalCostSum / 100.));
 
-        Date date = mValues.get(position).date;
+        Date date = receipt.date;
         holder.binding.date.setText(new SimpleDateFormat("EEE, MMM d, yy", Locale.getDefault()).format(date));
 
         holder.binding.getRoot().setOnClickListener(v -> {
@@ -48,16 +47,26 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
             }
         });
 
+        holder.binding.getRoot().setOnLongClickListener(v -> {
+            if (null != mListener) {
+                mListener.onLongClickTicketItem(holder.mItem);
+            }
+            return true;
+        });
+
         holder.binding.getRoot().setBackgroundColor(App.getContext().getResources()
-                .getColor(position % 2 == 0
-                ? R.color.receipt_item_bg_light
-                : R.color.receipt_item_bg_dark));
+                .getColor(cursor.getPosition() % 2 == 0
+                        ? R.color.receipt_item_bg_light
+                        : R.color.receipt_item_bg_dark));
     }
 
     @Override
-    public int getItemCount() {
-        return mValues.size();
+    public TicketRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ReceiptListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.receipt_list_item, parent, false);
+        return new ViewHolder(binding);
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

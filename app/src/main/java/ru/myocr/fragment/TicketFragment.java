@@ -1,8 +1,12 @@
 package ru.myocr.fragment;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,14 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.R;
-import ru.myocr.api.ApiHelper;
+import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.model.Receipt;
 import ru.myocr.view.ReceiptView;
-import rx.Subscription;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+import static ru.myocr.model.DummyReceipt.addToDb;
 
 /**
  * A fragment representing a list of Items.
@@ -25,12 +29,9 @@ import rx.Subscription;
  * Activities containing this fragment MUST implement the {@link TicketFragmentInteractionListener}
  * interface.
  */
-public class TicketFragment extends Fragment {
+public class TicketFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private TicketRecyclerViewAdapter adapter;
-    private List<Receipt> tickets = new ArrayList<>();
-    private Subscription subscription;
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -48,13 +49,9 @@ public class TicketFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        subscription = ApiHelper.makeApiRequest(null, ApiHelper::getAllReceipt, throwable -> {
-                },
-                getTicketResponses -> {
-                    tickets.clear();
-                    tickets.addAll(getTicketResponses);
-                    adapter.notifyDataSetChanged();
-                }, null);
+        addToDb();
+        getLoaderManager().initLoader(0, null, this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -67,7 +64,19 @@ public class TicketFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter = new TicketRecyclerViewAdapter(tickets, this::onClickTicketItem);
+            adapter = new TicketRecyclerViewAdapter(getActivity(), null, new TicketFragmentInteractionListener() {
+                @Override
+                public void onClickTicketItem(Receipt item) {
+                    TicketFragment.this.onClickTicketItem(item);
+                }
+
+                @Override
+                public void onLongClickTicketItem(Receipt item) {
+                    cupboard().withContext(getActivity())
+                            .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
+                                    item);
+                }
+            });
             recyclerView.setAdapter(adapter);
         }
         return view;
@@ -79,15 +88,6 @@ public class TicketFragment extends Fragment {
         super.onAttach(context);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
-    }
-
-
     private void onClickTicketItem(Receipt item) {
         ReceiptView receiptView = new ReceiptView(getActivity());
         receiptView.setReceipt(item);
@@ -96,7 +96,28 @@ public class TicketFragment extends Fragment {
                 .show();
     }
 
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(),
+                UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
+                null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
+    }
+
+
     public interface TicketFragmentInteractionListener {
         void onClickTicketItem(Receipt item);
+
+        void onLongClickTicketItem(Receipt item);
     }
 }
