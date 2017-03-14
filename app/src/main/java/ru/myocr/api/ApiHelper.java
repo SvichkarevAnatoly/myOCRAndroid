@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -12,9 +13,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.myocr.api.ocr.OcrReceiptResponse;
-import ru.myocr.preference.Server;
+import ru.myocr.model.City;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
+import ru.myocr.preference.Server;
 import ru.myocr.util.BitmapUtil;
 import rx.Observable;
 import rx.Subscription;
@@ -80,9 +82,18 @@ public class ApiHelper {
         return makeRequest(responseCall);
     }
 
-    public List<String> getAllCities(Void v) {
+    public List<City> getAllCities(Void v) {
         Call<List<String>> call = api.getAllCities();
-        return makeRequest(call);
+        List<String> citiesStr = makeRequest(call);
+
+        List<City> cities = new ArrayList<>(citiesStr.size());
+        for (String city : citiesStr) {
+            City c = new City(city, city);
+            c.updateDb();
+            cities.add(c);
+        }
+
+        return cities;
     }
 
     public List<Receipt> getAllReceipt(Void v) {

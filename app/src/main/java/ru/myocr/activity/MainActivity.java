@@ -24,6 +24,7 @@ import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityMainBinding;
 import ru.myocr.fragment.TicketFragment;
+import ru.myocr.model.City;
 import ru.myocr.preference.Preference;
 
 public class MainActivity extends AppCompatActivity
@@ -57,8 +58,8 @@ public class MainActivity extends AppCompatActivity
                 this::onLoadCities, null);
     }
 
-    private void onLoadCities(List<String> cities) {
-        Preference.setString(Preference.CITY, cities.get(0));
+    private void onLoadCities(List<City> cities) {
+        Preference.setString(Preference.CITY, cities.get(0).id);
     }
 
     @Override

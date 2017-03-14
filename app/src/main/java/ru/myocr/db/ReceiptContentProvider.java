@@ -7,6 +7,7 @@ import nl.littlerobots.cupboard.tools.provider.CupboardContentProvider;
 import nl.qbusict.cupboard.Cupboard;
 import nl.qbusict.cupboard.CupboardBuilder;
 import ru.myocr.BuildConfig;
+import ru.myocr.model.City;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
 
@@ -16,8 +17,9 @@ import static nl.qbusict.cupboard.CupboardFactory.setCupboard;
 public class ReceiptContentProvider extends CupboardContentProvider {
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
+    public static final String _ID = "_id";
 
     static {
         Cupboard cupboard = new CupboardBuilder()
@@ -30,6 +32,7 @@ public class ReceiptContentProvider extends CupboardContentProvider {
 
         cupboard().register(Receipt.class);
         cupboard().register(ReceiptItem.class);
+        cupboard().register(City.class);
     }
 
     public ReceiptContentProvider() {
