@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_share) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_send) {
 
         }
