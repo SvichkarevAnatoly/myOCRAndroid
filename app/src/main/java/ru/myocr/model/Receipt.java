@@ -57,6 +57,11 @@ public class Receipt implements Serializable {
                 .withSelection("", tag).list();
     }
 
+    public static List<Receipt> findReceiptByTagId(Long id) {
+        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_BY_TAG_ID, Receipt.class)
+                .withSelection("", id.toString()).list();
+    }
+
     public void loadReceiptItems(Context context) {
         UriHelper helper = UriHelper.with(ReceiptContentProvider.AUTHORITY);
         Uri cheeseUri = helper.getUri(ReceiptItem.class);

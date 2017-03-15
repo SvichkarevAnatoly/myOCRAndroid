@@ -30,9 +30,13 @@ public class ReceiptContentProvider extends CupboardContentProvider {
     public static final String PATH_RECEIPT_BY_TAG = "PATH_RECEIPT_BY_TAG";
     public static final String PATH_RECEIPT_TAG = "PATH_RECEIPT_TAG";
     public static final String PATH_DELETE_TAG = "PATH_DELETE_TAG";
+    public static final String PATH_RECEIPT_BY_TAG_ID = "PATH_RECEIPT_BY_TAG_ID";
+
     public static final Uri URI_RECEIPT_BY_TAG = Uri.parse("content://" + AUTHORITY + "/" + PATH_RECEIPT_BY_TAG);
     public static final Uri URI_RECEIPT_TAG = Uri.parse("content://" + AUTHORITY + "/" + PATH_RECEIPT_TAG);
     public static final Uri URI_DELETE_TAG = Uri.parse("content://" + AUTHORITY + "/" + PATH_DELETE_TAG);
+    public static final Uri URI_RECEIPT_BY_TAG_ID = Uri.parse("content://" + AUTHORITY + "/" + PATH_RECEIPT_BY_TAG_ID);
+
     private static final UriMatcher URI_MATCHER;
 
     static {
@@ -40,6 +44,7 @@ public class ReceiptContentProvider extends CupboardContentProvider {
         URI_MATCHER.addURI(AUTHORITY, PATH_RECEIPT_BY_TAG, 0);
         URI_MATCHER.addURI(AUTHORITY, PATH_RECEIPT_TAG, 1);
         URI_MATCHER.addURI(AUTHORITY, PATH_DELETE_TAG, 2);
+        URI_MATCHER.addURI(AUTHORITY, PATH_RECEIPT_BY_TAG_ID, 3);
     }
 
     static {
@@ -76,6 +81,13 @@ public class ReceiptContentProvider extends CupboardContentProvider {
             String queryTagsIds = "SELECT DISTINCT ReceiptTag.tagId FROM ReceiptTag WHERE ReceiptTag.receiptId = ?";
             String query = String.format("SELECT * FROM Tag WHERE Tag._id IN (%s)",
                     queryTagsIds);
+            return rawQuery(query, selectionArgs);
+        } else if (3 == URI_MATCHER.match(uri)) {
+            String queryTags = "SELECT Tag._id FROM Tag WHERE Tag._id = ?";
+            String queryReceiptIds = String.format("SELECT DISTINCT ReceiptTag.receiptId FROM ReceiptTag " +
+                    "WHERE ReceiptTag.tagId IN (%s)", queryTags);
+            String query = String.format("SELECT * FROM Receipt WHERE Receipt._id IN (%s)",
+                    queryReceiptIds);
             return rawQuery(query, selectionArgs);
         } else {
             return super.query(uri, projection, selection, selectionArgs, sortOrder);
