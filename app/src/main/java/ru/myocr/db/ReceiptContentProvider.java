@@ -66,12 +66,12 @@ public class ReceiptContentProvider extends CupboardContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         if (0 == URI_MATCHER.match(uri)) {
-            String queryTags = "SELECT Tag._id FROM Tag WHERE Tag.tag LIKE '?'";
+            String queryTags = String.format("SELECT Tag._id FROM Tag WHERE Tag.tag LIKE '%%%s%%\'", selectionArgs[0]);
             String queryReceiptIds = String.format("SELECT DISTINCT ReceiptTag.receiptId FROM ReceiptTag " +
                     "WHERE ReceiptTag.tagId IN (%s)", queryTags);
             String query = String.format("SELECT * FROM Receipt WHERE Receipt._id IN (%s)",
                     queryReceiptIds);
-            return rawQuery(query, selectionArgs);
+            return rawQuery(query, null);
         } else if (1 == URI_MATCHER.match(uri)) {
             String queryTagsIds = "SELECT DISTINCT ReceiptTag.tagId FROM ReceiptTag WHERE ReceiptTag.receiptId = ?";
             String query = String.format("SELECT * FROM Tag WHERE Tag._id IN (%s)",

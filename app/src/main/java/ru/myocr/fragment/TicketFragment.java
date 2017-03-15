@@ -37,6 +37,7 @@ import static ru.myocr.model.DummyReceipt.addToDb;
  */
 public class TicketFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final String KEYTAG = "Tag";
     private TicketRecyclerViewAdapter adapter;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -108,9 +109,17 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(),
-                UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
-                null, null, null, null);
+        if (0 == id) {
+            return new CursorLoader(getActivity(),
+                    UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
+                    null, null, null, null);
+        } else if (1 == id) {
+            return new CursorLoader(getActivity(),
+                    ReceiptContentProvider.URI_RECEIPT_BY_TAG,
+                    null, null, new String[]{args.getString(KEYTAG)}, null);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -121,7 +130,8 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                updateQuery(query);
+                return true;
             }
 
             @Override
@@ -129,6 +139,12 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
                 return false;
             }
         });
+    }
+
+    private void updateQuery(String query) {
+        Bundle arg = new Bundle();
+        arg.putString(KEYTAG, query);
+        getLoaderManager().restartLoader(1, arg, TicketFragment.this);
     }
 
     @Override
