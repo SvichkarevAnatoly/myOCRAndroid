@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity
                 throwable -> {
                 },
                 this::onLoadCities, null);
+
+        openFragment(TicketFragment.newInstance());
     }
 
     private void onLoadCities(List<City> cities) {

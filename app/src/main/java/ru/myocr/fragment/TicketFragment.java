@@ -8,9 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -89,6 +94,12 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         super.onAttach(context);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Мои чеки");
+    }
+
     private void onClickTicketItem(Receipt item) {
         Intent intent = new Intent(getActivity(), TicketActivity.class);
         intent.putExtra(ARG_RECEIPT, item._id);
@@ -100,6 +111,24 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         return new CursorLoader(getActivity(),
                 UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
                 null, null, null, null);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_ticket_fragment, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     @Override
