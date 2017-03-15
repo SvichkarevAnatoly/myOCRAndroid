@@ -50,6 +50,10 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.TicketActivity"
+            android:label="@string/title_activity_ticket"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

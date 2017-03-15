@@ -34,6 +34,10 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
         return cupboard().withContext(App.getContext());
     }
 
+    public static UriHelper getUriHelper() {
+        return UriHelper.with(ReceiptContentProvider.AUTHORITY);
+    }
+
     public Long getId() {
         return _id == null ? -1 : _id;
     }
@@ -74,5 +78,4 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
     public boolean isValidId() {
         return _id != null && _id >= 0;
     }
-
 }
