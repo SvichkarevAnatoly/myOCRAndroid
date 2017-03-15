@@ -10,6 +10,7 @@ import ru.myocr.BuildConfig;
 import ru.myocr.model.City;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
+import ru.myocr.model.Tag;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import static nl.qbusict.cupboard.CupboardFactory.setCupboard;
@@ -17,7 +18,7 @@ import static nl.qbusict.cupboard.CupboardFactory.setCupboard;
 public class ReceiptContentProvider extends CupboardContentProvider {
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     public static final String _ID = "_id";
 
@@ -33,6 +34,7 @@ public class ReceiptContentProvider extends CupboardContentProvider {
         cupboard().register(Receipt.class);
         cupboard().register(ReceiptItem.class);
         cupboard().register(City.class);
+        cupboard().register(Tag.class);
     }
 
     public ReceiptContentProvider() {
