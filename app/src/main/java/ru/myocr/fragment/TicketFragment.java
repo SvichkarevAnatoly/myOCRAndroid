@@ -1,13 +1,13 @@
 package ru.myocr.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +16,12 @@ import android.view.ViewGroup;
 
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.R;
+import ru.myocr.activity.TicketActivity;
 import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.model.Receipt;
-import ru.myocr.view.ReceiptView;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
 import static ru.myocr.model.DummyReceipt.addToDb;
 
 /**
@@ -89,13 +90,10 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void onClickTicketItem(Receipt item) {
-        ReceiptView receiptView = new ReceiptView(getActivity());
-        receiptView.setReceipt(item);
-        new AlertDialog.Builder(getActivity())
-                .setView(receiptView)
-                .show();
+        Intent intent = new Intent(getActivity(), TicketActivity.class);
+        intent.putExtra(ARG_RECEIPT, item._id);
+        startActivity(intent);
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

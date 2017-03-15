@@ -17,6 +17,12 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class Receipt implements Serializable {
 
+    public static final Uri URI;
+
+    static {
+        URI = DbModel.getUriHelper().getUri(Receipt.class);
+    }
+
     public Long _id;
     @SerializedName("receipt_number")
     public long id;
