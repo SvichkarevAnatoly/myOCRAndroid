@@ -15,14 +15,22 @@ public class Tag extends DbModel<Tag> {
     public Tag() {
     }
 
+    public Tag(String tag) {
+        this.tag = tag;
+    }
+
     public static List<Tag> getAllTags() {
         return getProviderCompartment().query(UriHelper.with(ReceiptContentProvider.AUTHORITY)
                 .getUri(Tag.class), Tag.class).list();
     }
 
-
     @Override
     protected Class<Tag> getEntityClass() {
         return Tag.class;
+    }
+
+    @Override
+    public String toString() {
+        return tag;
     }
 }

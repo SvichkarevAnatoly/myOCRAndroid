@@ -14,6 +14,7 @@ import nl.qbusict.cupboard.annotation.Ignore;
 import ru.myocr.db.ReceiptContentProvider;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+import static ru.myocr.model.DbModel.getProviderCompartment;
 
 public class Receipt implements Serializable {
 
@@ -48,6 +49,14 @@ public class Receipt implements Serializable {
     @SerializedName("discountSum")
     public int discountSum;
 
+    @Ignore
+    public List<Tag> tags;
+
+    public static List<Receipt> findReceiptByTag(String tag) {
+        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_BY_TAG, Receipt.class)
+                .withSelection("", tag).list();
+    }
+
     public void loadReceiptItems(Context context) {
         UriHelper helper = UriHelper.with(ReceiptContentProvider.AUTHORITY);
         Uri cheeseUri = helper.getUri(ReceiptItem.class);
@@ -55,6 +64,13 @@ public class Receipt implements Serializable {
                 .withContext(context)
                 .query(cheeseUri, ReceiptItem.class)
                 .withSelection("receiptId = ?", String.valueOf(_id)).list();
+    }
+
+    public void loadTags(Context context) {
+        tags = cupboard()
+                .withContext(context)
+                .query(ReceiptContentProvider.URI_RECEIPT_TAG, Tag.class)
+                .withSelection("", _id.toString()).list();
     }
 
     @Override
