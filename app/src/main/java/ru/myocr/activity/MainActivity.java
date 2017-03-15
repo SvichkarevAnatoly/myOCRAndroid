@@ -23,6 +23,7 @@ import java.util.List;
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityMainBinding;
+import ru.myocr.fragment.StatsFragment;
 import ru.myocr.fragment.TicketFragment;
 import ru.myocr.model.City;
 import ru.myocr.preference.Preference;
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.my_tickets) {
             openFragment(TicketFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
-
+            openFragment(StatsFragment.newInstance());
         } else if (id == R.id.nav_share) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_send) {
