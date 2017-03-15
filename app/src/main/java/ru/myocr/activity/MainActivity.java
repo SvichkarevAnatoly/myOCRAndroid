@@ -94,15 +94,12 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.my_tickets) {
+        if (id == R.id.my_tickets) {
             openFragment(TicketFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
 
@@ -122,14 +119,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void onClickAddGallery() {
-        /*Intent intent = new Intent(this, TicketParserActivity.class);
-        startActivity(intent);*/
         selectImage();
     }
 
     private void onClickAddCam() {
-        /*Intent intent = new Intent(this, TicketParserActivity.class);
-        startActivity(intent);*/
         runCamScanner();
     }
 

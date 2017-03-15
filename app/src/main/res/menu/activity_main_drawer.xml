@@ -3,16 +3,12 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_add_white_18dp"
-            android:title="Главный экран" />
-        <item
             android:id="@+id/my_tickets"
-            android:icon="@drawable/ic_add_white_18dp"
+            android:icon="@drawable/ic_receipt_black_24dp"
             android:title="Мои чеки" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_add_white_18dp"
+            android:icon="@drawable/ic_pie_chart_black_24dp"
             android:title="Статистика" />
 
     </group>
@@ -21,12 +17,12 @@
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_add_white_18dp"
-                android:title="Share" />
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Настройки" />
             <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_add_white_18dp"
-                android:title="Send" />
+                android:icon="@drawable/ic_info_black_24dp"
+                android:title="О приложении" />
         </menu>
     </item>
 
