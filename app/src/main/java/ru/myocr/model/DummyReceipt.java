@@ -20,9 +20,9 @@ public class DummyReceipt {
     public static final List<Receipt> LIST;
     public static final Random RANDOM;
 
-    private static final List<String> DUMMY_PRODUCTS =
+    public static final List<String> DUMMY_PRODUCTS =
             Arrays.asList("Шоколад 200 гр", "Молоко простаквашино 1 л", "Мясо говядниа", "Макароны Макфа",
-                    "Чай Griendfield");
+                    "Чай Griendfield", "Кетчуп 100 гр", "Консервы", "Вода питьевая");
 
     private static final List<String> DUMMY_SHOPS =
             Arrays.asList("Ашан", "Okey", "ТЦ Академгородка", "Холидей",
@@ -61,7 +61,7 @@ public class DummyReceipt {
         Receipt receipt = new Receipt();
 
         receipt.cashier = "Иванова Н. А";
-        receipt.date = new Date(System.currentTimeMillis() - RANDOM.nextInt(100000000));
+        receipt.date = new Date(System.currentTimeMillis() - RANDOM.nextInt(1000) * 1000000L);
         receipt.totalCostSum = RANDOM.nextInt(200) * 1000;
         receipt.market = new Receipt.Market();
         receipt.market.title = DUMMY_SHOPS.get(RANDOM.nextInt(DUMMY_SHOPS.size()));
@@ -70,8 +70,8 @@ public class DummyReceipt {
 
         receipt.items = new ArrayList<>();
 
-        for (int i = 0; i < 5 + RANDOM.nextInt(10); i++) {
-            int price = 100 + RANDOM.nextInt(100);
+        for (int i = 0; i < 5 + RANDOM.nextInt(5); i++) {
+            int price = 10000 + 500 * RANDOM.nextInt(100);
             float amount = RANDOM.nextInt(100) / 100.0f;
             receipt.items.add(new ReceiptItem(
                     i,

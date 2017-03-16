@@ -26,7 +26,9 @@ import ru.myocr.R;
 import ru.myocr.activity.MainActivity;
 import ru.myocr.activity.TicketActivity;
 import ru.myocr.db.ReceiptContentProvider;
+import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
+import ru.myocr.model.ReceiptItem;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
@@ -54,6 +56,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         TicketFragment fragment = new TicketFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        DummyReceipt.addToDb();
         return fragment;
     }
 
@@ -86,8 +89,11 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void onLongClickTicketItem(Receipt item) {
                 cupboard().withContext(getActivity())
-                        .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
-                                item);
+                        .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class), item);
+                cupboard().withContext(getActivity())
+                        .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
+                                "receiptId = ?", item._id.toString());
+
             }
         });
         recyclerView.setAdapter(adapter);

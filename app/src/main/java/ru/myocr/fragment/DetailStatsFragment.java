@@ -8,8 +8,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentDetailStatsBinding;
+import ru.myocr.model.DbModel;
+import ru.myocr.model.DummyReceipt;
+import ru.myocr.model.ReceiptItem;
+import ru.myocr.util.ColorUtil;
+import ru.myocr.util.RxUtil;
 
 public class DetailStatsFragment extends Fragment {
 
@@ -36,6 +54,8 @@ public class DetailStatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail_stats, container, false);
         binding.floatingMenu.hide(false);
+
+        initLineChart();
         return binding.getRoot();
     }
 
@@ -49,5 +69,56 @@ public class DetailStatsFragment extends Fragment {
         if (binding != null) {
             binding.floatingMenu.hide(true);
         }
+    }
+
+    private void initLineChart() {
+        LineChart lineChart = binding.lineChart;
+
+        lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        lineChart.getXAxis().setLabelRotationAngle(-45);
+        lineChart.getXAxis().setValueFormatter((value, axis) -> new SimpleDateFormat("dd MMM yy", Locale.getDefault()).format(new Date((long) value)));
+        lineChart.getXAxis().setDrawGridLines(false);
+
+        lineChart.getAxisRight().setEnabled(false);
+
+        lineChart.getDescription().setEnabled(false);
+
+        addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(0));
+        addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(1));
+        addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(2));
+    }
+
+    private void addDataSet(String receiptName) {
+        List<Entry> entries = new ArrayList<>();
+
+        RxUtil.work(() -> {
+            List<ReceiptItem> receiptItems = DbModel.getProviderCompartment().query(ReceiptItem.URI, ReceiptItem.class)
+                    .withSelection("title = ?", receiptName).list();
+            Collections.sort(receiptItems, (o1, o2) -> o1.date.after(o2.date) ? 1 : -1);
+            for (ReceiptItem receiptItem : receiptItems) {
+                entries.add(new Entry(receiptItem.date.getTime(), receiptItem.price / 100));
+            }
+            return receiptItems;
+        }, Throwable::printStackTrace, receiptItems -> {
+            LineDataSet dataSet = new LineDataSet(entries, receiptName);
+            dataSet.setLineWidth(2f);
+
+            int num = 0;
+            dataSet.setDrawCircleHole(false);
+
+            LineData lineData = binding.lineChart.getLineData();
+            if (lineData == null) {
+                lineData = new LineData(dataSet);
+            } else {
+                num = lineData.getDataSetCount();
+                lineData.addDataSet(dataSet);
+            }
+
+            int idx = num % ColorUtil.CHART_COLOR.length;
+            dataSet.setColor(ColorUtil.CHART_COLOR[idx]);
+
+            binding.lineChart.setData(lineData);
+            binding.lineChart.invalidate();
+        });
     }
 }

@@ -1,10 +1,18 @@
 package ru.myocr.model;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
 public class ReceiptItem {
+
+    public static final Uri URI;
+
+    static {
+        URI = DbModel.getUriHelper().getUri(ReceiptItem.class);
+    }
 
     public Long _id;
     @SerializedName("number")
