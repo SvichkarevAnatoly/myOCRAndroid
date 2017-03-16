@@ -15,7 +15,7 @@ public class RxUtil {
     public static <R> Subscription work(Func0<R> function, Action1<Throwable> handler,
                                         @Nullable Action1<R> callback) {
         return getApiObservable(function)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(t -> {
                             if (callback != null) {
