@@ -73,8 +73,13 @@ public class DummyReceipt {
         for (int i = 0; i < 5 + RANDOM.nextInt(10); i++) {
             int price = 100 + RANDOM.nextInt(100);
             float amount = RANDOM.nextInt(100) / 100.0f;
-            receipt.items.add(new ReceiptItem(i, DUMMY_PRODUCTS.get(RANDOM.nextInt(DUMMY_PRODUCTS.size())),
-                    price, amount, (int) (price * amount)));
+            receipt.items.add(new ReceiptItem(
+                    i,
+                    DUMMY_PRODUCTS.get(RANDOM.nextInt(DUMMY_PRODUCTS.size())),
+                    receipt.date,
+                    price,
+                    amount,
+                    (int) (price * amount)));
         }
         return receipt;
     }
