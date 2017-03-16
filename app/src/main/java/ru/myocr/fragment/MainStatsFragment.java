@@ -14,6 +14,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -73,16 +74,17 @@ public class MainStatsFragment extends Fragment {
 
             for (Tag tag : allTags) {
                 List<Receipt> receiptByTag = Receipt.findReceiptByTagId(tag._id);
+                long sum = calculateReceiptCosts(receiptByTag) / 100;
 
-                int sum = 0;
-                for (Receipt receipt : receiptByTag) {
-                    sum += receipt.totalCostSum;
+                if (sum != 0) {
+                    pieEntries.add(new PieEntry(sum, tag.tag));
                 }
-                sum /= 100;
-                if (0 == sum) {
-                    continue;
-                }
-                pieEntries.add(new PieEntry(sum, tag.tag));
+            }
+
+            List<Receipt> receiptsWithoutTag = Receipt.findReceiptWithoutTag();
+            if (receiptsWithoutTag.size() > 0) {
+                long sum = calculateReceiptCosts(receiptsWithoutTag) / 100;
+                pieEntries.add(new PieEntry(sum, "Остальное"));
             }
 
             return pieEntries;
@@ -90,9 +92,9 @@ public class MainStatsFragment extends Fragment {
 
             PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
             pieDataSet.setValueTextSize(12f);
-            pieDataSet.setValueLinePart1OffsetPercentage(80f);
-            pieDataSet.setValueLinePart1Length(0.4f);
-            pieDataSet.setValueLinePart2Length(0.6f);
+            pieDataSet.setValueLinePart1OffsetPercentage(90f);
+            pieDataSet.setValueLinePart1Length(0.5f);
+            pieDataSet.setValueLinePart2Length(0.3f);
             pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
             pieDataSet.setSliceSpace(3f);
 
@@ -118,7 +120,7 @@ public class MainStatsFragment extends Fragment {
             pieDataSet.setColors(colors);
 
             pieChart.setEntryLabelTextSize(12f);
-            pieChart.animateX(500);
+            pieChart.animateXY(1000, 1000);
             pieChart.setExtraOffsets(20f, 0f, 20f, 0f);
 
             //pieChart.setCenterText(String.valueOf(totalSum));
@@ -126,6 +128,9 @@ public class MainStatsFragment extends Fragment {
             pieChart.setDrawCenterText(true);
             pieChart.setDrawEntryLabels(false);
             pieChart.setUsePercentValues(true);
+            pieChart.setRotationEnabled(false);
+            pieChart.setHoleRadius(40f);
+            pieChart.setTransparentCircleRadius(40f);
 
             pieChart.getDescription().setEnabled(false);
 
@@ -137,7 +142,10 @@ public class MainStatsFragment extends Fragment {
             l.setXEntrySpace(7f);
             l.setYEntrySpace(0f);
             l.setYOffset(0f);
-            pieChart.setData(new PieData(pieDataSet));
+
+            PieData data = new PieData(pieDataSet);
+            data.setValueFormatter(new PercentFormatter());
+            pieChart.setData(data);
         });
     }
 
@@ -163,12 +171,17 @@ public class MainStatsFragment extends Fragment {
                 .query(uri, Receipt.class)
                 .list();
 
+        return calculateReceiptCosts(list) / list.size();
+    }
+
+    private long calculateReceiptCosts(List<Receipt> items)
+    {
         long sum = 0l;
-        for (Receipt receipt : list) {
+        for (Receipt receipt : items) {
             sum += receipt.totalCostSum;
         }
 
-        return sum / list.size();
+        return sum;
     }
 
     private long calculateCosts(List<ReceiptItem> items)
