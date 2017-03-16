@@ -41,9 +41,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        findViewById(R.id.fabCam).setOnClickListener(v -> onClickAddCam());
-        findViewById(R.id.fabGallery).setOnClickListener(v -> onClickAddGallery());
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -121,11 +118,11 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    private void onClickAddGallery() {
+    public void onClickAddGallery() {
         selectImage();
     }
 
-    private void onClickAddCam() {
+    public void onClickAddCam() {
         runCamScanner();
     }
 

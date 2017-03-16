@@ -18,7 +18,12 @@ import ru.myocr.R;
  * Use the {@link StatsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StatsFragment extends Fragment {
+public class StatsFragment extends Fragment implements ViewPager.OnPageChangeListener {
+
+    private ViewPager viewPager;
+    private SectionsPagerAdapter adapter;
+    private MainStatsFragment mainStatsFragment;
+    private DetailStatsFragment detailStatsFragment;
 
     public StatsFragment() {
     }
@@ -40,12 +45,37 @@ public class StatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_stats, container, false);
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getChildFragmentManager());
-        ViewPager mViewPager = (ViewPager) inflate.findViewById(R.id.container);
-        mViewPager.setAdapter(adapter);
+        adapter = new SectionsPagerAdapter(getChildFragmentManager());
+        viewPager = (ViewPager) inflate.findViewById(R.id.container);
+        viewPager.setAdapter(adapter);
         TabLayout tabLayout = (TabLayout) inflate.findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(this);
+
         return inflate;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        switch (position) {
+            case 0:
+                detailStatsFragment.hideFab();
+                break;
+            case 1:
+                detailStatsFragment.showFab();
+                break;
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -58,9 +88,11 @@ public class StatsFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return MainStatsFragment.newInstance();
+                    mainStatsFragment = MainStatsFragment.newInstance();
+                    return mainStatsFragment;
                 case 1:
-                    return DetailStatsFragment.newInstance();
+                    detailStatsFragment = DetailStatsFragment.newInstance();
+                    return detailStatsFragment;
             }
             return null;
         }

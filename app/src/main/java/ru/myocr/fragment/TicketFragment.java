@@ -19,15 +19,17 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.clans.fab.FloatingActionMenu;
+
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.R;
+import ru.myocr.activity.MainActivity;
 import ru.myocr.activity.TicketActivity;
 import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.model.Receipt;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
-import static ru.myocr.model.DummyReceipt.addToDb;
 
 /**
  * A fragment representing a list of Items.
@@ -39,6 +41,8 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
     public static final String KEYTAG = "Tag";
     private TicketRecyclerViewAdapter adapter;
+    private FloatingActionMenu fab;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -56,7 +60,6 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addToDb();
         getLoaderManager().initLoader(0, null, this);
         setHasOptionsMenu(true);
     }
@@ -66,26 +69,28 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ticket_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter = new TicketRecyclerViewAdapter(getActivity(), null, new TicketFragmentInteractionListener() {
-                @Override
-                public void onClickTicketItem(Receipt item) {
-                    TicketFragment.this.onClickTicketItem(item);
-                }
+        fab = (FloatingActionMenu) view.findViewById(R.id.floatingMenu);
+        fab.hideMenu(false);
+        view.findViewById(R.id.fabCam).setOnClickListener(v -> ((MainActivity) getActivity()).onClickAddCam());
+        view.findViewById(R.id.fabGallery).setOnClickListener(v -> ((MainActivity) getActivity()).onClickAddGallery());
 
-                @Override
-                public void onLongClickTicketItem(Receipt item) {
-                    cupboard().withContext(getActivity())
-                            .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
-                                    item);
-                }
-            });
-            recyclerView.setAdapter(adapter);
-        }
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        Context context = view.getContext();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        adapter = new TicketRecyclerViewAdapter(getActivity(), null, new TicketFragmentInteractionListener() {
+            @Override
+            public void onClickTicketItem(Receipt item) {
+                TicketFragment.this.onClickTicketItem(item);
+            }
+
+            @Override
+            public void onLongClickTicketItem(Receipt item) {
+                cupboard().withContext(getActivity())
+                        .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
+                                item);
+            }
+        });
+        recyclerView.setAdapter(adapter);
         return view;
     }
 
@@ -99,6 +104,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
     public void onResume() {
         super.onResume();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Мои чеки");
+        fab.postDelayed(() -> fab.showMenu(true), 200);
     }
 
     private void onClickTicketItem(Receipt item) {

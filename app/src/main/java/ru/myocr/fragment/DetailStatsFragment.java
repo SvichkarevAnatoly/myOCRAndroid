@@ -1,6 +1,7 @@
 package ru.myocr.fragment;
 
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ru.myocr.R;
+import ru.myocr.databinding.FragmentDetailStatsBinding;
 
 public class DetailStatsFragment extends Fragment {
 
 
+    private FragmentDetailStatsBinding binding;
+
     public DetailStatsFragment() {
-        // Required empty public constructor
     }
 
     public static DetailStatsFragment newInstance() {
@@ -31,8 +34,20 @@ public class DetailStatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail_stats, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail_stats, container, false);
+        binding.floatingMenu.hide(false);
+        return binding.getRoot();
     }
 
+    public void showFab() {
+        if (binding != null) {
+            binding.floatingMenu.postDelayed(() -> binding.floatingMenu.show(true), 200);
+        }
+    }
+
+    public void hideFab() {
+        if (binding != null) {
+            binding.floatingMenu.hide(true);
+        }
+    }
 }
