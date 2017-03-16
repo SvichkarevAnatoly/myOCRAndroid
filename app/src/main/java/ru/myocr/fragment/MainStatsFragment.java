@@ -2,6 +2,7 @@ package ru.myocr.fragment;
 
 
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,11 +17,14 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentMainStatsBinding;
+import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
+import ru.myocr.model.ReceiptItem;
 import ru.myocr.model.Tag;
 import ru.myocr.util.RxUtil;
 
@@ -49,16 +53,23 @@ public class MainStatsFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_stats, container, false);
 
+        List<ReceiptItem> currMonthReceiptItems = getCurrentMonthReceiptItems();
+        long monthCosts = calculateCosts(currMonthReceiptItems) / 100;
+        binding.valueMonthCosts.setText(String.valueOf(monthCosts) + "\u20BD");
+
+        long averageReceiptTotal = getAverageReceiptTotal() / 100;
+        binding.valueMeanReceipt.setText(String.valueOf(averageReceiptTotal) + "\u20BD");
+
         initPieChart();
         return binding.getRoot();
     }
 
     private void initPieChart() {
         PieChart pieChart = binding.pieChart;
+
         RxUtil.work(() -> {
             List<PieEntry> pieEntries = new ArrayList<>();
             List<Tag> allTags = Tag.getAllTags();
-            int totalSum = 0;
 
             for (Tag tag : allTags) {
                 List<Receipt> receiptByTag = Receipt.findReceiptByTagId(tag._id);
@@ -72,8 +83,6 @@ public class MainStatsFragment extends Fragment {
                     continue;
                 }
                 pieEntries.add(new PieEntry(sum, tag.tag));
-
-                totalSum += sum;
             }
 
             return pieEntries;
@@ -81,7 +90,6 @@ public class MainStatsFragment extends Fragment {
 
             PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
             pieDataSet.setValueTextSize(12f);
-            pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
             pieDataSet.setValueLinePart1OffsetPercentage(80f);
             pieDataSet.setValueLinePart1Length(0.4f);
             pieDataSet.setValueLinePart2Length(0.6f);
@@ -117,6 +125,7 @@ public class MainStatsFragment extends Fragment {
             pieChart.setCenterTextSize(12);
             pieChart.setDrawCenterText(true);
             pieChart.setDrawEntryLabels(false);
+            pieChart.setUsePercentValues(true);
 
             pieChart.getDescription().setEnabled(false);
 
@@ -130,7 +139,45 @@ public class MainStatsFragment extends Fragment {
             l.setYOffset(0f);
             pieChart.setData(new PieData(pieDataSet));
         });
-
     }
 
+    private List<ReceiptItem> getCurrentMonthReceiptItems()
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        Uri uri = DbModel.getUriHelper().getUri(ReceiptItem.class);
+        return DbModel.getProviderCompartment()
+                .query(uri, ReceiptItem.class)
+                .withSelection("date >= ?", String.valueOf(calendar.getTimeInMillis()))
+                .list();
+    }
+
+    private long getAverageReceiptTotal()
+    {
+        Uri uri = DbModel.getUriHelper().getUri(Receipt.class);
+        List<Receipt> list = DbModel.getProviderCompartment()
+                .query(uri, Receipt.class)
+                .list();
+
+        long sum = 0l;
+        for (Receipt receipt : list) {
+            sum += receipt.totalCostSum;
+        }
+
+        return sum / list.size();
+    }
+
+    private long calculateCosts(List<ReceiptItem> items)
+    {
+        long sum = 0l;
+        for (ReceiptItem item : items) {
+            sum += item.price;
+        }
+
+        return sum;
+    }
 }
