@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -41,7 +42,7 @@ import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
  */
 public class TicketFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String KEYTAG = "Tag";
+    public static final String KEY_QUERY = "Tag";
     private TicketRecyclerViewAdapter adapter;
     private FloatingActionMenu fab;
 
@@ -128,7 +129,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         } else if (1 == id) {
             return new CursorLoader(getActivity(),
                     ReceiptContentProvider.URI_RECEIPT_BY_TAG,
-                    null, null, new String[]{args.getString(KEYTAG)}, null);
+                    null, null, new String[]{args.getString(KEY_QUERY)}, null);
         } else {
             return null;
         }
@@ -143,20 +144,32 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public boolean onQueryTextSubmit(String query) {
                 updateQuery(query);
+                searchView.clearFocus();
+                getActivity().getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                );
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                updateQuery(newText);
+                return true;
             }
         });
+
+        searchView.setOnCloseListener(this::showAll);
     }
 
     private void updateQuery(String query) {
         Bundle arg = new Bundle();
-        arg.putString(KEYTAG, query);
+        arg.putString(KEY_QUERY, query);
         getLoaderManager().restartLoader(1, arg, TicketFragment.this);
+    }
+
+    private boolean showAll() {
+        getLoaderManager().restartLoader(0, null, TicketFragment.this);
+        return false;
     }
 
     @Override
