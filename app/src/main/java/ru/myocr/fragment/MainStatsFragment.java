@@ -15,7 +15,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,6 +26,7 @@ import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
 import ru.myocr.model.Tag;
+import ru.myocr.util.ColorUtil;
 import ru.myocr.util.RxUtil;
 
 public class MainStatsFragment extends Fragment {
@@ -72,6 +72,14 @@ public class MainStatsFragment extends Fragment {
             List<PieEntry> pieEntries = new ArrayList<>();
             List<Tag> allTags = Tag.getAllTags();
 
+            List<Receipt> receiptsWithoutTag = Receipt.findReceiptWithoutTag();
+            if (receiptsWithoutTag.size() > 0) {
+                long sum = calculateReceiptCosts(receiptsWithoutTag) / 100;
+                if (sum != 0) {
+                    pieEntries.add(new PieEntry(sum, "Остальное"));
+                }
+            }
+
             for (Tag tag : allTags) {
                 List<Receipt> receiptByTag = Receipt.findReceiptByTagId(tag._id);
                 long sum = calculateReceiptCosts(receiptByTag) / 100;
@@ -79,12 +87,6 @@ public class MainStatsFragment extends Fragment {
                 if (sum != 0) {
                     pieEntries.add(new PieEntry(sum, tag.tag));
                 }
-            }
-
-            List<Receipt> receiptsWithoutTag = Receipt.findReceiptWithoutTag();
-            if (receiptsWithoutTag.size() > 0) {
-                long sum = calculateReceiptCosts(receiptsWithoutTag) / 100;
-                pieEntries.add(new PieEntry(sum, "Остальное"));
             }
 
             return pieEntries;
@@ -98,26 +100,7 @@ public class MainStatsFragment extends Fragment {
             pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
             pieDataSet.setSliceSpace(3f);
 
-            ArrayList<Integer> colors = new ArrayList<Integer>();
-
-            for (int c : ColorTemplate.VORDIPLOM_COLORS)
-                colors.add(c);
-
-            for (int c : ColorTemplate.JOYFUL_COLORS)
-                colors.add(c);
-
-            for (int c : ColorTemplate.COLORFUL_COLORS)
-                colors.add(c);
-
-            for (int c : ColorTemplate.LIBERTY_COLORS)
-                colors.add(c);
-
-            for (int c : ColorTemplate.PASTEL_COLORS)
-                colors.add(c);
-
-            colors.add(ColorTemplate.getHoloBlue());
-
-            pieDataSet.setColors(colors);
+            pieDataSet.setColors(ColorUtil.PIE_CHART_COLOR);
 
             pieChart.setEntryLabelTextSize(12f);
             pieChart.animateXY(1000, 1000);

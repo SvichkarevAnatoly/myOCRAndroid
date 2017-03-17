@@ -115,7 +115,15 @@ public class DetailStatsFragment extends Fragment {
             }
 
             int idx = num % ColorUtil.CHART_COLOR.length;
-            dataSet.setColor(ColorUtil.CHART_COLOR[idx]);
+            int color = ColorUtil.CHART_COLOR[idx];
+            dataSet.setColor(color);
+
+            dataSet.setColor(color);
+            dataSet.setCircleColor(color);
+            dataSet.setFillColor(color);
+            dataSet.setDrawCircleHole(false);
+            dataSet.setFillAlpha(30);
+            dataSet.setDrawFilled(true);
 
             binding.lineChart.setData(lineData);
             binding.lineChart.invalidate();
