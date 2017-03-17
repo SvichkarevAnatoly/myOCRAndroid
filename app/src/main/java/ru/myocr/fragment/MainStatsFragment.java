@@ -16,9 +16,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentMainStatsBinding;
@@ -28,10 +30,13 @@ import ru.myocr.model.ReceiptItem;
 import ru.myocr.model.Tag;
 import ru.myocr.util.ColorUtil;
 import ru.myocr.util.RxUtil;
+import rx.functions.Action0;
 
 public class MainStatsFragment extends Fragment {
 
     private FragmentMainStatsBinding binding;
+    private List<PieEntry> tagEntries;
+    private PieEntry withoutTagEntry;
 
     public MainStatsFragment() {
     }
@@ -54,82 +59,109 @@ public class MainStatsFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_stats, container, false);
 
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("ru","RU"));
         List<ReceiptItem> currMonthReceiptItems = getCurrentMonthReceiptItems();
-        long monthCosts = calculateCosts(currMonthReceiptItems) / 100;
-        binding.valueMonthCosts.setText(String.valueOf(monthCosts) + "\u20BD");
 
-        long averageReceiptTotal = getAverageReceiptTotal() / 100;
-        binding.valueMeanReceipt.setText(String.valueOf(averageReceiptTotal) + "\u20BD");
+        float monthCosts = calculateCosts(currMonthReceiptItems) / 100.0f;
+        String monthCostsText = format.format(monthCosts);
+        binding.valueMonthCosts.setText(monthCostsText);
 
-        initPieChart();
+        float averageReceiptTotal = getAverageReceiptTotal() / 100.0f;
+        String averageReceiptTotalText = format.format(averageReceiptTotal);
+        binding.valueMeanReceipt.setText(averageReceiptTotalText);
+
+        binding.showOtherCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> initPieChart(isChecked));
+
+        initPieEntries(() -> {
+            initPieChart(false);
+        });
+
         return binding.getRoot();
     }
 
-    private void initPieChart() {
-        PieChart pieChart = binding.pieChart;
-
+    private void initPieEntries(Action0 onDataLoaded)
+    {
         RxUtil.work(() -> {
-            List<PieEntry> pieEntries = new ArrayList<>();
-            List<Tag> allTags = Tag.getAllTags();
-
             List<Receipt> receiptsWithoutTag = Receipt.findReceiptWithoutTag();
             if (receiptsWithoutTag.size() > 0) {
                 long sum = calculateReceiptCosts(receiptsWithoutTag) / 100;
                 if (sum != 0) {
-                    pieEntries.add(new PieEntry(sum, "Остальное"));
+                    withoutTagEntry = new PieEntry(sum, "Остальное");
                 }
             }
+
+            tagEntries = new ArrayList<>();
+            List<Tag> allTags = Tag.getAllTags();
 
             for (Tag tag : allTags) {
                 List<Receipt> receiptByTag = Receipt.findReceiptByTagId(tag._id);
                 long sum = calculateReceiptCosts(receiptByTag) / 100;
 
                 if (sum != 0) {
-                    pieEntries.add(new PieEntry(sum, tag.tag));
+                    tagEntries.add(new PieEntry(sum, tag.tag));
                 }
             }
 
-            return pieEntries;
-        }, Throwable::printStackTrace, pieEntries -> {
+            return 0;
+        }, Throwable::printStackTrace, integer -> onDataLoaded.call());
+    }
 
-            PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
-            pieDataSet.setValueTextSize(12f);
-            pieDataSet.setValueLinePart1OffsetPercentage(90f);
-            pieDataSet.setValueLinePart1Length(0.5f);
-            pieDataSet.setValueLinePart2Length(0.3f);
-            pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-            pieDataSet.setSliceSpace(3f);
+    private void initPieChart(boolean showOthers) {
+        PieChart pieChart = binding.pieChart;
 
-            pieDataSet.setColors(ColorUtil.PIE_CHART_COLOR);
+        List<PieEntry> entries = new ArrayList<>();
 
-            pieChart.setEntryLabelTextSize(12f);
-            pieChart.animateXY(1000, 1000);
-            pieChart.setExtraOffsets(20f, 0f, 20f, 0f);
+        if (showOthers){
+            entries.add(withoutTagEntry);
+        }
 
-            //pieChart.setCenterText(String.valueOf(totalSum));
-            pieChart.setCenterTextSize(12);
-            pieChart.setDrawCenterText(true);
-            pieChart.setDrawEntryLabels(false);
-            pieChart.setUsePercentValues(true);
-            pieChart.setRotationEnabled(false);
-            pieChart.setHoleRadius(40f);
-            pieChart.setTransparentCircleRadius(40f);
+        entries.addAll(tagEntries);
 
-            pieChart.getDescription().setEnabled(false);
+        PieDataSet pieDataSet = new PieDataSet(entries, "");
+        setPieDataSetStyling(pieDataSet);
 
-            Legend l = pieChart.getLegend();
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-            l.setOrientation(Legend.LegendOrientation.VERTICAL);
-            l.setDrawInside(false);
-            l.setXEntrySpace(7f);
-            l.setYEntrySpace(0f);
-            l.setYOffset(0f);
+        setPieChartStyling(pieChart);
+        pieDataSet.setColors(showOthers ? ColorUtil.PIE_CHART_COLOR_WITH_GRAY : ColorUtil.PIE_CHART_COLOR);
 
-            PieData data = new PieData(pieDataSet);
-            data.setValueFormatter(new PercentFormatter());
-            pieChart.setData(data);
-        });
+        PieData data = new PieData(pieDataSet);
+        data.setValueFormatter(new PercentFormatter());
+        pieChart.setData(data);
+        pieChart.invalidate();
+    }
+
+    private static void setPieDataSetStyling(PieDataSet pieDataSet)
+    {
+        pieDataSet.setValueTextSize(12f);
+        pieDataSet.setValueLinePart1OffsetPercentage(90f);
+        pieDataSet.setValueLinePart1Length(0.5f);
+        pieDataSet.setValueLinePart2Length(0.3f);
+        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        pieDataSet.setSliceSpace(3f);
+    }
+
+    private static void setPieChartStyling(PieChart pieChart)
+    {
+        pieChart.setEntryLabelTextSize(12f);
+        pieChart.animateY(500);
+        pieChart.setExtraOffsets(20f, 0f, 20f, 0f);
+        pieChart.setCenterTextSize(12);
+        pieChart.setDrawCenterText(true);
+        pieChart.setDrawEntryLabels(false);
+        pieChart.setUsePercentValues(true);
+        pieChart.setRotationEnabled(false);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(40f);
+
+        pieChart.getDescription().setEnabled(false);
+
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(true);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
     }
 
     private List<ReceiptItem> getCurrentMonthReceiptItems()

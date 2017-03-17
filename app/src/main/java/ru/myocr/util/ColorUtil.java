@@ -12,9 +12,14 @@ public class ColorUtil {
     };
 
     public static final int[] PIE_CHART_COLOR = new int[]{
-            rgb("#cccccc"), rgb("#DB3340"), rgb("#E8B71A"), rgb("#1FDA9A"), rgb("#28ABE3"),
+            rgb("#DB3340"), rgb("#E8B71A"), rgb("#1FDA9A"), rgb("#28ABE3"),
             rgb("#FF66CC"), rgb("#8C4646"), rgb("#D0C91F"), rgb("#008BBA"),
             rgb("#78C0A8"), rgb("#F07818"), rgb("#75EB00"), rgb("#982395")
     };
 
+    public static final int[] PIE_CHART_COLOR_WITH_GRAY = new int[]{
+            rgb("#cccccc"), rgb("#DB3340"), rgb("#E8B71A"), rgb("#1FDA9A"), rgb("#28ABE3"),
+            rgb("#FF66CC"), rgb("#8C4646"), rgb("#D0C91F"), rgb("#008BBA"),
+            rgb("#78C0A8"), rgb("#F07818"), rgb("#75EB00"), rgb("#982395")
+    };
 }
