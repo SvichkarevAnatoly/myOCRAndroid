@@ -30,7 +30,8 @@
         </activity>
         <activity
             android:name=".activity.ReceiptOcrActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 

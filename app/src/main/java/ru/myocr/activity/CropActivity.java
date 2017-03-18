@@ -147,7 +147,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             final String shop = Preference.getString(Preference.SHOP);
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
-            ApiHelper.makeApiRequest(ocrRequest, ApiHelper::ocr,
+            ApiHelper.makeApiRequest(ocrRequest, ApiHelper::ocrFake,
                     throwable -> Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show(),
                     this::startActivity, null);
         }

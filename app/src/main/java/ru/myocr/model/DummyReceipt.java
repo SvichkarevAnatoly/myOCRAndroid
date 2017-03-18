@@ -39,6 +39,10 @@ public class DummyReceipt {
 
     }
 
+    public static String getDummyProduct() {
+        return DUMMY_PRODUCTS.get(RANDOM.nextInt(DUMMY_PRODUCTS.size()));
+    }
+
     public static void addToDb() {
         Receipt receipt = buildItem();
 

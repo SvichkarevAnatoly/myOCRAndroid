@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
+import ru.myocr.api.ocr.ParsedPrice;
+import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.model.City;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
@@ -106,6 +110,22 @@ public class ApiHelper {
 
         Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.city, request.shop);
         return makeRequest(call);
+    }
+
+    public OcrReceiptResponse ocrFake(OcrRequest request) {
+        List<ReceiptItemMatches> itemMatches = new ArrayList<>();
+        List<ParsedPrice> prices = new ArrayList<>();
+
+        ArrayList<Match> matches = new ArrayList<>();
+        matches.add(new Match(DummyReceipt.getDummyProduct(), 10));
+
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            itemMatches.add(new ReceiptItemMatches(DummyReceipt.getDummyProduct(), matches));
+            prices.add(new ParsedPrice("1000", random.nextInt() * 1000));
+        }
+
+        return new OcrReceiptResponse(itemMatches, prices);
     }
 
     public Integer save(SavePriceRequest request) {
