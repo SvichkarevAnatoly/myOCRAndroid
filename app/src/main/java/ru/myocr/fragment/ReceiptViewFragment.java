@@ -65,9 +65,22 @@ public class ReceiptViewFragment extends Fragment {
             @Override
             public void onAppend(TagGroup tagGroup, String tag) {
                 Tag newTag = new Tag(tag);
-                Uri uri = DbModel.getProviderCompartment()
-                        .put(DbModel.getUriHelper().getUri(Tag.class), newTag);
-                ReceiptTag receiptTag = new ReceiptTag(receipt._id, Long.valueOf(uri.getLastPathSegment()));
+                Uri tagUri = DbModel.getUriHelper().getUri(Tag.class);
+                Tag existingTag = DbModel.getProviderCompartment()
+                        .query(tagUri, Tag.class)
+                        .withSelection("tag = ?", tag)
+                        .get();
+                Long id;
+
+                if (existingTag == null) {
+                    Uri uri = DbModel.getProviderCompartment().put(tagUri, newTag);
+                    id = Long.valueOf(uri.getLastPathSegment());
+                }
+                else {
+                    id = existingTag._id;
+                }
+
+                ReceiptTag receiptTag = new ReceiptTag(receipt._id, id);
                 receiptTag.updateDb();
             }
 
