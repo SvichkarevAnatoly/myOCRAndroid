@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -14,10 +15,15 @@ import android.view.MenuItem;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.R;
+import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.fragment.ReceiptViewFragment;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
+import ru.myocr.model.ReceiptItem;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class TicketActivity extends AppCompatActivity {
 
@@ -58,18 +64,31 @@ public class TicketActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (id == R.id.action_delete) {
+            delete();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void delete() {
+        new AlertDialog.Builder(this)
+                .setTitle("Вы действительно хотите удалить этот чек?")
+                .setPositiveButton("Да", (dialog, which) -> {
+                    cupboard().withContext(this)
+                            .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class), receipt);
+                    cupboard().withContext(this)
+                            .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
+                                    "receiptId = ?", receipt._id.toString());
+                    finish();
+                }).show();
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

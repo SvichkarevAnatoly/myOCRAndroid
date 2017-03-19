@@ -35,7 +35,7 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        getSupportActionBar().setTitle("Добавить чека");
+        getSupportActionBar().setTitle("Добавить чек");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         response = (OcrReceiptResponse) getIntent().getSerializableExtra(ARG_OCR_RESPONSE);
