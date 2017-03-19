@@ -51,6 +51,7 @@ public class ReceiptOcrActivity extends AppCompatActivity {
                 OcrStepReceiptDetailsFragment fragment = (OcrStepReceiptDetailsFragment) getSupportFragmentManager()
                         .findFragmentByTag(TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT);
                 fragment.onClickSave();
+                finish();
             }
         });
     }
@@ -63,7 +64,7 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
     private void showReceiptDetailFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(response),
+                .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(receiptData),
                         TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT).commit();
 
         binding.floatingMenu.setImageResource(R.drawable.ic_check_white_18dp);

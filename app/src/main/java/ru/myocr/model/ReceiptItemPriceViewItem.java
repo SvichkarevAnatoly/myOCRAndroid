@@ -1,6 +1,7 @@
 package ru.myocr.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.util.PriceUtil;
 
-public class ReceiptItemPriceViewItem {
+public class ReceiptItemPriceViewItem implements Serializable {
     private final static String EMPTY_LINE = "";
 
     private ReceiptItemMatches receiptItemMatches;

@@ -157,6 +157,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         Intent intent = new Intent(this, ReceiptOcrActivity.class);
         intent.putExtra(ReceiptOcrActivity.ARG_OCR_RESPONSE, response);
         startActivity(intent);
+        finish();
     }
 
     protected void cropImage() {

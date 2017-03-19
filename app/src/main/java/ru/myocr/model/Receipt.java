@@ -105,5 +105,14 @@ public class Receipt implements Serializable {
         public String address;
         @SerializedName("inn")
         public String inn;
+
+        public Market() {
+        }
+
+        public Market(String title, String address, String inn) {
+            this.title = title;
+            this.address = address;
+            this.inn = inn;
+        }
     }
 }

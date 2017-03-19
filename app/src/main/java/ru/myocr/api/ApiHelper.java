@@ -122,7 +122,7 @@ public class ApiHelper {
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             itemMatches.add(new ReceiptItemMatches(DummyReceipt.getDummyProduct(), matches));
-            prices.add(new ParsedPrice("1000", random.nextInt() * 1000));
+            prices.add(new ParsedPrice("1000", random.nextInt(100) * 1000));
         }
 
         return new OcrReceiptResponse(itemMatches, prices);

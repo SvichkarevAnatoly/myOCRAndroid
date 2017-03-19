@@ -4,6 +4,7 @@ package ru.myocr.model;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
 
-public class ReceiptData {
+public class ReceiptData implements Serializable {
     private final static String EMPTY_LINE = "";
 
     private final List<ReceiptItemPriceViewItem> receiptItemPriceViewItems;
