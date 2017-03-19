@@ -5,39 +5,65 @@
         android:id="@+id/activity_receipt_ocr"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="ru.myocr.activity.ReceiptOcrActivity">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="48dp"
+                    android:layout_weight="3"
+                    android:maxLines="2"
+                    android:text="Продукт"
+                    android:textColor="#8a8a8a"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:background="#0000" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="48dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="Цена"
+                    android:textColor="#8a8a8a"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#c6c6c6" />
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/list_receipt_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/buttons"
+            android:layout_below="@+id/linearLayout"
             android:layout_centerHorizontal="true"></ListView>
-
-        <LinearLayout
-            android:id="@+id/buttons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
-
-            <Button
-                android:id="@+id/button_find_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Find all" />
-
-            <Button
-                android:id="@+id/button_add_to_db"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add to DB" />
-
-        </LinearLayout>
 
     </RelativeLayout>
 </layout>

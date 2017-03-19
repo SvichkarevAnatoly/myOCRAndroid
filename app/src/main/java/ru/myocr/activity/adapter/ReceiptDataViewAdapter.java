@@ -36,11 +36,11 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
         binding.textProduct.setText(item.first != null ? item.first : "");
         binding.textPrice.setText(item.second != null ? item.second : "");
 
-        binding.buttonProductUp.setOnClickListener(v -> listener.onClickReceiptItemUp(position));
-        binding.buttonProductDown.setOnClickListener(v -> listener.onClickReceiptItemDown(position));
+        /*binding.buttonProductUp.setOnClickListener(v -> listener.onClickReceiptItemUp(position));
+        binding.buttonProductDown.setOnClickListener(v -> listener.onClickReceiptItemDown(position));*/
         binding.buttonProductRemove.setOnClickListener(v -> listener.onClickReceiptItemRemove(position));
 
-        binding.buttonPriceDown.setOnClickListener(v -> listener.onClickPriceDown(position));
+        /*binding.buttonPriceDown.setOnClickListener(v -> listener.onClickPriceDown(position));*/
         binding.buttonPriceRemove.setOnClickListener(v -> listener.onClickPriceRemove(position));
 
         binding.textProduct.setOnClickListener(v -> listener.onClickItemEdit(position));
@@ -64,13 +64,13 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
         int productButtonsVisibility = item.first != null ? View.VISIBLE : View.INVISIBLE;
         int priceButtonsVisibility = item.second != null ? View.VISIBLE : View.INVISIBLE;
 
-        binding.buttonProductUp.setVisibility(productButtonsVisibility);
-        binding.buttonProductDown.setVisibility(productButtonsVisibility);
+        /*binding.buttonProductUp.setVisibility(productButtonsVisibility);
+        binding.buttonProductDown.setVisibility(productButtonsVisibility);*/
         binding.buttonProductRemove.setVisibility(productButtonsVisibility);
-        binding.buttonPriceDown.setVisibility(priceButtonsVisibility);
+        /*binding.buttonPriceDown.setVisibility(priceButtonsVisibility);*/
         binding.buttonPriceRemove.setVisibility(priceButtonsVisibility);
 
-        if (position == 0) {
+        /*if (position == 0) {
             binding.buttonProductUp.setVisibility(View.INVISIBLE);
         }
 
@@ -79,7 +79,7 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
         }
         if (position == priceSize - 1) {
             binding.buttonPriceDown.setVisibility(View.INVISIBLE);
-        }
+        }*/
     }
 
     public interface OnItemClickListener {
