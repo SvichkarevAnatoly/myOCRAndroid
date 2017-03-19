@@ -3,6 +3,7 @@ package ru.myocr.activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import ru.myocr.R;
 import ru.myocr.api.ocr.OcrReceiptResponse;
@@ -34,7 +35,7 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        getSupportActionBar().setTitle("Разбор чека");
+        getSupportActionBar().setTitle("Добавить чека");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         response = (OcrReceiptResponse) getIntent().getSerializableExtra(ARG_OCR_RESPONSE);
@@ -54,6 +55,16 @@ public class ReceiptOcrActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onReceiptDataSaved(ReceiptData receiptData) {
