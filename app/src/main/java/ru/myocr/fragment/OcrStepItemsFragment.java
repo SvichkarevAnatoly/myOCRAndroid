@@ -58,7 +58,6 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receipt_ocr, container, false);
-        binding.buttonAddToDb.setOnClickListener(v -> addToDb());
 
         OcrReceiptResponse response = (OcrReceiptResponse) getArguments().getSerializable(ARG_OCR_RESPONSE);
         if (response != null) {

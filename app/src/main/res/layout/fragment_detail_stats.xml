@@ -28,7 +28,6 @@
             fab:fab_colorNormal="@color/colorAccent"
             fab:fab_colorPressed="@color/colorAccent"
             fab:fab_colorRipple="@color/colorAccent"
-            fab:fab_label="Сфотографировать"
             fab:fab_size="normal" />
 
     </FrameLayout>

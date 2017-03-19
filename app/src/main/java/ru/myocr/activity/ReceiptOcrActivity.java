@@ -15,12 +15,15 @@ import ru.myocr.model.ReceiptData;
 public class ReceiptOcrActivity extends AppCompatActivity {
 
     public static final String ARG_OCR_RESPONSE = "ARG_OCR_RESPONSE";
+    public static final String TAG_OCR_STEP_ITEMS_FRAGMENT = "OcrStepItemsFragment";
+    public static final String TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT = "OcrStepReceiptDetailsFragment";
 
     private ActivityReceiptOcrBinding binding;
 
     private ReceiptData receiptData;
     private Receipt receipt;
     private OcrReceiptResponse response;
+    private boolean receiptDataSaved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +40,33 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         response = (OcrReceiptResponse) getIntent().getSerializableExtra(ARG_OCR_RESPONSE);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, OcrStepItemsFragment.newInstance(response)).commit();
+                .replace(R.id.container, OcrStepItemsFragment.newInstance(response), TAG_OCR_STEP_ITEMS_FRAGMENT).commit();
 
+        binding.floatingMenu.setOnClickListener(v -> {
+            if (!receiptDataSaved) {
+                OcrStepItemsFragment fragment = (OcrStepItemsFragment) getSupportFragmentManager()
+                        .findFragmentByTag(TAG_OCR_STEP_ITEMS_FRAGMENT);
+                fragment.addToDb();
+            } else {
+                OcrStepReceiptDetailsFragment fragment = (OcrStepReceiptDetailsFragment) getSupportFragmentManager()
+                        .findFragmentByTag(TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT);
+                fragment.onClickSave();
+            }
+        });
     }
 
     public void onReceiptDataSaved(ReceiptData receiptData) {
         this.receiptData = receiptData;
+        receiptDataSaved = true;
         showReceiptDetailFragment();
     }
 
     private void showReceiptDetailFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(response)).commit();
+                .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(response),
+                        TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT).commit();
+
+        binding.floatingMenu.setImageResource(R.drawable.ic_check_white_18dp);
     }
 
 }
