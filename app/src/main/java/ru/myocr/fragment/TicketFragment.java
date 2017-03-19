@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -57,7 +59,6 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         TicketFragment fragment = new TicketFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
-        DummyReceipt.addToDb();
         return fragment;
     }
 
@@ -75,8 +76,15 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
         fab = (FloatingActionMenu) view.findViewById(R.id.floatingMenu);
         fab.hideMenu(false);
-        view.findViewById(R.id.fabCam).setOnClickListener(v -> ((MainActivity) getActivity()).onClickAddCam());
-        view.findViewById(R.id.fabGallery).setOnClickListener(v -> ((MainActivity) getActivity()).onClickAddGallery());
+
+        view.findViewById(R.id.fabCam).setOnClickListener(v -> {
+            fab.hideMenu(true);
+            ((MainActivity) getActivity()).onClickAddCam();
+        });
+        view.findViewById(R.id.fabGallery).setOnClickListener(v -> {
+            fab.hideMenu(true);
+            ((MainActivity) getActivity()).onClickAddGallery();
+        });
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         Context context = view.getContext();
@@ -89,12 +97,15 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
             @Override
             public void onLongClickTicketItem(Receipt item) {
-                cupboard().withContext(getActivity())
-                        .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class), item);
-                cupboard().withContext(getActivity())
-                        .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
-                                "receiptId = ?", item._id.toString());
-
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Вы действительно хотите удалить этот чек?")
+                        .setPositiveButton("Да", (dialog, which) -> {
+                            cupboard().withContext(getActivity())
+                                    .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class), item);
+                            cupboard().withContext(getActivity())
+                                    .delete(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
+                                            "receiptId = ?", item._id.toString());
+                        }).show();
             }
         });
         recyclerView.setAdapter(adapter);
@@ -159,6 +170,14 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         });
 
         searchView.setOnCloseListener(this::showAll);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add_fake_receipt) {
+            DummyReceipt.addToDb();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateQuery(String query) {
