@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#00bcd4</color>
+    <color name="colorPrimaryDark">#00a1b5</color>
+    <color name="colorAccent">#D4E157</color>
 
     <color name="receipt_item_bg_light">#00ffffff</color>
     <color name="receipt_item_bg_dark">#0d000000</color>
