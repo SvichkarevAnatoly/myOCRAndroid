@@ -186,6 +186,11 @@ public class MainStatsFragment extends Fragment {
                 .query(uri, Receipt.class)
                 .list();
 
+        if (list.size() == 0)
+        {
+            return 0L;
+        }
+
         return calculateReceiptCosts(list) / list.size();
     }
 
