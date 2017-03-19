@@ -38,23 +38,23 @@
             android:id="@+id/fabCam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_white_18dp"
+            android:src="@drawable/ic_camera_alt_white_18dp"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorAccent"
+            fab:fab_colorRipple="@color/colorAccent"
             fab:fab_label="Сфотографировать"
-            fab:fab_size="mini"
-            fab:menu_colorNormal="@color/colorAccent"
-            fab:menu_colorPressed="@color/colorAccent"
-            fab:menu_colorRipple="@color/colorAccent" />
+            fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabGallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/fab_add"
+            android:src="@drawable/ic_image_white_18dp"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorAccent"
+            fab:fab_colorRipple="@color/colorAccent"
             fab:fab_label="Выбрать с галереи"
-            fab:fab_size="mini"
-            fab:menu_colorNormal="@color/colorAccent"
-            fab:menu_colorPressed="@color/colorAccent"
-            fab:menu_colorRipple="@color/colorAccent" />
+            fab:fab_size="mini" />
 
 
     </com.github.clans.fab.FloatingActionMenu>
