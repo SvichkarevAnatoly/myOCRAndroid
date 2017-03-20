@@ -10,11 +10,5 @@
             android:key="city"
             android:summary="Нажмите чтобы выбрать город"
             android:title="Город" />
-
-        <CheckBoxPreference
-            android:key="pref_key_new_items"
-            android:summary="summary"
-            android:title="Title" />
-
     </PreferenceCategory>
 </PreferenceScreen>

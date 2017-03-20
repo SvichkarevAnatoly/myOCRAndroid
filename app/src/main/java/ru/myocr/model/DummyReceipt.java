@@ -66,7 +66,6 @@ public class DummyReceipt {
 
         receipt.cashier = "Иванова Н. А";
         receipt.date = new Date(System.currentTimeMillis() - RANDOM.nextInt(1000) * 1000000L);
-        receipt.totalCostSum = RANDOM.nextInt(200) * 1000;
         receipt.market = new Receipt.Market();
         receipt.market.title = DUMMY_SHOPS.get(RANDOM.nextInt(DUMMY_SHOPS.size()));
         receipt.market.inn = "" + (100000 + RANDOM.nextInt(100000));
@@ -74,17 +73,25 @@ public class DummyReceipt {
 
         receipt.items = new ArrayList<>();
 
+        int totalCost = 0;
+
         for (int i = 0; i < 5 + RANDOM.nextInt(5); i++) {
             int price = 10000 + 500 * RANDOM.nextInt(100);
             float amount = RANDOM.nextInt(100) / 100.0f;
+            int cost = (int) (price * amount);
+
             receipt.items.add(new ReceiptItem(
                     i,
                     DUMMY_PRODUCTS.get(RANDOM.nextInt(DUMMY_PRODUCTS.size())),
                     receipt.date,
                     price,
                     amount,
-                    (int) (price * amount)));
+                    cost));
+
+            totalCost += cost;
         }
+
+        receipt.totalCostSum = totalCost;
         return receipt;
     }
 }

@@ -5,14 +5,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.gujun.android.taggroup.TagGroup;
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentTicketBinding;
 import ru.myocr.model.DbModel;
@@ -27,6 +29,7 @@ public class ReceiptViewFragment extends Fragment {
     public static final String ARG_RECEIPT = "ARG_RECEIPT";
 
     private Receipt receipt;
+    private FragmentTicketBinding binding;
 
     public ReceiptViewFragment() {
     }
@@ -52,7 +55,7 @@ public class ReceiptViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        FragmentTicketBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ticket,
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ticket,
                 container, false);
         binding.receiptView.setReceipt(receipt);
 
@@ -60,37 +63,61 @@ public class ReceiptViewFragment extends Fragment {
         for (Tag tag : receipt.tags) {
             tagStr.add(tag.tag);
         }
-        binding.tagGroup.setTags(tagStr);
-        binding.tagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
+
+        boolean editMode = receipt.tags.size() == 0;
+        updateTagView(editMode ? "" : receipt.tags.get(0).tag, editMode);
+
+        binding.deleteTag.setOnClickListener(v -> {
+            DbModel.getProviderCompartment()
+                    .delete(URI_DELETE_TAG, "", receipt._id.toString(), binding.tagText.getText().toString());
+            updateTagView("", true);
+        });
+
+        binding.tagText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onAppend(TagGroup tagGroup, String tag) {
-                Tag newTag = new Tag(tag);
-                Uri tagUri = DbModel.getUriHelper().getUri(Tag.class);
-                Tag existingTag = DbModel.getProviderCompartment()
-                        .query(tagUri, Tag.class)
-                        .withSelection("tag = ?", tag)
-                        .get();
-                Long id;
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == KeyEvent.KEYCODE_ENDCALL){
+                    String tag = v.getText().toString();
 
-                if (existingTag == null) {
-                    Uri uri = DbModel.getProviderCompartment().put(tagUri, newTag);
-                    id = Long.valueOf(uri.getLastPathSegment());
+                    Tag newTag = new Tag(tag);
+                    Uri tagUri = DbModel.getUriHelper().getUri(Tag.class);
+                    Tag existingTag = DbModel.getProviderCompartment()
+                            .query(tagUri, Tag.class)
+                            .withSelection("tag = ?", tag)
+                            .get();
+                    Long id;
+
+                    if (existingTag == null) {
+                        Uri uri = DbModel.getProviderCompartment().put(tagUri, newTag);
+                        id = Long.valueOf(uri.getLastPathSegment());
+                    }
+                    else {
+                        id = existingTag._id;
+                    }
+
+                    ReceiptTag receiptTag = new ReceiptTag(receipt._id, id);
+                    receiptTag.updateDb();
+
+                    updateTagView(tag, false);
                 }
-                else {
-                    id = existingTag._id;
-                }
-
-                ReceiptTag receiptTag = new ReceiptTag(receipt._id, id);
-                receiptTag.updateDb();
-            }
-
-            @Override
-            public void onDelete(TagGroup tagGroup, String tag) {
-                DbModel.getProviderCompartment()
-                        .delete(URI_DELETE_TAG, "", receipt._id.toString(), tag);
+                return false;
             }
         });
 
         return binding.getRoot();
+    }
+
+    private void updateTagView(String text, boolean editMode) {
+        binding.tagText.setText(text);
+
+        if (editMode)
+        {
+            binding.deleteTag.setVisibility(View.GONE);
+        }
+        else{
+            binding.deleteTag.setVisibility(View.VISIBLE);
+        }
+
+        binding.tagText.setInputType(editMode ? InputType.TYPE_CLASS_TEXT :InputType.TYPE_NULL);
     }
 }

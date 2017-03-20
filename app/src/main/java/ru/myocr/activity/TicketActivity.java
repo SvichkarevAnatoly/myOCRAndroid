@@ -46,7 +46,7 @@ public class TicketActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setTitle("Чек от " + new SimpleDateFormat("EEE MMM d", Locale.getDefault()).format(receipt.date));
+        toolbar.setTitle("Чек от " + new SimpleDateFormat("d MMM ", new Locale("ru", "RU")).format(receipt.date));
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);

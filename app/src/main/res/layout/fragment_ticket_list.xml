@@ -53,7 +53,7 @@
             fab:fab_colorNormal="@color/colorAccent"
             fab:fab_colorPressed="@color/colorAccent"
             fab:fab_colorRipple="@color/colorAccent"
-            fab:fab_label="Выбрать с галереи"
+            fab:fab_label="Выбрать из галереи"
             fab:fab_size="mini" />
 
 

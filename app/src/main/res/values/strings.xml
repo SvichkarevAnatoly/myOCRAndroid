@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyOcrAndroid</string>
+    <string name="app_name">ticketeen</string>
     <string name="menu_toggle_tile_numbers">Show/hide tile numbers</string>
     <string name="menu_start_new_game">Start new game</string>
 
@@ -7,9 +7,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_ticket_parser">TicketParserActivity</string>
+    <string name="title_activity_ticket_parser">Извлечь</string>
     <string name="title_activity_ticket">TicketActivity</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Настройки</string>
     <string name="pref_key_city">city</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
