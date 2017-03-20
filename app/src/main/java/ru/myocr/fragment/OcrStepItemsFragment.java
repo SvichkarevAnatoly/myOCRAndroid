@@ -86,7 +86,7 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
             if (pair.first == null || pair.second == null || pair.second.isEmpty()) {
                 break;
             }
-            final int price = Integer.parseInt(pair.second.replace(".", ""));
+            final int price = Integer.parseInt(pair.second.replace(".", "").replace(" ", ""));
             items.add(new SavePriceRequest.ReceiptPriceItem(pair.first, price));
         }
 

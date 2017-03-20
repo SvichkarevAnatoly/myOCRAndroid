@@ -19,7 +19,15 @@ public class ParsedPrice implements Serializable {
         return stringValue;
     }
 
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
+
     public Integer getIntValue() {
         return intValue;
+    }
+
+    public void setIntValue(Integer intValue) {
+        this.intValue = intValue;
     }
 }

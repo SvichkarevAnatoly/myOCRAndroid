@@ -26,10 +26,10 @@ public class ReceiptItemPriceViewItem implements Serializable {
     }
 
     public String initReceiptItem() {
-        /*final List<Match> matches = receiptItemMatches.getMatches();
+        final List<Match> matches = receiptItemMatches.getMatches();
         if (!matches.isEmpty()) {
             return matches.get(0).getMatch();
-        }*/
+        }
 
         return receiptItemMatches.getSource();
     }

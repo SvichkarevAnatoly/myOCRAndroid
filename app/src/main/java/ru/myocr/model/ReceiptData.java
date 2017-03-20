@@ -21,7 +21,7 @@ public class ReceiptData implements Serializable {
         receiptItemPriceViewItems = new ArrayList<>();
         final List<ReceiptItemMatches> receiptItemMatches = response.getItemMatches();
         final List<ParsedPrice> parsedPrices = response.getPrices();
-        final int n = Math.min(receiptItemMatches.size(), receiptItemMatches.size());
+        final int n = Math.min(receiptItemMatches.size(), parsedPrices.size());
         for (int i = 0; i < n; i++) {
             final ReceiptItemPriceViewItem item = new ReceiptItemPriceViewItem(
                     receiptItemMatches.get(i), parsedPrices.get(i));
