@@ -83,7 +83,7 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
 
         final ArrayList<SavePriceRequest.ReceiptPriceItem> items = new ArrayList<>();
         for (Pair<String, String> pair : productPricePairs) {
-            if (pair.first == null || pair.second == null) {
+            if (pair.first == null || pair.second == null || pair.second.isEmpty()) {
                 break;
             }
             final int price = Integer.parseInt(pair.second.replace(".", ""));
