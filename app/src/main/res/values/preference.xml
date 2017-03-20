@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_cities">
+        <item>Новосибирск</item>
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Сочи</item>
+    </string-array>
+
+    <string-array name="pref_cities_entry">
+        <item>Новосибирск</item>
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Сочи</item>
+    </string-array>
+
+</resources>

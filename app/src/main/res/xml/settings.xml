@@ -6,7 +6,9 @@
         android:title="Основные настройки">
 
         <ListPreference
-            android:defaultValue="-1"
+            android:defaultValue="1"
+            android:entries="@array/pref_cities"
+            android:entryValues="@array/pref_cities"
             android:key="city"
             android:summary="Нажмите чтобы выбрать город"
             android:title="Город" />
