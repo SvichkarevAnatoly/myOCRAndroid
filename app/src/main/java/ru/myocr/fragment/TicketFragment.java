@@ -193,6 +193,13 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() == 0 && data.getCount() == 0) {
+            DummyReceipt.addToDb(false);
+            DummyReceipt.addToDb(false);
+            for (int i = 0; i < 10; i++) {
+                DummyReceipt.addToDb();
+            }
+        }
         adapter.swapCursor(data);
     }
 
