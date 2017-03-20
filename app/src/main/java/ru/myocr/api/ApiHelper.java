@@ -7,8 +7,10 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -35,9 +37,15 @@ public class ApiHelper {
     private final Api api;
 
     public ApiHelper() {
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Server.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
         api = retrofit.create(Api.class);
     }
@@ -108,8 +116,17 @@ public class ApiHelper {
         final MultipartBody.Part receiptItemsPart = BitmapUtil.buildMultipartBody(request.receiptItems, "receiptItemsImage");
         final MultipartBody.Part pricesPart = BitmapUtil.buildMultipartBody(request.prices, "pricesImage");
 
-        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.city, request.shop);
-        return makeRequest(call);
+        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, "Nsk", "Auchan");
+        OcrReceiptResponse response = makeRequest(call);
+
+        for (int i = 0; i < response.getPrices().size(); i++) {
+            ParsedPrice price = response.getPrices().get(i);
+            /*final int p = Integer.parseInt(price.getStringValue().replace(".", "").replace(",", "").replace(" ", ""));
+            price.setIntValue(p);*/
+            price.setStringValue(price.getStringValue().replace(" ", ""));
+        }
+
+        return response;
     }
 
     public OcrReceiptResponse ocrFake(OcrRequest request) {

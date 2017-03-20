@@ -25,7 +25,8 @@
             android:id="@+id/spinner_shop"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/button_ok"
