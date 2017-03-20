@@ -83,9 +83,14 @@ public class DetailStatsFragment extends Fragment {
 
         lineChart.getDescription().setEnabled(false);
 
-        addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(0));
-        addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(1));
-        addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(2));
+
+        for (int i = 0; i < 10; i++) {
+            try {
+                addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(i));
+            } catch (Exception e) {
+            }
+        }
+
     }
 
     private void addDataSet(String receiptName) {
@@ -100,6 +105,9 @@ public class DetailStatsFragment extends Fragment {
             }
             return receiptItems;
         }, Throwable::printStackTrace, receiptItems -> {
+            if (receiptItems.size() == 0) {
+                return;
+            }
             LineDataSet dataSet = new LineDataSet(entries, receiptName);
             dataSet.setLineWidth(2f);
 
