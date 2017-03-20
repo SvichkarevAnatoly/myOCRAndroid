@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.gujun.android.taggroup.TagGroup;
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentTicketBinding;
 import ru.myocr.model.DbModel;
