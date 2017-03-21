@@ -2,12 +2,14 @@ package ru.myocr.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +44,8 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
 
     private Bitmap receiptItem;
 
+    private ProgressDialog progressDialog;
+
     @Override
     @SuppressLint("NewApi")
     public void onCreate(Bundle savedInstanceState) {
@@ -67,9 +71,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            String title = mOptions.activityTitle != null && !mOptions.activityTitle.isEmpty()
-                    ? mOptions.activityTitle
-                    : getResources().getString(R.string.crop_image_activity_title);
+            String title = "Распознать чек";
             actionBar.setTitle(title);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -77,10 +79,10 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.buttonOk.setOnClickListener(v -> onClickCrop());
         Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        ApiHelper.makeApiRequest(Preference.getString(Preference.CITY), ApiHelper::getShops,
+        /*ApiHelper.makeApiRequest(Preference.getString(Preference.CITY), ApiHelper::getShops,
                 throwable -> {
                 },
-                this::onLoadShops, null);
+                this::onLoadShops, null);*/
     }
 
     private void onLoadShops(List<String> shops) {
@@ -152,9 +154,23 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             final String shop = Preference.getString(Preference.SHOP);
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Загрузка...");
+            }
+
+            progressDialog.show();
+
             ApiHelper.makeApiRequest(ocrRequest, ApiHelper::ocr,
-                    throwable -> Toast.makeText(this, "Ошибка", Toast.LENGTH_SHORT).show(),
-                    this::startActivity, null);
+                    throwable -> {
+                        progressDialog.hide();
+                        new AlertDialog.Builder(this)
+                                .setTitle("Ошибка").setMessage("Не удалось разпознать текст").show();
+                    }, ocrReceiptResponse -> {
+                        progressDialog.hide();
+                        startActivity(ocrReceiptResponse);
+                    }, null);
         }
     }
 
