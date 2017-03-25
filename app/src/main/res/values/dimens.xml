@@ -9,4 +9,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="stats_label_text_size">16sp</dimen>
+
+    <dimen name="pie_chart_value_text_size">7sp</dimen>
 </resources>

@@ -1,74 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_product_up"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
-            android:layout_weight="0"
-            android:text="↑"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_product_down"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
-            android:layout_weight="0"
-            android:text="↓"/>
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/button_product_remove"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="0"
+                android:tint="#6c6c6c"
+                app:srcCompat="@drawable/ic_delete_white_24dp" />
 
-        <Button
-            android:id="@+id/button_product_remove"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
-            android:layout_weight="0"
-            android:text="R"/>
+            <TextView
+                android:id="@+id/text_product"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="3"
+                android:maxLines="2"
+                android:text="Продукт"
+                android:textColor="#4b4b4b"
+                android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/text_product"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="#0000" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/button_price_remove"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="0"
+                android:tint="#6c6c6c"
+                app:srcCompat="@drawable/ic_delete_white_24dp" />
+
+            <TextView
+                android:id="@+id/text_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="16dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="100"
+                android:textColor="#4b4b4b" />
+
+        </LinearLayout>
 
         <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="#000"/>
-
-        <Button
-            android:id="@+id/button_price_down"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
-            android:layout_weight="0"
-            android:text="↓"/>
-
-        <Button
-            android:id="@+id/button_price_remove"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
-            android:layout_weight="0"
-            android:text="R"/>
-
-        <TextView
-            android:id="@+id/text_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="right"/>
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="#c6c6c6" />
 
     </LinearLayout>
 </layout>

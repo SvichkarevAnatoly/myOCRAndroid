@@ -11,6 +11,7 @@ public class Server {
 
     private static String localhostUrl = App.getContext().getString(localhost);
 
+
     static {
         Preference.setString(SERVER, localhostUrl);
     }

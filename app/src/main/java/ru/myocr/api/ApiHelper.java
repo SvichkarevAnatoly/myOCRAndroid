@@ -4,17 +4,25 @@ import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
-import ru.myocr.preference.Server;
+import ru.myocr.api.ocr.ParsedPrice;
+import ru.myocr.api.ocr.ReceiptItemMatches;
+import ru.myocr.model.City;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
+import ru.myocr.preference.Server;
 import ru.myocr.util.BitmapUtil;
 import rx.Observable;
 import rx.Subscription;
@@ -29,9 +37,15 @@ public class ApiHelper {
     private final Api api;
 
     public ApiHelper() {
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Server.getUrl())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
         api = retrofit.create(Api.class);
     }
@@ -80,9 +94,18 @@ public class ApiHelper {
         return makeRequest(responseCall);
     }
 
-    public List<String> getAllCities(Void v) {
+    public List<City> getAllCities(Void v) {
         Call<List<String>> call = api.getAllCities();
-        return makeRequest(call);
+        List<String> citiesStr = makeRequest(call);
+
+        List<City> cities = new ArrayList<>(citiesStr.size());
+        for (String city : citiesStr) {
+            City c = new City(city, city);
+            c.updateDb();
+            cities.add(c);
+        }
+
+        return cities;
     }
 
     public List<Receipt> getAllReceipt(Void v) {
@@ -93,8 +116,33 @@ public class ApiHelper {
         final MultipartBody.Part receiptItemsPart = BitmapUtil.buildMultipartBody(request.receiptItems, "receiptItemsImage");
         final MultipartBody.Part pricesPart = BitmapUtil.buildMultipartBody(request.prices, "pricesImage");
 
-        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.city, request.shop);
-        return makeRequest(call);
+        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, "Nsk", "Auchan");
+        OcrReceiptResponse response = makeRequest(call);
+
+        for (int i = 0; i < response.getPrices().size(); i++) {
+            ParsedPrice price = response.getPrices().get(i);
+            /*final int p = Integer.parseInt(price.getStringValue().replace(".", "").replace(",", "").replace(" ", ""));
+            price.setIntValue(p);*/
+            price.setStringValue(price.getStringValue().replace(" ", ""));
+        }
+
+        return response;
+    }
+
+    public OcrReceiptResponse ocrFake(OcrRequest request) {
+        List<ReceiptItemMatches> itemMatches = new ArrayList<>();
+        List<ParsedPrice> prices = new ArrayList<>();
+
+        ArrayList<Match> matches = new ArrayList<>();
+        matches.add(new Match(DummyReceipt.getDummyProduct(), 10));
+
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            itemMatches.add(new ReceiptItemMatches(DummyReceipt.getDummyProduct(), matches));
+            prices.add(new ParsedPrice("1000", random.nextInt(100) * 1000));
+        }
+
+        return new OcrReceiptResponse(itemMatches, prices);
     }
 
     public Integer save(SavePriceRequest request) {

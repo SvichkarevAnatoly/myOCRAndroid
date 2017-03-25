@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="localhost">http://193.169.0.103:8080/</string>
-    <string name="remote">http://Sample-env.323rjbfqpy.us-west-2.elasticbeanstalk.com:8080/</string>
+    <string name="localhost">http://ticketeen-test.azurewebsites.net:80/</string>
+    <string name="remote">http://ticketeen-test.azurewebsites.net:80/</string>
 </resources>

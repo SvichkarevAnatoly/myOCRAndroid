@@ -7,14 +7,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.databinding.ReceiptListItemBinding;
 import ru.myocr.model.Receipt;
+import ru.myocr.model.ReceiptItem;
 import ru.myocr.util.CursorRecyclerViewAdapter;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
@@ -36,10 +39,15 @@ public class TicketRecyclerViewAdapter extends CursorRecyclerViewAdapter<TicketR
 
         holder.mItem = receipt;
         holder.binding.market.setText(receipt.market.title);
-        holder.binding.sum.setText(String.format("%.2f руб.", receipt.totalCostSum / 100.));
+
+        Locale locale = new Locale("ru","RU");
+        NumberFormat format = NumberFormat.getCurrencyInstance(locale);
+        String totalCostSum = format.format(receipt.totalCostSum / 100.);
+
+        holder.binding.sum.setText(totalCostSum);
 
         Date date = receipt.date;
-        holder.binding.date.setText(new SimpleDateFormat("EEE, MMM d, yy", Locale.getDefault()).format(date));
+        holder.binding.date.setText(new SimpleDateFormat("EEE, d MMM, yyyy", locale).format(date));
 
         holder.binding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {

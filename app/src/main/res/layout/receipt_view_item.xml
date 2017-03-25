@@ -11,9 +11,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="0"
             android:lines="1"
             android:text="1"
-            android:layout_weight="0"
             android:textColor="#000"
             android:textSize="14sp" />
 
@@ -22,32 +22,32 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Сок добрый"
-            android:lines="1"
-            android:textColor="#000"
             android:layout_marginLeft="4dp"
-            android:layout_weight="10"
+            android:layout_weight="15"
+            android:lines="1"
+            android:text="Сок добрый"
+            android:textColor="#000"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.300"
             android:layout_marginLeft="4dp"
-            android:textColor="#000"
-            android:lines="1"
             android:layout_weight="1"
+            android:lines="1"
+            android:text="0.300"
+            android:textColor="#000"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="49.00"
             android:layout_weight="2"
-            android:lines="1"
             android:gravity="end"
+            android:lines="1"
+            android:text="49.00"
             android:textColor="#000"
             android:textSize="14sp" />
 

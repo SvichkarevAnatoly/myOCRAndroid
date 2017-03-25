@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,19 +21,32 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityMainBinding;
+import ru.myocr.fragment.StatsFragment;
 import ru.myocr.fragment.TicketFragment;
+import ru.myocr.model.City;
 import ru.myocr.preference.Preference;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int CAM_REQUEST = 2;
+
     private ActivityMainBinding binding;
+    private String mCurrentPhotoPath;
+    private Uri photoURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +54,6 @@ public class MainActivity extends AppCompatActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        findViewById(R.id.fabCam).setOnClickListener(v -> onClickAddCam());
-        findViewById(R.id.fabGallery).setOnClickListener(v -> onClickAddGallery());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -55,10 +68,13 @@ public class MainActivity extends AppCompatActivity
                 throwable -> {
                 },
                 this::onLoadCities, null);
+
+        openFragment(TicketFragment.newInstance());
+        checkForUpdates();
     }
 
-    private void onLoadCities(List<String> cities) {
-        Preference.setString(Preference.CITY, cities.get(0));
+    private void onLoadCities(List<City> cities) {
+        Preference.setString(Preference.CITY, cities.get(0).id);
     }
 
     @Override
@@ -93,20 +109,17 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.my_tickets) {
+        if (id == R.id.my_tickets) {
             openFragment(TicketFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
-
+            openFragment(StatsFragment.newInstance());
         } else if (id == R.id.nav_share) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_send) {
 
         }
@@ -120,15 +133,11 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    private void onClickAddGallery() {
-        /*Intent intent = new Intent(this, TicketParserActivity.class);
-        startActivity(intent);*/
+    public void onClickAddGallery() {
         selectImage();
     }
 
-    private void onClickAddCam() {
-        /*Intent intent = new Intent(this, TicketParserActivity.class);
-        startActivity(intent);*/
+    public void onClickAddCam() {
         runCamScanner();
     }
 
@@ -162,8 +171,40 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void runCamScanner() {
-        Intent intent = new Intent("com.intsig.camscanner.NEW_DOC");
-        startActivity(intent);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                photoURI = FileProvider.getUriForFile(this,
+                        "ru.myocr.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAM_REQUEST);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     public void selectImage() {
@@ -186,8 +227,40 @@ public class MainActivity extends AppCompatActivity
                         startCropImageActivity(imageUri);
                     }
                     break;
+                case CAM_REQUEST:
+                    startCropImageActivity(photoURI);
             }
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkForCrashes();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterManagers();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterManagers();
+    }
+
+    private void checkForCrashes() {
+        CrashManager.register(this);
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this);
+    }
+
+    private void unregisterManagers() {
+        UpdateManager.unregister();
+    }
 }

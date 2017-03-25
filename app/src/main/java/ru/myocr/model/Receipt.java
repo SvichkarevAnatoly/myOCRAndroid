@@ -14,8 +14,15 @@ import nl.qbusict.cupboard.annotation.Ignore;
 import ru.myocr.db.ReceiptContentProvider;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+import static ru.myocr.model.DbModel.getProviderCompartment;
 
 public class Receipt implements Serializable {
+
+    public static final Uri URI;
+
+    static {
+        URI = DbModel.getUriHelper().getUri(Receipt.class);
+    }
 
     public Long _id;
     @SerializedName("receipt_number")
@@ -42,6 +49,23 @@ public class Receipt implements Serializable {
     @SerializedName("discountSum")
     public int discountSum;
 
+    @Ignore
+    public List<Tag> tags;
+
+    public static List<Receipt> findReceiptByTag(String tag) {
+        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_BY_TAG, Receipt.class)
+                .withSelection("", tag).list();
+    }
+
+    public static List<Receipt> findReceiptByTagId(Long id) {
+        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_BY_TAG_ID, Receipt.class)
+                .withSelection("", id.toString()).list();
+    }
+
+    public static List<Receipt> findReceiptWithoutTag() {
+        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_WITHOUT_TAG, Receipt.class).list();
+    }
+
     public void loadReceiptItems(Context context) {
         UriHelper helper = UriHelper.with(ReceiptContentProvider.AUTHORITY);
         Uri cheeseUri = helper.getUri(ReceiptItem.class);
@@ -49,6 +73,13 @@ public class Receipt implements Serializable {
                 .withContext(context)
                 .query(cheeseUri, ReceiptItem.class)
                 .withSelection("receiptId = ?", String.valueOf(_id)).list();
+    }
+
+    public void loadTags(Context context) {
+        tags = cupboard()
+                .withContext(context)
+                .query(ReceiptContentProvider.URI_RECEIPT_TAG, Tag.class)
+                .withSelection("", _id.toString()).list();
     }
 
     @Override
@@ -74,5 +105,14 @@ public class Receipt implements Serializable {
         public String address;
         @SerializedName("inn")
         public String inn;
+
+        public Market() {
+        }
+
+        public Market(String title, String address, String inn) {
+            this.title = title;
+            this.address = address;
+            this.inn = inn;
+        }
     }
 }
