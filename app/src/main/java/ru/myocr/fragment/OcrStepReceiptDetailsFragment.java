@@ -2,19 +2,22 @@ package ru.myocr.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,12 +25,18 @@ import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.activity.TicketActivity;
+import ru.myocr.api.ApiHelper;
+import ru.myocr.api.SavePriceRequest;
+import ru.myocr.api.SavePriceRequest.ReceiptPriceItem;
 import ru.myocr.databinding.FragmentOcrStepReceiptDetailsBinding;
 import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItem;
+import ru.myocr.preference.Preference;
+import ru.myocr.util.PriceUtil;
+import ru.myocr.util.TimeUtil;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
@@ -68,26 +77,28 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     }
 
     public void onClickSave() {
+        sentToServer();
+    }
+
+    public void saveToLocalDb() {
         Receipt receipt = new Receipt();
 
         receipt.market = new Receipt.Market(binding.market.getText().toString(),
                 binding.address.getText().toString(),
                 binding.inn.getText().toString());
 
-        Date date = this.date.getTime();
-        receipt.date = date;
+        receipt.date = date.getTime();
 
         List<ReceiptItem> items = new ArrayList<>();
         int idx = 0;
         for (Pair<String, String> item : receiptData.getProductsPricesPairs()) {
             idx++;
-            Integer price = Integer.valueOf((int) (Double.valueOf(item.second) * 100));
-            items.add(new ReceiptItem(idx, item.first, date, price, 1f, price));
+            int price = PriceUtil.getIntValue(item.second);
+            items.add(new ReceiptItem(idx, item.first, receipt.date, price, 1f, price));
         }
         receipt.items = items;
 
         receipt.totalCostSum = Integer.valueOf(binding.total.getText().toString()) * 100;
-
 
         // Save to Db
         Uri uri = DbModel.getProviderCompartment().put(Receipt.URI, receipt);
@@ -102,6 +113,40 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         Intent intent = new Intent(getActivity(), TicketActivity.class);
         intent.putExtra(ARG_RECEIPT, id);
         startActivity(intent);
+    }
+
+    public void sentToServer() {
+        final SavePriceRequest savePriceRequest = initSavePriceRequest();
+
+        ApiHelper.makeApiRequest(savePriceRequest, ApiHelper::save,
+                throwable -> Toast.makeText(getContext(), "Ошибка сохранения", Toast.LENGTH_SHORT).show(),
+                integer -> {
+                    Toast.makeText(getContext(), "Успешно сохранено " + integer + " записей", Toast.LENGTH_SHORT).show();
+                    saveToLocalDb();
+                }, null);
+    }
+
+    @NonNull
+    private SavePriceRequest initSavePriceRequest() {
+        final List<ReceiptPriceItem> items = convert(receiptData.getProductsPricesPairs());
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        final String city = sharedPreferences.getString(Preference.CITY, "Nsk");
+        final String shop = Preference.getString(Preference.SHOP);
+        final String time = TimeUtil.parse(date.getTime());
+        return new SavePriceRequest(city, shop, time, items);
+    }
+
+    private List<ReceiptPriceItem> convert(List<Pair<String, String>> productPricePairs) {
+        final ArrayList<ReceiptPriceItem> items = new ArrayList<>();
+        for (Pair<String, String> pair : productPricePairs) {
+            if (pair.first == null || pair.second == null) {
+                break;
+            }
+            final int price = Integer.parseInt(pair.second.replace(".", ""));
+            items.add(new ReceiptPriceItem(pair.first, price));
+        }
+
+        return items;
     }
 
     public void initUi() {

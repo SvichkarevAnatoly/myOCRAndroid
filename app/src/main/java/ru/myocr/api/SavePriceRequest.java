@@ -38,6 +38,10 @@ public class SavePriceRequest {
         return time;
     }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public List<ReceiptPriceItem> getItems() {
         return items;
     }

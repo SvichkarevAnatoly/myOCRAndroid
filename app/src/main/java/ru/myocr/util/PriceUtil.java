@@ -4,6 +4,10 @@ package ru.myocr.util;
 import ru.myocr.api.ocr.ParsedPrice;
 
 public class PriceUtil {
+    public static int getIntValue(String price) {
+        return Integer.parseInt(price.replace(".", ""));
+    }
+
     public static String getValue(ParsedPrice price) {
         final String priceValue;
         if (price.getIntValue() != null) {
