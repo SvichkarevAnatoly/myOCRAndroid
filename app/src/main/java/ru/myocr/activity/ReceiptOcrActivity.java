@@ -10,7 +10,6 @@ import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.ActivityReceiptOcrBinding;
 import ru.myocr.fragment.OcrStepItemsFragment;
 import ru.myocr.fragment.OcrStepReceiptDetailsFragment;
-import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptData;
 
 public class ReceiptOcrActivity extends AppCompatActivity {
@@ -22,7 +21,6 @@ public class ReceiptOcrActivity extends AppCompatActivity {
     private ActivityReceiptOcrBinding binding;
 
     private ReceiptData receiptData;
-    private Receipt receipt;
     private OcrReceiptResponse response;
     private boolean receiptDataSaved;
 

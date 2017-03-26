@@ -10,6 +10,7 @@ import java.util.List;
 import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
+import ru.myocr.util.OcrUtil;
 import ru.myocr.util.PriceUtil;
 
 public class ReceiptItemPriceViewItem implements Serializable {
@@ -28,12 +29,18 @@ public class ReceiptItemPriceViewItem implements Serializable {
     }
 
     public String initReceiptItem() {
+        final String source = receiptItemMatches.getSource();
         final List<Match> matches = receiptItemMatches.getMatches();
-        if (!matches.isEmpty()) {
-            return matches.get(0).getMatch();
+        if (matches.isEmpty()) {
+            return source;
         }
 
-        return receiptItemMatches.getSource();
+        final Match bestMatch = matches.get(0);
+        if (OcrUtil.isComparable(receiptItemMatches)) {
+            return source;
+        } else {
+            return bestMatch.getMatch();
+        }
     }
 
     public List<String> getMatches() {
