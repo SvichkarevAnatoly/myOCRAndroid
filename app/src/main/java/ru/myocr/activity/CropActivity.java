@@ -4,10 +4,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.List;
 
+import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
@@ -79,10 +82,10 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.buttonOk.setOnClickListener(v -> onClickCrop());
         Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        /*ApiHelper.makeApiRequest(Preference.getString(Preference.CITY), ApiHelper::getShops,
+        ApiHelper.makeApiRequest(Preference.getString(Preference.CITY), ApiHelper::getShops,
                 throwable -> {
                 },
-                this::onLoadShops, null);*/
+                this::onLoadShops, null);
     }
 
     private void onLoadShops(List<String> shops) {
@@ -150,7 +153,8 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         } else {
             Bitmap prices = result.getBitmap();
 
-            final String city = Preference.getString(Preference.CITY);
+            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+            final String city = sharedPreferences.getString(Preference.CITY, "Nsk");
             final String shop = Preference.getString(Preference.SHOP);
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 

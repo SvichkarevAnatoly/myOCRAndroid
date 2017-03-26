@@ -116,13 +116,11 @@ public class ApiHelper {
         final MultipartBody.Part receiptItemsPart = BitmapUtil.buildMultipartBody(request.receiptItems, "receiptItemsImage");
         final MultipartBody.Part pricesPart = BitmapUtil.buildMultipartBody(request.prices, "pricesImage");
 
-        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, "Nsk", "Auchan");
+        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.city, request.shop);
         OcrReceiptResponse response = makeRequest(call);
 
         for (int i = 0; i < response.getPrices().size(); i++) {
             ParsedPrice price = response.getPrices().get(i);
-            /*final int p = Integer.parseInt(price.getStringValue().replace(".", "").replace(",", "").replace(" ", ""));
-            price.setIntValue(p);*/
             price.setStringValue(price.getStringValue().replace(" ", ""));
         }
 
