@@ -171,7 +171,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
             total += Double.valueOf(item.second);
         }
 
-        binding.total.setText(String.format("%d", (int) total));
+        binding.total.setText(String.valueOf((int) total));
+        binding.market.setText(Preference.getString(Preference.SHOP));
     }
 
     private void updateLabel() {
