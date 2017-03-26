@@ -43,6 +43,10 @@ public class ReceiptItemPriceViewItem implements Serializable {
         return matches;
     }
 
+    public String getSource() {
+        return receiptItemMatches.getSource();
+    }
+
     public String getReceiptItem() {
         return receiptItem;
     }

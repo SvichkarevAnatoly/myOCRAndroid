@@ -128,13 +128,17 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
 
         binding.receiptItemEditText.setText(item.getReceiptItem());
         binding.priceEditText.setText(item.getPrice());
+
+        final List<String> matches = new ArrayList<>(item.getMatches());
+        matches.add(item.getSource());
+
         binding.receiptItemMatches.setAdapter(new ArrayAdapter<>(
-                getContext(), android.R.layout.simple_list_item_1, item.getMatches()
+                getContext(), android.R.layout.simple_list_item_1, matches
         ));
 
         binding.receiptItemMatches.setOnItemClickListener(
                 (parent, view, position, id) -> {
-                    final String newText = item.getMatches().get(position);
+                    final String newText = matches.get(position);
                     binding.receiptItemEditText.setText(newText);
                 });
 
