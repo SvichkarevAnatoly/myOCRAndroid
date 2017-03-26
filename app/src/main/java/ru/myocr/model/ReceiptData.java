@@ -1,7 +1,6 @@
 package ru.myocr.model;
 
 
-import android.text.TextUtils;
 import android.util.Pair;
 
 import java.io.Serializable;
@@ -75,7 +74,7 @@ public class ReceiptData implements Serializable {
             }
         }
 
-        if (isEmpty(receiptItemPriceViewItems.get(lastIndex))) {
+        if (receiptItemPriceViewItems.get(lastIndex).isEmpty()) {
             receiptItemPriceViewItems.remove(lastIndex);
         }
     }
@@ -93,7 +92,7 @@ public class ReceiptData implements Serializable {
             }
         }
 
-        if (isEmpty(receiptItemPriceViewItems.get(lastIndex))) {
+        if (receiptItemPriceViewItems.get(lastIndex).isEmpty()) {
             receiptItemPriceViewItems.remove(lastIndex);
         }
     }
@@ -118,9 +117,5 @@ public class ReceiptData implements Serializable {
 
     public int size() {
         return receiptItemPriceViewItems.size();
-    }
-
-    private boolean isEmpty(ReceiptItemPriceViewItem item) {
-        return TextUtils.isEmpty(item.getReceiptItem()) && TextUtils.isEmpty(item.getPrice());
     }
 }

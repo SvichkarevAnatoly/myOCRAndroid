@@ -1,6 +1,8 @@
 package ru.myocr.model;
 
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +71,10 @@ public class ReceiptItemPriceViewItem implements Serializable {
 
     public void setReceiptItemMatches(ReceiptItemMatches receiptItemMatches) {
         this.receiptItemMatches = receiptItemMatches;
+    }
+
+    public boolean isEmpty() {
+        return TextUtils.isEmpty(receiptItem) && TextUtils.isEmpty(price);
     }
 
     public void replaceReceiptItemInfo(ReceiptItemPriceViewItem item) {
