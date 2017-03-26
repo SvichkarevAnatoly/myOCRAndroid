@@ -16,13 +16,11 @@ import java.util.List;
 import ru.myocr.R;
 import ru.myocr.activity.ReceiptOcrActivity;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
-import ru.myocr.api.SavePriceRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.FragmentReceiptOcrBinding;
 import ru.myocr.databinding.ReceiptItemEditDialogBinding;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItemPriceViewItem;
-import ru.myocr.preference.Preference;
 
 import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 
@@ -66,29 +64,8 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
         return binding.getRoot();
     }
 
-    public void addToDb() {
-        final SavePriceRequest savePriceRequest = convert(productPricePairs);
-        /*ApiHelper.makeApiRequest(savePriceRequest, ApiHelper::save,
-                throwable -> Toast.makeText(getActivity(), "Ошибка сохранения", Toast.LENGTH_SHORT).show(),
-                integer -> Toast.makeText(getActivity(), "Успешно сохранено " + integer + " записей",
-                        Toast.LENGTH_SHORT).show(), null);*/
+    public void onClickNext() {
         ((ReceiptOcrActivity) getActivity()).onReceiptDataSaved(receiptData);
-    }
-
-    private SavePriceRequest convert(List<Pair<String, String>> productPricePairs) {
-        final String city = Preference.getString(Preference.CITY);
-        final String shop = Preference.getString(Preference.SHOP);
-
-        final ArrayList<SavePriceRequest.ReceiptPriceItem> items = new ArrayList<>();
-        for (Pair<String, String> pair : productPricePairs) {
-            if (pair.first == null || pair.second == null || pair.second.isEmpty()) {
-                break;
-            }
-            final int price = Integer.parseInt(pair.second.replace(".", "").replace(" ", ""));
-            items.add(new SavePriceRequest.ReceiptPriceItem(pair.first, price));
-        }
-
-        return new SavePriceRequest(city, shop, items);
     }
 
     private void updateProductsView() {
