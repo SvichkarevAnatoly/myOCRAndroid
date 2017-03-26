@@ -77,6 +77,10 @@ public class ReceiptItemPriceViewItem implements Serializable {
         return TextUtils.isEmpty(receiptItem) && TextUtils.isEmpty(price);
     }
 
+    public boolean isPartEmpty() {
+        return TextUtils.isEmpty(receiptItem) || TextUtils.isEmpty(price);
+    }
+
     public void replaceReceiptItemInfo(ReceiptItemPriceViewItem item) {
         setReceiptItem(item.getReceiptItem());
         setReceiptItemMatches(item.getReceiptItemMatches());

@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ru.myocr.api.ocr.OcrReceiptResponse;
@@ -42,6 +43,10 @@ public class ReceiptData implements Serializable {
                 receiptItemPriceViewItems.add(item);
             }
         }
+    }
+
+    public ReceiptData(ReceiptData receiptData) {
+        receiptItemPriceViewItems = new ArrayList<>(receiptData.receiptItemPriceViewItems);
     }
 
     public ReceiptItemPriceViewItem getReceiptItemPriceViewItem(int index) {
@@ -117,5 +122,18 @@ public class ReceiptData implements Serializable {
 
     public int size() {
         return receiptItemPriceViewItems.size();
+    }
+
+    public ReceiptData getCompletedList() {
+        final ReceiptData completedReceiptData = new ReceiptData(this);
+
+        final Iterator<ReceiptItemPriceViewItem> iterator = completedReceiptData.receiptItemPriceViewItems.iterator();
+        while (iterator.hasNext()) {
+            final ReceiptItemPriceViewItem item = iterator.next();
+            if (item.isPartEmpty()) {
+                iterator.remove();
+            }
+        }
+        return completedReceiptData;
     }
 }

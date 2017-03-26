@@ -65,7 +65,27 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
     }
 
     public void onClickNext() {
-        ((ReceiptOcrActivity) getActivity()).onReceiptDataSaved(receiptData);
+        if (receiptDataIsNotCompleted()) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Предупреждение")
+                    .setMessage("Незаполненые полностью строки не будут сохранены.\n" +
+                            "Продолжить?")
+                    .setNegativeButton("Нет", (dialog, which) -> {
+                    })
+                    .setPositiveButton("Да",
+                            (dialog, which) ->
+                                    ((ReceiptOcrActivity) getActivity())
+                                            .onReceiptDataSaved(receiptData.getCompletedList()))
+                    .show();
+        } else {
+            ((ReceiptOcrActivity) getActivity()).onReceiptDataSaved(receiptData);
+        }
+    }
+
+    private boolean receiptDataIsNotCompleted() {
+        final int lastIndex = receiptData.size() - 1;
+        final ReceiptItemPriceViewItem item = receiptData.getReceiptItemPriceViewItem(lastIndex);
+        return item.isPartEmpty();
     }
 
     private void updateProductsView() {
