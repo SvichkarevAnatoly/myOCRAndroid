@@ -2,7 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:key="pref_key_storage_settings"
         android:title="Основные настройки">
 
         <ListPreference
@@ -12,5 +11,21 @@
             android:key="city"
             android:summary="Нажмите чтобы выбрать город"
             android:title="Город" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="use_localhost"
+            android:title="Использовать локальный сервер"/>
+
+        <EditTextPreference
+            android:defaultValue="@string/remote"
+            android:key="url_remote"
+            android:title="Адрес удаленного сервера"/>
+
+        <EditTextPreference
+            android:defaultValue="@string/localhost"
+            android:key="url_localhost"
+            android:title="Адрес локального сервера"/>
+
     </PreferenceCategory>
 </PreferenceScreen>

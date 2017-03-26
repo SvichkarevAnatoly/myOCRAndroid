@@ -1,31 +1,28 @@
 package ru.myocr.preference;
 
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import ru.myocr.App;
 
 import static ru.myocr.R.string.localhost;
 import static ru.myocr.R.string.remote;
-import static ru.myocr.preference.Preference.SERVER;
 
 public class Server {
 
-    private static String localhostUrl = App.getContext().getString(localhost);
+    private static final String SERVER_REMOTE_KEY = "url_remote";
+    private static final String SERVER_LOCAL_KEY = "url_localhost";
 
-
-    static {
-        Preference.setString(SERVER, localhostUrl);
-    }
-
-    public static boolean isLocal() {
-        return getUrl().equals(localhostUrl);
-    }
+    private static final String SERVER_SWITCH_KEY = "use_localhost";
 
     public static String getUrl() {
-        return Preference.getString(SERVER, localhostUrl);
-    }
-
-    public static void change() {
-        final int newUrl = isLocal() ? remote : localhost;
-        Preference.setString(SERVER, App.getContext().getString(newUrl));
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        final boolean isLocal = preferences.getBoolean(SERVER_SWITCH_KEY, true);
+        if (isLocal) {
+            return preferences.getString(SERVER_LOCAL_KEY, App.getContext().getString(localhost));
+        } else {
+            return preferences.getString(SERVER_REMOTE_KEY, App.getContext().getString(remote));
+        }
     }
 }
