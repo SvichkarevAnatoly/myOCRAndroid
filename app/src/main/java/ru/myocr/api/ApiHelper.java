@@ -101,7 +101,7 @@ public class ApiHelper {
         List<City> cities = new ArrayList<>(citiesStr.size());
         for (String city : citiesStr) {
             City c = new City(city, city);
-            c.updateDb();
+            c.putIfNotExist();
             cities.add(c);
         }
 

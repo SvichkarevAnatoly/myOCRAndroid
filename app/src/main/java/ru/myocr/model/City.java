@@ -35,7 +35,7 @@ public class City extends DbModel<City> {
                 .query(getTableUri(), getEntityClass())
                 .withSelection("id = ?", id).get();
         if (null != city) {
-            this.id = city.id;
+            this._id = city._id;
         }
         updateDb();
     }
