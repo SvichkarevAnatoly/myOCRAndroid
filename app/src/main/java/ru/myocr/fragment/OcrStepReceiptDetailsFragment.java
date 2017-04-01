@@ -123,6 +123,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
                 integer -> {
                     Toast.makeText(getContext(), "Успешно сохранено " + integer + " записей", Toast.LENGTH_SHORT).show();
                     saveToLocalDb();
+                    getActivity().finish();
                 }, null);
     }
 
