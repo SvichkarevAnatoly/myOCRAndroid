@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +27,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import ru.myocr.App;
@@ -33,6 +40,9 @@ import ru.myocr.api.OcrRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.ActivityCropBinding;
 import ru.myocr.preference.Preference;
+import ru.myocr.util.BitmapUtil;
+
+import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
 
 public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {
 
@@ -48,6 +58,12 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
     private Bitmap receiptItem;
 
     private ProgressDialog progressDialog;
+    private Rect cropProductRect;
+
+    private static Rect unionRect(Rect productRect, Rect pricesRect) {
+        return new Rect(productRect.left, Math.min(productRect.top, pricesRect.top),
+                pricesRect.right, Math.max(productRect.bottom, pricesRect.bottom));
+    }
 
     @Override
     @SuppressLint("NewApi")
@@ -149,6 +165,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         if (!isProductCropped) {
             isProductCropped = true;
             receiptItem = result.getBitmap();
+            cropProductRect = result.getCropRect();
             Toast.makeText(CropActivity.this, "Изображение продуктов получено", Toast.LENGTH_LONG).show();
         } else {
             Bitmap prices = result.getBitmap();
@@ -173,15 +190,36 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
                                 .setTitle("Ошибка").setMessage("Не удалось разпознать текст").show();
                     }, ocrReceiptResponse -> {
                         progressDialog.hide();
-                        startActivity(ocrReceiptResponse);
+                        Uri itemsImageUri = null;
+                        try {
+                            itemsImageUri = cropItemsImage(cropProductRect, result.getCropRect());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(ocrReceiptResponse, itemsImageUri);
                     }, null);
         }
     }
 
-    private void startActivity(OcrReceiptResponse response) {
+    private Uri cropItemsImage(Rect cropProductRect, Rect cropPricesRect) throws IOException {
+        InputStream imageStream = getContentResolver().openInputStream(mCropImageUri);
+        Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+
+        Rect unionRect = unionRect(cropProductRect, cropPricesRect);
+        Bitmap unionBitmap = Bitmap.createBitmap(bitmap, unionRect.left, unionRect.top, unionRect.width(), unionRect.height());
+
+        File tempFile = BitmapUtil.createTempFile();
+        FileOutputStream outputStream = new FileOutputStream(tempFile);
+        unionBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        outputStream.close();
+
+        return FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, tempFile);
+    }
+
+    private void startActivity(OcrReceiptResponse response, Uri cropItemsImageUri) {
         Intent intent = new Intent(this, ReceiptOcrActivity.class);
         intent.putExtra(ReceiptOcrActivity.ARG_OCR_RESPONSE, response);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_PHOTO, mCropImageUri);
+        intent.putExtra(ReceiptOcrActivity.ARG_OCR_PHOTO, cropItemsImageUri);
         startActivity(intent);
         finish();
     }

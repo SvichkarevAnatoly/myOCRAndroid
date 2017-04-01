@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -26,8 +25,6 @@ import net.hockeyapp.android.UpdateManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import ru.myocr.R;
@@ -37,6 +34,9 @@ import ru.myocr.fragment.StatsFragment;
 import ru.myocr.fragment.TicketFragment;
 import ru.myocr.model.City;
 import ru.myocr.preference.Preference;
+import ru.myocr.util.BitmapUtil;
+
+import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     private static final int CAM_REQUEST = 2;
 
     private ActivityMainBinding binding;
-    private String mCurrentPhotoPath;
     private Uri photoURI;
 
     @Override
@@ -177,34 +176,17 @@ public class MainActivity extends AppCompatActivity
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = BitmapUtil.createTempFile();
             } catch (IOException ex) {
+                ex.printStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(this,
-                        "ru.myocr.fileprovider",
-                        photoFile);
+                photoURI = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAM_REQUEST);
             }
         }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 
     public void selectImage() {

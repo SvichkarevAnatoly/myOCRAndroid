@@ -5,6 +5,8 @@ import android.content.Context;
 
 public class App extends Application {
 
+    public static final String FILE_PROVIDER_AUTHORITY = "ru.myocr.fileprovider";
+
     private static App instance;
 
     public static App getInstance() {
