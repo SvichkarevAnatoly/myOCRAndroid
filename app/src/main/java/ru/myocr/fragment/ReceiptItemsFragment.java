@@ -24,7 +24,7 @@ import ru.myocr.model.ReceiptItemPriceViewItem;
 
 import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 
-public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAdapter.OnItemClickListener {
+public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAdapter.OnItemClickListener {
 
     private FragmentReceiptOcrBinding binding;
 
@@ -32,12 +32,12 @@ public class OcrStepItemsFragment extends Fragment implements ReceiptDataViewAda
     private ReceiptDataViewAdapter receiptViewAdapter;
     private List<Pair<String, String>> productPricePairs = new ArrayList<>();
 
-    public OcrStepItemsFragment() {
+    public ReceiptItemsFragment() {
         // Required empty public constructor
     }
 
-    public static OcrStepItemsFragment newInstance(OcrReceiptResponse response) {
-        OcrStepItemsFragment fragment = new OcrStepItemsFragment();
+    public static ReceiptItemsFragment newInstance(OcrReceiptResponse response) {
+        ReceiptItemsFragment fragment = new ReceiptItemsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_OCR_RESPONSE, response);
         fragment.setArguments(args);

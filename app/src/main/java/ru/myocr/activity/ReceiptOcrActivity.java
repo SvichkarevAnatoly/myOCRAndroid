@@ -8,14 +8,15 @@ import android.view.MenuItem;
 import ru.myocr.R;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.ActivityReceiptOcrBinding;
-import ru.myocr.fragment.OcrStepItemsFragment;
 import ru.myocr.fragment.OcrStepReceiptDetailsFragment;
+import ru.myocr.fragment.OcrStepReceiptItemsFragment;
 import ru.myocr.model.ReceiptData;
 
 public class ReceiptOcrActivity extends AppCompatActivity {
 
     public static final String ARG_OCR_RESPONSE = "ARG_OCR_RESPONSE";
-    public static final String TAG_OCR_STEP_ITEMS_FRAGMENT = "OcrStepItemsFragment";
+    public static final String ARG_OCR_PHOTO = "ARG_OCR_PHOTO";
+    public static final String TAG_OCR_STEP_ITEMS_FRAGMENT = "ReceiptItemsFragment";
     public static final String TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT = "OcrStepReceiptDetailsFragment";
 
     private ActivityReceiptOcrBinding binding;
@@ -39,11 +40,12 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         response = (OcrReceiptResponse) getIntent().getSerializableExtra(ARG_OCR_RESPONSE);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, OcrStepItemsFragment.newInstance(response), TAG_OCR_STEP_ITEMS_FRAGMENT).commit();
+                .replace(R.id.container, OcrStepReceiptItemsFragment.newInstance(response, null),
+                        TAG_OCR_STEP_ITEMS_FRAGMENT).commit();
 
         binding.floatingMenu.setOnClickListener(v -> {
             if (!receiptDataSaved) {
-                OcrStepItemsFragment fragment = (OcrStepItemsFragment) getSupportFragmentManager()
+                OcrStepReceiptItemsFragment fragment = (OcrStepReceiptItemsFragment) getSupportFragmentManager()
                         .findFragmentByTag(TAG_OCR_STEP_ITEMS_FRAGMENT);
                 fragment.onClickNext();
             } else {
