@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             xmlns:fab="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/list"
-        android:name="ru.tickerparserandroid.fragment.TicketFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="ru.tickerparserandroid.fragment.TicketFragment"
-        tools:listitem="@layout/ticket_fragment_item" />
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:id="@+id/list"
+                                            android:name="ru.tickerparserandroid.fragment.TicketFragment"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            app:layoutManager="LinearLayoutManager"
+                                            tools:context="ru.tickerparserandroid.fragment.TicketFragment"
+                                            tools:listitem="@layout/ticket_fragment_item"/>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/floatingMenu"
@@ -43,7 +43,7 @@
             fab:fab_colorPressed="@color/colorAccent"
             fab:fab_colorRipple="@color/colorAccent"
             fab:fab_label="Сфотографировать"
-            fab:fab_size="mini" />
+            fab:fab_size="mini"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabGallery"
@@ -54,7 +54,18 @@
             fab:fab_colorPressed="@color/colorAccent"
             fab:fab_colorRipple="@color/colorAccent"
             fab:fab_label="Выбрать из галереи"
-            fab:fab_size="mini" />
+            fab:fab_size="mini"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabCamScanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_white_18dp"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorAccent"
+            fab:fab_colorRipple="@color/colorAccent"
+            fab:fab_label="Выбрать из CamScanner"
+            fab:fab_size="mini"/>
 
 
     </com.github.clans.fab.FloatingActionMenu>

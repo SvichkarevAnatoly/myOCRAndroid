@@ -79,11 +79,15 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
 
         view.findViewById(R.id.fabCam).setOnClickListener(v -> {
             fab.hideMenu(true);
-            ((MainActivity) getActivity()).onClickAddCam();
+            ((MainActivity) getActivity()).onClickRunCamera();
         });
         view.findViewById(R.id.fabGallery).setOnClickListener(v -> {
             fab.hideMenu(true);
             ((MainActivity) getActivity()).onClickAddGallery();
+        });
+        view.findViewById(R.id.fabCamScanner).setOnClickListener(v -> {
+            fab.hideMenu(true);
+            ((MainActivity) getActivity()).onClickRunCamScanner();
         });
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);

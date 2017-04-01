@@ -136,8 +136,12 @@ public class MainActivity extends AppCompatActivity
         selectImage();
     }
 
-    public void onClickAddCam() {
+    public void onClickRunCamScanner() {
         runCamScanner();
+    }
+
+    public void onClickRunCamera() {
+        runCamera();
     }
 
     // old Activity
@@ -169,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         handleIncomingImage(intent);
     }
 
-    public void runCamScanner() {
+    public void runCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -196,6 +200,11 @@ public class MainActivity extends AppCompatActivity
         // Always show the chooser (if there are multiple options available)
         final Intent chooser = Intent.createChooser(intent, "Select Picture");
         startActivityForResult(chooser, PICK_IMAGE_REQUEST);
+    }
+
+    public void runCamScanner() {
+        Intent intent = new Intent("com.intsig.camscanner.NEW_DOC");
+        startActivity(intent);
     }
 
     @Override
