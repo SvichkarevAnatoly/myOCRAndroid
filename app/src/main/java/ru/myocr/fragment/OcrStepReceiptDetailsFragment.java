@@ -110,6 +110,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
                 .put(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
                         ReceiptItem.class, receipt.items);
 
+
+        getActivity().finish();
         Intent intent = new Intent(getActivity(), TicketActivity.class);
         intent.putExtra(ARG_RECEIPT, id);
         startActivity(intent);
@@ -121,7 +123,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         ApiHelper.makeApiRequest(savePriceRequest, ApiHelper::save,
                 throwable -> Toast.makeText(getContext(), "Ошибка сохранения", Toast.LENGTH_SHORT).show(),
                 integer -> {
-                    Toast.makeText(getContext(), "Успешно сохранено " + integer + " записей", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Успешно сохранено " + integer + " записей", Toast.LENGTH_SHORT).show();
                     saveToLocalDb();
                 }, null);
     }
@@ -130,8 +132,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     private SavePriceRequest initSavePriceRequest() {
         final List<ReceiptPriceItem> items = convert(receiptData.getProductsPricesPairs());
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final String city = sharedPreferences.getString(Preference.CITY, "Nsk");
-        final String shop = Preference.getString(Preference.SHOP);
+        final String city = "Nsk";
+        final String shop = "Auchan";
         final String time = TimeUtil.parse(date.getTime());
         return new SavePriceRequest(city, shop, time, items);
     }

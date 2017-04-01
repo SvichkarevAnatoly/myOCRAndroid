@@ -52,7 +52,7 @@ public class ReceiptOcrActivity extends AppCompatActivity {
                 OcrStepReceiptDetailsFragment fragment = (OcrStepReceiptDetailsFragment) getSupportFragmentManager()
                         .findFragmentByTag(TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT);
                 fragment.onClickSave();
-                finish();
+
             }
         });
     }
