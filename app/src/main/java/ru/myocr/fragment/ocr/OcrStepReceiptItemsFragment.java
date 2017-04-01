@@ -1,4 +1,4 @@
-package ru.myocr.fragment;
+package ru.myocr.fragment.ocr;
 
 
 import android.net.Uri;
@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import ru.myocr.R;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 
+import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_PHOTO;
 import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 
 /**
@@ -27,16 +28,17 @@ public class OcrStepReceiptItemsFragment extends Fragment {
     private ReceiptItemsFragment receiptItemsFragment;
     private ViewPager viewPager;
     private OcrReceiptResponse response;
+    private Uri photoUri;
 
     public OcrStepReceiptItemsFragment() {
         // Required empty public constructor
     }
 
-    public static OcrStepReceiptItemsFragment newInstance(OcrReceiptResponse response, Uri photo) {
+    public static OcrStepReceiptItemsFragment newInstance(OcrReceiptResponse response, Uri photoUri) {
         OcrStepReceiptItemsFragment fragment = new OcrStepReceiptItemsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_OCR_RESPONSE, response);
-        //args.putString(ARG_OCR_PHOTO, photo.toString());
+        args.putParcelable(ARG_OCR_PHOTO, photoUri);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,6 +47,7 @@ public class OcrStepReceiptItemsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         response = (OcrReceiptResponse) getArguments().getSerializable(ARG_OCR_RESPONSE);
+        photoUri = getArguments().getParcelable(ARG_OCR_PHOTO);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class OcrStepReceiptItemsFragment extends Fragment {
                     receiptItemsFragment = ReceiptItemsFragment.newInstance(response);
                     return receiptItemsFragment;
                 case 1:
-                    return ReceiptPhotoFragment.newInstance(null);
+                    return ReceiptPhotoFragment.newInstance(photoUri);
             }
             return null;
         }

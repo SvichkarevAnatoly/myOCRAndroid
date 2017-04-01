@@ -1,6 +1,7 @@
 package ru.myocr.activity;
 
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -9,7 +10,7 @@ import ru.myocr.R;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.ActivityReceiptOcrBinding;
 import ru.myocr.fragment.OcrStepReceiptDetailsFragment;
-import ru.myocr.fragment.OcrStepReceiptItemsFragment;
+import ru.myocr.fragment.ocr.OcrStepReceiptItemsFragment;
 import ru.myocr.model.ReceiptData;
 
 public class ReceiptOcrActivity extends AppCompatActivity {
@@ -38,9 +39,10 @@ public class ReceiptOcrActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         response = (OcrReceiptResponse) getIntent().getSerializableExtra(ARG_OCR_RESPONSE);
+        Uri photoUri = getIntent().getParcelableExtra(ARG_OCR_PHOTO);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, OcrStepReceiptItemsFragment.newInstance(response, null),
+                .replace(R.id.container, OcrStepReceiptItemsFragment.newInstance(response, photoUri),
                         TAG_OCR_STEP_ITEMS_FRAGMENT).commit();
 
         binding.floatingMenu.setOnClickListener(v -> {

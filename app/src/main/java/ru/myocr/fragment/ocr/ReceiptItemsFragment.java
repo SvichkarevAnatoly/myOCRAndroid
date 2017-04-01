@@ -1,4 +1,4 @@
-package ru.myocr.fragment;
+package ru.myocr.fragment.ocr;
 
 import android.app.AlertDialog;
 import android.databinding.DataBindingUtil;
