@@ -230,7 +230,10 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
 
     protected void setResultCancel() {
         setResult(RESULT_CANCELED);
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         finish();
+        startActivity(intent);
     }
 }
 

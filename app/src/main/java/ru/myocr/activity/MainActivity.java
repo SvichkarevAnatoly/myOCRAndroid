@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -144,7 +143,6 @@ public class MainActivity extends AppCompatActivity
         runCamera();
     }
 
-    // old Activity
     private void handleIncomingImage(Intent intent) {
         if (intent != null) {
             final String type = intent.getType();
@@ -170,7 +168,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        handleIncomingImage(intent);
+        setIntent(intent);
     }
 
     public void runCamera() {
@@ -214,7 +212,6 @@ public class MainActivity extends AppCompatActivity
                 case PICK_IMAGE_REQUEST:
                     if (data != null && data.getData() != null) {
                         final Uri imageUri = data.getData();
-                        Toast.makeText(MainActivity.this, imageUri.toString(), Toast.LENGTH_LONG).show();
                         startCropImageActivity(imageUri);
                     }
                     break;
@@ -228,6 +225,8 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         checkForCrashes();
+        Intent intent = getIntent();
+        handleIncomingImage(intent);
     }
 
     @Override
