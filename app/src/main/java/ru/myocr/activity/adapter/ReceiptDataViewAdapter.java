@@ -88,12 +88,6 @@ public class ReceiptDataViewAdapter extends ArrayAdapter<Pair<String, String>> {
 
         void onClickPriceRemove(int pos);
 
-        void onClickReceiptItemDown(int pos);
-
-        void onClickReceiptItemUp(int pos);
-
-        void onClickPriceDown(int pos);
-
         void onClickItemEdit(int pos);
     }
 }

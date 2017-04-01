@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
@@ -46,7 +47,21 @@ public class ReceiptData implements Serializable {
     }
 
     public ReceiptData(ReceiptData receiptData) {
-        receiptItemPriceViewItems = new ArrayList<>(receiptData.receiptItemPriceViewItems);
+        receiptItemPriceViewItems = new ArrayList<>();
+        List<ReceiptItemPriceViewItem> receiptItemPriceViewItems = receiptData.receiptItemPriceViewItems;
+        for (ReceiptItemPriceViewItem receiptItemPriceViewItem : receiptItemPriceViewItems) {
+            final ReceiptItemMatches receiptItemMatches = receiptItemPriceViewItem.getReceiptItemMatches();
+            final ArrayList<Match> matches = new ArrayList<>();
+            for (Match match : receiptItemMatches.getMatches()) {
+                final Match copyMatch = new Match(match.getMatch(), match.getScore());
+                matches.add(copyMatch);
+            }
+            final ReceiptItemMatches copyReceiptItemMatches = new ReceiptItemMatches(receiptItemMatches.getSource(), matches);
+            final String copyReceiptItem = receiptItemPriceViewItem.getReceiptItem();
+            final String price = receiptItemPriceViewItem.getPrice();
+            final ReceiptItemPriceViewItem copyReceiptItemPriceViewItem = new ReceiptItemPriceViewItem(copyReceiptItemMatches, copyReceiptItem, price);
+            this.receiptItemPriceViewItems.add(copyReceiptItemPriceViewItem);
+        }
     }
 
     public ReceiptItemPriceViewItem getReceiptItemPriceViewItem(int index) {
@@ -100,24 +115,6 @@ public class ReceiptData implements Serializable {
         if (receiptItemPriceViewItems.get(lastIndex).isEmpty()) {
             receiptItemPriceViewItems.remove(lastIndex);
         }
-    }
-
-    public void shiftProductUp(int idx) {
-        /*final String curProduct = products.get(idx);
-        final String prevProduct = products.get(idx - 1);
-        products.set(idx - 1, prevProduct + ' ' + curProduct);
-        removeReceiptItem(idx);*/
-    }
-
-    public void shiftProductDown(int idx) {
-        /*final String curProduct = products.get(idx);
-        final String nextProduct = products.get(idx + 1);
-        products.set(idx + 1, curProduct + ' ' + nextProduct);
-        removeReceiptItem(idx);*/
-    }
-
-    public void shiftPriceDown(int idx) {
-        // prices.add(idx, EMPTY_LINE);
     }
 
     public int size() {

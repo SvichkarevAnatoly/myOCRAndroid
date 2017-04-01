@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ru.myocr.activity.TicketActivity">
+    <item
+        android:id="@+id/action_cancel"
+        android:icon="@drawable/crop_image_menu_rotate_left"
+        android:orderInCategory="100"
+        android:title="Отменить"
+        app:showAsAction="always"/>
+</menu>

@@ -28,6 +28,12 @@ public class ReceiptItemPriceViewItem implements Serializable {
         price = PriceUtil.getValue(parsedPrice);
     }
 
+    public ReceiptItemPriceViewItem(ReceiptItemMatches receiptItemMatches, String receiptItem, String price) {
+        this.receiptItemMatches = receiptItemMatches;
+        this.receiptItem = receiptItem;
+        this.price = price;
+    }
+
     public String initReceiptItem() {
         final String source = receiptItemMatches.getSource();
         final List<Match> matches = receiptItemMatches.getMatches();

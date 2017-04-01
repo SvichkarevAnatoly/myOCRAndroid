@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -21,6 +24,8 @@ import ru.myocr.databinding.FragmentReceiptOcrBinding;
 import ru.myocr.databinding.ReceiptItemEditDialogBinding;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItemPriceViewItem;
+import ru.myocr.util.collection.ArrayStack;
+import ru.myocr.util.collection.Stack;
 
 import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 
@@ -28,12 +33,13 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
 
     private FragmentReceiptOcrBinding binding;
 
-    private ReceiptData receiptData;
+    private Stack<ReceiptData> receiptDataStack = new ArrayStack<>();
     private ReceiptDataViewAdapter receiptViewAdapter;
     private List<Pair<String, String>> productPricePairs = new ArrayList<>();
 
     public ReceiptItemsFragment() {
         // Required empty public constructor
+
     }
 
     public static ReceiptItemsFragment newInstance(OcrReceiptResponse response) {
@@ -47,6 +53,29 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_receipt_item_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_cancel:
+                cancel();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void cancel() {
+        if (receiptDataStack.size() > 1) {
+            receiptDataStack.pop();
+            updateProductsView();
+        }
     }
 
     @Override
@@ -57,7 +86,7 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
 
         OcrReceiptResponse response = (OcrReceiptResponse) getArguments().getSerializable(ARG_OCR_RESPONSE);
         if (response != null) {
-            receiptData = new ReceiptData(response);
+            receiptDataStack.push(new ReceiptData(response));
             updateProductsView();
         }
 
@@ -75,68 +104,57 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
                     .setPositiveButton("Да",
                             (dialog, which) ->
                                     ((ReceiptOcrActivity) getActivity())
-                                            .onReceiptDataSaved(receiptData.getCompletedList()))
+                                            .onReceiptDataSaved(receiptDataStack.peek().getCompletedList()))
                     .show();
         } else {
-            ((ReceiptOcrActivity) getActivity()).onReceiptDataSaved(receiptData);
+            ((ReceiptOcrActivity) getActivity()).onReceiptDataSaved(receiptDataStack.peek());
         }
     }
 
     private boolean receiptDataIsNotCompleted() {
-        final int lastIndex = receiptData.size() - 1;
-        final ReceiptItemPriceViewItem item = receiptData.getReceiptItemPriceViewItem(lastIndex);
+        final int lastIndex = receiptDataStack.peek().size() - 1;
+        final ReceiptItemPriceViewItem item = receiptDataStack.peek().getReceiptItemPriceViewItem(lastIndex);
         return item.isPartEmpty();
     }
 
     private void updateProductsView() {
         productPricePairs.clear();
-        productPricePairs.addAll(receiptData.getProductsPricesPairs());
+        productPricePairs.addAll(receiptDataStack.peek().getProductsPricesPairs());
         if (receiptViewAdapter == null) {
             receiptViewAdapter = new ReceiptDataViewAdapter(getActivity(), productPricePairs, this);
             binding.listReceiptData.setAdapter(receiptViewAdapter);
         } else {
             receiptViewAdapter.notifyDataSetChanged();
         }
-        receiptViewAdapter.setProductSize(receiptData.size());
-        receiptViewAdapter.setPriceSize(receiptData.size());
+        receiptViewAdapter.setProductSize(receiptDataStack.size());
+        receiptViewAdapter.setPriceSize(receiptDataStack.size());
     }
 
     @Override
     public void onClickReceiptItemRemove(int pos) {
-        receiptData.removeReceiptItem(pos);
+        final ReceiptData copyReceiptData = new ReceiptData(receiptDataStack.peek());
+        copyReceiptData.removeReceiptItem(pos);
+        receiptDataStack.push(copyReceiptData);
         updateProductsView();
     }
 
     @Override
     public void onClickPriceRemove(int pos) {
-        receiptData.removePrice(pos);
-        updateProductsView();
-    }
-
-    @Override
-    public void onClickReceiptItemDown(int pos) {
-        receiptData.shiftProductDown(pos);
-        updateProductsView();
-    }
-
-    @Override
-    public void onClickReceiptItemUp(int pos) {
-        receiptData.shiftProductUp(pos);
-        updateProductsView();
-    }
-
-    @Override
-    public void onClickPriceDown(int pos) {
-        receiptData.shiftPriceDown(pos);
+        final ReceiptData copyReceiptData = new ReceiptData(receiptDataStack.peek());
+        copyReceiptData.removePrice(pos);
+        receiptDataStack.push(copyReceiptData);
         updateProductsView();
     }
 
     @Override
     public void onClickItemEdit(int pos) {
-        showEditReceiptItemDialog(receiptData.getReceiptItemPriceViewItem(pos),
+        final ReceiptData copyReceiptData = new ReceiptData(receiptDataStack.peek());
+        final ReceiptItemPriceViewItem item = copyReceiptData.getReceiptItemPriceViewItem(pos);
+        showEditReceiptItemDialog(item,
                 (receiptItem, price) -> {
-                    receiptData.getReceiptItemPriceViewItem(pos).setReceiptItem(receiptItem);
-                    receiptData.getReceiptItemPriceViewItem(pos).setPrice(price);
+                    item.setReceiptItem(receiptItem);
+                    item.setPrice(price);
+                    receiptDataStack.push(copyReceiptData);
                     updateProductsView();
                 });
     }
