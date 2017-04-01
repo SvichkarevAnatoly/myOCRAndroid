@@ -72,7 +72,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void onLoadCities(List<City> cities) {
-        Preference.setString(Preference.CITY, cities.get(0).id);
+        final String currentCity = Preference.getString(Preference.CITY);
+        if (currentCity == null) {
+            Preference.setString(Preference.CITY, cities.get(0).id);
+        }
     }
 
     @Override
