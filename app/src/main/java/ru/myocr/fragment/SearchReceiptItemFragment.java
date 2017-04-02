@@ -8,13 +8,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ru.myocr.R;
+import ru.myocr.api.ApiHelper;
+import ru.myocr.api.SearchReceiptItemsRequest;
 import ru.myocr.model.SearchReceiptItem;
+import ru.myocr.preference.Preference;
+import ru.myocr.preference.Settings;
 
 public class SearchReceiptItemFragment extends Fragment implements SearchReceiptItemRecyclerViewAdapter.SearchReceiptItemInteractionListener {
+
+    private RecyclerView recyclerView;
 
     public SearchReceiptItemFragment() {
     }
@@ -40,16 +47,22 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            final ArrayList<SearchReceiptItem> items = new ArrayList<>();
-            items.add(new SearchReceiptItem("item1", 1, "2016"));
-            items.add(new SearchReceiptItem("item2", 1, "2016"));
-            recyclerView.setAdapter(new SearchReceiptItemRecyclerViewAdapter(items, this));
+
+            final String city = Settings.getString(Settings.CITY);
+            final String shop = Preference.getString(Preference.SHOP);
+            final SearchReceiptItemsRequest request = new SearchReceiptItemsRequest(city, shop);
+            ApiHelper.makeApiRequest(request, ApiHelper::getReceiptItems,
+                    throwable -> Toast.makeText(getContext(), "Ошибка получения данных", Toast.LENGTH_SHORT).show(),
+                    this::onLoadReceiptItems, null);
         }
         return view;
     }
 
+    private void onLoadReceiptItems(List<SearchReceiptItem> searchReceiptItems) {
+        recyclerView.setAdapter(new SearchReceiptItemRecyclerViewAdapter(searchReceiptItems, this));
+    }
 
     @Override
     public void onAttach(Context context) {

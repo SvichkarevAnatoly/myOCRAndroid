@@ -1,6 +1,8 @@
 package ru.myocr.model;
 
 
+import ru.myocr.util.PriceUtil;
+
 public class SearchReceiptItem {
     private String item;
     private int price;
@@ -10,6 +12,11 @@ public class SearchReceiptItem {
         this.item = item;
         this.price = price;
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return item + " " + date + " " + PriceUtil.getStringWithDot(price) + " руб.";
     }
 
     public String getItem() {

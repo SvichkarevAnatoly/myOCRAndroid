@@ -25,6 +25,7 @@ import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.model.City;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
+import ru.myocr.model.SearchReceiptItem;
 import ru.myocr.preference.Server;
 import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
@@ -160,6 +161,13 @@ public class ApiHelper {
 
     public List<String> getShops(String city) {
         Call<List<String>> call = api.getShops(city);
+        return makeRequest(call);
+    }
+
+    public List<SearchReceiptItem> getReceiptItems(SearchReceiptItemsRequest request) {
+        final String city = request.getCity();
+        final String shop = request.getShop();
+        Call<List<SearchReceiptItem>> call = api.getReceiptItems(city, shop);
         return makeRequest(call);
     }
 
