@@ -7,10 +7,13 @@
             android:icon="@drawable/ic_receipt_black_24dp"
             android:title="Мои чеки" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_stats"
             android:icon="@drawable/ic_pie_chart_black_24dp"
             android:title="Статистика" />
-
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_pie_chart_black_24dp"
+            android:title="Поиск продуктов"/>
     </group>
 
     <item android:title="Настройки">
