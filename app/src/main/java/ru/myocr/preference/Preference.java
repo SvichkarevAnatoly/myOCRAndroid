@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import ru.myocr.App;
 
 public class Preference {
-
-    public static final String CITY = "city";
     public static final String SHOP = "SHOP";
 
     private static final String APP_PREFS = "APP_PREFS";

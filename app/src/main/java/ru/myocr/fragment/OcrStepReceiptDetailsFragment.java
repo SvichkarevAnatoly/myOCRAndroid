@@ -2,11 +2,9 @@ package ru.myocr.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
@@ -35,6 +33,7 @@ import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItem;
 import ru.myocr.preference.Preference;
+import ru.myocr.preference.Settings;
 import ru.myocr.util.PriceUtil;
 import ru.myocr.util.TimeUtil;
 
@@ -130,8 +129,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     @NonNull
     private SavePriceRequest initSavePriceRequest() {
         final List<ReceiptPriceItem> items = convert(receiptData.getProductsPricesPairs());
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final String city = sharedPreferences.getString(Preference.CITY, "Nsk");
+        final String city = Settings.getString(Settings.CITY);
         final String shop = Preference.getString(Preference.SHOP);
         final String time = TimeUtil.parse(date.getTime());
         return new SavePriceRequest(city, shop, time, items);

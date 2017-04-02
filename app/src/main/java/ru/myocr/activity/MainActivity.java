@@ -24,15 +24,12 @@ import net.hockeyapp.android.UpdateManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityMainBinding;
 import ru.myocr.fragment.StatsFragment;
 import ru.myocr.fragment.TicketFragment;
-import ru.myocr.model.City;
-import ru.myocr.preference.Preference;
 import ru.myocr.util.BitmapUtil;
 
 import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
@@ -65,17 +62,10 @@ public class MainActivity extends AppCompatActivity
         ApiHelper.makeApiRequest(null, ApiHelper::getAllCities,
                 throwable -> {
                 },
-                this::onLoadCities, null);
+                null, null);
 
         openFragment(TicketFragment.newInstance());
         checkForUpdates();
-    }
-
-    private void onLoadCities(List<City> cities) {
-        final String currentCity = Preference.getString(Preference.CITY);
-        if (currentCity == null) {
-            Preference.setString(Preference.CITY, cities.get(0).id);
-        }
     }
 
     @Override

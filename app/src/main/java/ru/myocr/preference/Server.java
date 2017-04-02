@@ -18,7 +18,7 @@ public class Server {
 
     public static String getUrl() {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        final boolean isLocal = preferences.getBoolean(SERVER_SWITCH_KEY, true);
+        final boolean isLocal = preferences.getBoolean(SERVER_SWITCH_KEY, false);
         if (isLocal) {
             return preferences.getString(SERVER_LOCAL_KEY, App.getContext().getString(localhost));
         } else {

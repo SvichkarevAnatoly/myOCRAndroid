@@ -5,13 +5,12 @@
         android:title="Основные настройки">
 
         <ListPreference
-            android:defaultValue="1"
             android:key="city"
             android:summary="Нажмите чтобы выбрать город"
             android:title="Город" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="use_localhost"
             android:title="Использовать локальный сервер"/>
 

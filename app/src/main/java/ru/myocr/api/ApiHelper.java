@@ -1,5 +1,7 @@
 package ru.myocr.api;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import java.io.IOException;
@@ -15,6 +17,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.myocr.App;
 import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
@@ -23,6 +26,7 @@ import ru.myocr.model.City;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
 import ru.myocr.preference.Server;
+import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
 import rx.Observable;
 import rx.Subscription;
@@ -103,6 +107,12 @@ public class ApiHelper {
             City c = new City(city, city);
             c.putIfNotExist();
             cities.add(c);
+        }
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        if ((preferences.getString(Settings.CITY, null) == null)
+                && (cities.size() != 0)) {
+            preferences.edit().putString(Settings.CITY, cities.get(0).id).apply();
         }
 
         return cities;

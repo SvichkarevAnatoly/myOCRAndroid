@@ -4,14 +4,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -33,13 +31,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.ActivityCropBinding;
 import ru.myocr.preference.Preference;
+import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
 
 import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
@@ -98,7 +96,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         binding.buttonOk.setOnClickListener(v -> onClickCrop());
         Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        ApiHelper.makeApiRequest(Preference.getString(Preference.CITY), ApiHelper::getShops,
+        ApiHelper.makeApiRequest(Settings.getString(Settings.CITY), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);
@@ -170,8 +168,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         } else {
             Bitmap prices = result.getBitmap();
 
-            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-            final String city = sharedPreferences.getString(Preference.CITY, "Nsk");
+            final String city = Settings.getString(Settings.CITY);
             final String shop = Preference.getString(Preference.SHOP);
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
