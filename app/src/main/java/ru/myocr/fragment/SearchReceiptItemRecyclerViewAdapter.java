@@ -36,7 +36,7 @@ public class SearchReceiptItemRecyclerViewAdapter extends RecyclerView.Adapter<S
         if (null == item) {
             return;
         }
-        holder.binding.content.setText(item.toString());
+        holder.binding.searchReceiptItem.setText(item.toString());
         holder.binding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
                 mListener.onListFragmentInteraction(item);
