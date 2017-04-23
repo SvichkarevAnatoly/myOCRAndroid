@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="localhost">http://193.169.0.100:8080/</string>
-    <string name="remote">http://ticketeen-test.azurewebsites.net:80/</string>
+    <!--google cloud compute engine-->
+    <string name="remote">http://104.199.78.135:8080/</string>
 </resources>
