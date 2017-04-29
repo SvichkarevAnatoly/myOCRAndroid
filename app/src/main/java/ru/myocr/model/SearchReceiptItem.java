@@ -16,7 +16,7 @@ public class SearchReceiptItem {
 
     @Override
     public String toString() {
-        return item + " " + date + " " + PriceUtil.getStringWithDot(price) + " руб.";
+        return item + "\n" + date + "\n" + PriceUtil.getStringWithDot(price) + " руб.";
     }
 
     public String getItem() {
