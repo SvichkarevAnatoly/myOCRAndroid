@@ -26,7 +26,7 @@ public class BitmapUtil {
 
     public static File createTempFile() throws IOException {
         // Create an image file name
-        String timeStamp = TimeUtil.DATE_FORMAT.format(new Date());
+        String timeStamp = TimeUtil.parse(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(

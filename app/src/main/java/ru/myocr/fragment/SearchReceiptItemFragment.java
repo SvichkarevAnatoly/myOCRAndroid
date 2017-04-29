@@ -14,9 +14,7 @@ import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
-import ru.myocr.api.SearchReceiptItemsRequest;
 import ru.myocr.model.SearchReceiptItem;
-import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
 
 public class SearchReceiptItemFragment extends Fragment implements SearchReceiptItemRecyclerViewAdapter.SearchReceiptItemInteractionListener {
@@ -51,9 +49,7 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
             final String city = Settings.getString(Settings.CITY);
-            final String shop = Preference.getString(Preference.SHOP);
-            final SearchReceiptItemsRequest request = new SearchReceiptItemsRequest(city, shop);
-            ApiHelper.makeApiRequest(request, ApiHelper::getReceiptItems,
+            ApiHelper.makeApiRequest(city, ApiHelper::getReceiptItems,
                     throwable -> Toast.makeText(getContext(), "Ошибка получения данных", Toast.LENGTH_SHORT).show(),
                     this::onLoadReceiptItems, null);
         }

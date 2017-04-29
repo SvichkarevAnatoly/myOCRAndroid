@@ -164,10 +164,8 @@ public class ApiHelper {
         return makeRequest(call);
     }
 
-    public List<SearchReceiptItem> getReceiptItems(SearchReceiptItemsRequest request) {
-        final String city = request.getCity();
-        final String shop = request.getShop();
-        Call<List<SearchReceiptItem>> call = api.getReceiptItems(city, shop);
+    public List<SearchReceiptItem> getReceiptItems(String city) {
+        Call<List<SearchReceiptItem>> call = api.getReceiptItems(city);
         return makeRequest(call);
     }
 
