@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import ru.myocr.App;
 import ru.myocr.R;
@@ -25,7 +27,8 @@ public class SearchReceiptItemRecyclerViewAdapter extends RecyclerView.Adapter<S
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final FragmentSearchReceiptItemBinding inflate = DataBindingUtil.inflate(LayoutInflater.from(App.getContext()),
+        final FragmentSearchReceiptItemBinding inflate =
+                DataBindingUtil.inflate(LayoutInflater.from(App.getContext()),
                 R.layout.fragment_search_receipt_item, parent, false);
         return new ViewHolder(inflate);
     }
@@ -36,12 +39,22 @@ public class SearchReceiptItemRecyclerViewAdapter extends RecyclerView.Adapter<S
         if (null == item) {
             return;
         }
-        holder.binding.searchReceiptItem.setText(item.toString());
+        holder.binding.receiptItem.setText(item.getItem());
+        holder.binding.date.setText(item.getDate());
+
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        String price = format.format(item.getPrice() / 100.);
+        holder.binding.price.setText(price);
         holder.binding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
                 mListener.onListFragmentInteraction(item);
             }
         });
+
+        holder.binding.getRoot().setBackgroundColor(App.getContext().getResources()
+                .getColor(position % 2 == 0
+                        ? R.color.receipt_item_bg_light
+                        : R.color.receipt_item_bg_dark));
     }
 
     @Override

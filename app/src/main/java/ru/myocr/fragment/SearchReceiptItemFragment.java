@@ -13,16 +13,20 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.util.List;
 
 import ru.myocr.R;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.FragmentSearchReceiptItemListBinding;
 import ru.myocr.model.SearchReceiptItem;
 import ru.myocr.model.filter.Filter;
 import ru.myocr.model.filter.SearchSource;
 import ru.myocr.model.filter.SearchSourceRemote;
+import ru.myocr.preference.Settings;
 
 public class SearchReceiptItemFragment extends Fragment implements SearchReceiptItemRecyclerViewAdapter.SearchReceiptItemInteractionListener {
 
@@ -45,6 +49,12 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        filter.setCity(Settings.getString(Settings.CITY));
+        ApiHelper.makeApiRequest(Settings.getString(Settings.CITY), ApiHelper::getShops,
+                throwable -> {
+                },
+                this::onLoadShops, null);
     }
 
     @Override
@@ -81,12 +91,14 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
                 return true;
             }
         });
-
-        //searchView.setOnCloseListener(this::showAll);
     }
 
     private void updateQuery(String query) {
         filter.setQuery(query);
+        query();
+    }
+
+    private void query() {
         searchSource.search(filter, new SearchSource.SearchResultCallback() {
             @Override
             public void onFailed() {
@@ -113,6 +125,25 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     @Override
     public void onListFragmentInteraction(SearchReceiptItem item) {
 
+    }
+
+    private void onLoadShops(List<String> shops) {
+        binding.spinnerShop.setAdapter(
+                new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, shops));
+        binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final String shop = shops.get(position);
+                filter.setShop(shop);
+                query();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                filter.setShop(null);
+                query();
+            }
+        });
     }
 
 }
