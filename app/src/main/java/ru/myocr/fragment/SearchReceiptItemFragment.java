@@ -18,7 +18,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import ru.myocr.R;
-import ru.myocr.databinding.FragmentSearchreceiptitemListBinding;
+import ru.myocr.databinding.FragmentSearchReceiptItemListBinding;
 import ru.myocr.model.SearchReceiptItem;
 import ru.myocr.model.filter.Filter;
 import ru.myocr.model.filter.SearchSource;
@@ -28,7 +28,7 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
 
     private Filter filter = new Filter();
     private SearchSource searchSource = new SearchSourceRemote();
-    private FragmentSearchreceiptitemListBinding binding;
+    private FragmentSearchReceiptItemListBinding binding;
 
     public SearchReceiptItemFragment() {
     }
@@ -50,7 +50,7 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_searchreceiptitem_list, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_receipt_item_list, container, false);
         binding.list.setLayoutManager(new LinearLayoutManager(getActivity()));
         return binding.getRoot();
     }
