@@ -38,5 +38,8 @@ public interface Api {
     Call<List<String>> getShops(@Path("cityName") String cityName);
 
     @GET("find/prices")
-    Call<List<SearchReceiptItem>> getReceiptItems(@Query("city") String city);
+    Call<List<SearchReceiptItem>> getReceiptItems(
+            @Query("city") String city,
+            @Query("shop") String shop,
+            @Query("q") String q);
 }
