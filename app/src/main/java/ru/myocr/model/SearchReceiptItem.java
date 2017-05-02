@@ -1,9 +1,11 @@
 package ru.myocr.model;
 
 
+import java.io.Serializable;
+
 import ru.myocr.util.PriceUtil;
 
-public class SearchReceiptItem {
+public class SearchReceiptItem implements Serializable {
     private String item;
     private int price;
     private String date;

@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.myocr.R;
@@ -33,6 +35,8 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     private Filter filter = new Filter();
     private SearchSource searchSource = new SearchSourceRemote();
     private FragmentSearchReceiptItemListBinding binding;
+    private ArrayList<SearchReceiptItem> searchReceiptItems;
+    private String query;
 
     public SearchReceiptItemFragment() {
     }
@@ -66,6 +70,7 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     }
 
     private void onLoadReceiptItems(List<SearchReceiptItem> searchReceiptItems) {
+        this.searchReceiptItems = new ArrayList<>(searchReceiptItems);
         binding.list.setAdapter(new SearchReceiptItemRecyclerViewAdapter(searchReceiptItems, this));
     }
 
@@ -93,8 +98,21 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_show_diagram) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, DetailStatsFragment.newInstance(searchReceiptItems, query), null)
+                    .commit();
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void updateQuery(String query) {
-        filter.setQuery(query);
+        this.query = query;
+        filter.setQuery(this.query);
         query();
     }
 
@@ -147,3 +165,4 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     }
 
 }
+

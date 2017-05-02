@@ -4,6 +4,13 @@
       tools:context="ru.myocr.activity.TicketActivity">
 
     <item
+        android:id="@+id/action_show_diagram"
+        android:icon="@drawable/ic_pie_chart_black_24dp"
+        android:orderInCategory="100"
+        android:title="Показать график"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="200"

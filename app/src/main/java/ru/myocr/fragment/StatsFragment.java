@@ -91,7 +91,7 @@ public class StatsFragment extends Fragment implements ViewPager.OnPageChangeLis
                     mainStatsFragment = MainStatsFragment.newInstance();
                     return mainStatsFragment;
                 case 1:
-                    detailStatsFragment = DetailStatsFragment.newInstance();
+                    detailStatsFragment = DetailStatsFragment.newInstance(null, null);
                     return detailStatsFragment;
             }
             return null;
