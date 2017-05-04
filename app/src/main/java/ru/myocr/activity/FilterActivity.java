@@ -1,8 +1,10 @@
 package ru.myocr.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -11,14 +13,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityFilterBinding;
+import ru.myocr.databinding.FilterDialogLayoutBinding;
 import ru.myocr.fragment.SearchReceiptItemRecyclerViewAdapter;
 import ru.myocr.model.SearchReceiptItem;
 import ru.myocr.model.filter.Filter;
@@ -123,6 +130,9 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
             case R.id.action_ok:
                 onClickApply();
                 break;
+            case R.id.action_filter:
+                onClickFilter();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -133,6 +143,43 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
         data.putExtra(KEY_RESULT_FILTER, filter);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    private void onClickFilter() {
+        FilterDialogLayoutBinding binding = DataBindingUtil
+                .inflate(getLayoutInflater(), R.layout.filter_dialog_layout, null, false);
+
+        Calendar dateStart = Calendar.getInstance();
+        Calendar dateEnd = Calendar.getInstance();
+
+        setListenerForDateEditText(dateStart, binding.dateStart);
+        setListenerForDateEditText(dateEnd, binding.dateEnd);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Дополнительные настройки")
+                .setPositiveButton("Применить", (dialog, which) -> {
+                })
+                .setNegativeButton("Отменить", null)
+                .setView(binding.getRoot())
+                .show();
+    }
+
+    private void setListenerForDateEditText(Calendar date, EditText editText) {
+        DatePickerDialog.OnDateSetListener listener = (view, year, monthOfYear, dayOfMonth) -> {
+            date.set(Calendar.YEAR, year);
+            date.set(Calendar.MONTH, monthOfYear);
+            date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            String myFormat = "dd.MM.yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+            editText.setText(sdf.format(date.getTime()));
+        };
+
+        editText.setOnClickListener(v -> {
+            new DatePickerDialog(this, listener, date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+                    date.get(Calendar.DAY_OF_MONTH)).show();
+        });
     }
 
     private void onLoadShops(List<String> shops) {
