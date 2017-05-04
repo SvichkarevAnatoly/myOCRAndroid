@@ -1,7 +1,9 @@
 package ru.myocr.model.filter;
 
 
-public class Filter {
+import java.io.Serializable;
+
+public class Filter implements Serializable {
 
     private String city;
     private String shop;

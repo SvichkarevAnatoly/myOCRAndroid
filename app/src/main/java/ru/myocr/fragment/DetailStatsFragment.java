@@ -1,6 +1,8 @@
 package ru.myocr.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,11 +25,13 @@ import java.util.List;
 import java.util.Locale;
 
 import ru.myocr.R;
+import ru.myocr.activity.FilterActivity;
 import ru.myocr.databinding.FragmentDetailStatsBinding;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.ReceiptItem;
 import ru.myocr.model.SearchReceiptItem;
+import ru.myocr.model.filter.Filter;
 import ru.myocr.util.ColorUtil;
 import ru.myocr.util.RxUtil;
 
@@ -35,6 +39,7 @@ public class DetailStatsFragment extends Fragment {
 
     public static final String KEY_ITEMS = "KEY_ITEMS";
     public static final String KEY_LABEL = "KEY_LABEL";
+    public static final int REQUEST_CODE_FILTER = 5;
 
     private FragmentDetailStatsBinding binding;
     private ArrayList<SearchReceiptItem> items;
@@ -66,6 +71,9 @@ public class DetailStatsFragment extends Fragment {
         binding.floatingMenu.hide(false);
 
         initLineChart();
+
+        binding.floatingMenu.setOnClickListener(
+                v -> startActivityForResult(new Intent(getActivity(), FilterActivity.class), REQUEST_CODE_FILTER));
         return binding.getRoot();
     }
 
@@ -95,33 +103,37 @@ public class DetailStatsFragment extends Fragment {
 
 
         if (null == items) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 1; i++) {
                 try {
                     addDataSet(DummyReceipt.DUMMY_PRODUCTS.get(i));
                 } catch (Exception e) {
                 }
             }
         } else {
-            List<Entry> entries = new ArrayList<>();
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            Collections.sort(items, (o1, o2) -> {
-                o1.getDate();
-                try {
-                    return format.parse(o1.getDate()).after(format.parse(o2.getDate())) ? 1 : -1;
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 1;
-            });
-            for (SearchReceiptItem item : items) {
-                try {
-                    entries.add(new Entry(format.parse(item.getDate()).getTime(), item.getPrice() / 100f));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            addDataSet(entries, label);
+            addDataSet(items, label);
         }
+    }
+
+    private void addDataSet(ArrayList<SearchReceiptItem> items, String label) {
+        List<Entry> entries = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        Collections.sort(items, (o1, o2) -> {
+            o1.getDate();
+            try {
+                return format.parse(o1.getDate()).after(format.parse(o2.getDate())) ? 1 : -1;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return 1;
+        });
+        for (SearchReceiptItem item : items) {
+            try {
+                entries.add(new Entry(format.parse(item.getDate()).getTime(), item.getPrice() / 100f));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        addDataSet(entries, label);
     }
 
     private void addDataSet(String receiptName) {
@@ -171,5 +183,17 @@ public class DetailStatsFragment extends Fragment {
 
         binding.lineChart.setData(lineData);
         binding.lineChart.invalidate();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_CODE_FILTER == requestCode && Activity.RESULT_OK == resultCode) {
+            ArrayList<SearchReceiptItem> result =
+                    (ArrayList<SearchReceiptItem>) data.getSerializableExtra(FilterActivity.KEY_RESULT_ITEMS);
+            Filter filter = (Filter) data.getSerializableExtra(FilterActivity.KEY_RESULT_FILTER);
+            String query = filter.getQuery();
+            addDataSet(result, query == null ? "" : query);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

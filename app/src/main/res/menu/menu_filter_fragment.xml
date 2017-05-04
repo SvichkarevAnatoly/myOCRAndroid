@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ru.myocr.activity.TicketActivity">
+
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_tune_white_24dp"
+        android:orderInCategory="200"
+        android:title="filter"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_ok"
+        android:icon="@drawable/ic_check_white_24dp"
+        android:orderInCategory="200"
+        android:title="OK"
+        app:showAsAction="always" />
+
+</menu>
