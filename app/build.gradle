@@ -8,7 +8,7 @@ android {
         applicationId "ru.myocr"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "8e630e471bb5441fa2f5e83f57d18ab4"]
