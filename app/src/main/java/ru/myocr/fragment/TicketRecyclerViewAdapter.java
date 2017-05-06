@@ -10,14 +10,12 @@ import android.view.ViewGroup;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.databinding.ReceiptListItemBinding;
 import ru.myocr.model.Receipt;
-import ru.myocr.model.ReceiptItem;
 import ru.myocr.util.CursorRecyclerViewAdapter;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
@@ -30,6 +28,18 @@ public class TicketRecyclerViewAdapter extends CursorRecyclerViewAdapter<TicketR
                                      TicketFragment.TicketFragmentInteractionListener mListener) {
         super(context, cursor);
         this.mListener = mListener;
+        setHasStableIds(true);
+    }
+
+
+    @Override
+    public long getItemId(int position) {
+        Cursor cursor = getCursor();
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+            return cursor.getLong(cursor.getColumnIndex("_id"));
+        }
+        return 0;
     }
 
     @Override

@@ -112,6 +112,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
                         }).show();
             }
         });
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         return view;
     }
