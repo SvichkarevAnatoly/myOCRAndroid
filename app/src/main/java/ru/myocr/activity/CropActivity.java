@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -202,11 +205,19 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
 
         Rect unionRect = unionRect(cropProductRect, cropPricesRect);
-        Bitmap unionBitmap = Bitmap.createBitmap(bitmap, unionRect.left, unionRect.top, unionRect.width(), unionRect.height());
+        Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+        Canvas canvas = new Canvas(mutableBitmap);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(5);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(unionRect, paint);
 
         File tempFile = BitmapUtil.createTempFile();
         FileOutputStream outputStream = new FileOutputStream(tempFile);
-        unionBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        mutableBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         outputStream.close();
 
         return FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, tempFile);
