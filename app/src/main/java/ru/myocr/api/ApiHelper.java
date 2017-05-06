@@ -165,6 +165,12 @@ public class ApiHelper {
         return makeRequest(call);
     }
 
+    public List<String> getReceiptItemsInShop(ReceiptItemsInShopRequest request) {
+        Call<List<String>> call = api.getReceiptItemsInShop(
+                request.getCity(), request.getShop());
+        return makeRequest(call);
+    }
+
     public List<SearchReceiptItem> searchReceiptItems(Filter filter) {
         Call<List<SearchReceiptItem>> call = api.getReceiptItems(
                 filter.getCity(), filter.getShop(), filter.getQuery());

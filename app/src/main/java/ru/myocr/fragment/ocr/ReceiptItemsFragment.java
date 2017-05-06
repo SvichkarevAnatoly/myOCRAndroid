@@ -19,11 +19,15 @@ import java.util.List;
 import ru.myocr.R;
 import ru.myocr.activity.ReceiptOcrActivity;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
+import ru.myocr.api.ApiHelper;
+import ru.myocr.api.ReceiptItemsInShopRequest;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.FragmentReceiptOcrBinding;
 import ru.myocr.databinding.ReceiptItemEditDialogBinding;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItemPriceViewItem;
+import ru.myocr.preference.Preference;
+import ru.myocr.preference.Settings;
 import ru.myocr.util.collection.ArrayStack;
 import ru.myocr.util.collection.Stack;
 
@@ -36,10 +40,10 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
     private Stack<ReceiptData> receiptDataStack = new ArrayStack<>();
     private ReceiptDataViewAdapter receiptViewAdapter;
     private List<Pair<String, String>> productPricePairs = new ArrayList<>();
+    private List<String> autoCompleteShopReceiptItems = new ArrayList<>();
 
     public ReceiptItemsFragment() {
         // Required empty public constructor
-
     }
 
     public static ReceiptItemsFragment newInstance(OcrReceiptResponse response) {
@@ -54,6 +58,19 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        final String city = Settings.getString(Settings.CITY);
+        final String shop = Preference.getString(Preference.SHOP);
+        final ReceiptItemsInShopRequest request = new ReceiptItemsInShopRequest(city, shop);
+
+        ApiHelper.makeApiRequest(request, ApiHelper::getReceiptItemsInShop,
+                throwable -> {
+                },
+                this::onLoadShopReceiptItems, null);
+    }
+
+    private void onLoadShopReceiptItems(List<String> dbReceipts) {
+        autoCompleteShopReceiptItems = new ArrayList<>(dbReceipts);
     }
 
     @Override
@@ -179,6 +196,10 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
                     final String newText = matches.get(position);
                     binding.receiptItemEditText.setText(newText);
                 });
+
+        binding.receiptItemEditText.setAdapter(new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_list_item_1, autoCompleteShopReceiptItems
+        ));
 
         new AlertDialog.Builder(getContext())
                 .setView(binding.getRoot())

@@ -28,7 +28,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <android.support.v7.widget.AppCompatEditText
+                        <android.support.v7.widget.AppCompatAutoCompleteTextView
                             android:id="@+id/receipt_item_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                     style="@style/SectionTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Другие варианты" />
+                    android:text="Другие варианты"/>
 
                 <ListView
                     android:id="@+id/receipt_item_matches"

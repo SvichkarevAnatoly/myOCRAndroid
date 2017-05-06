@@ -42,4 +42,9 @@ public interface Api {
             @Query("city") String city,
             @Query("shop") String shop,
             @Query("q") String q);
+
+    @GET("receiptItems")
+    Call<List<String>> getReceiptItemsInShop(
+            @Query("city") String city,
+            @Query("shop") String shop);
 }
