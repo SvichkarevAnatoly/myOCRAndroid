@@ -17,6 +17,7 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
     public static final String ARG_OCR_RESPONSE = "ARG_OCR_RESPONSE";
     public static final String ARG_OCR_PHOTO = "ARG_OCR_PHOTO";
+    public static final String ARG_OCR_ORIGIN_PHOTO = "ARG_OCR_ORIGIN_PHOTO";
     public static final String TAG_OCR_STEP_ITEMS_FRAGMENT = "ReceiptItemsFragment";
     public static final String TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT = "OcrStepReceiptDetailsFragment";
 
@@ -76,7 +77,8 @@ public class ReceiptOcrActivity extends AppCompatActivity {
 
     private void showReceiptDetailFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(receiptData),
+                .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(receiptData,
+                        getIntent().getParcelableExtra(ARG_OCR_ORIGIN_PHOTO)),
                         TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT).commit();
 
         binding.floatingMenu.setImageResource(R.drawable.ic_check_white_18dp);

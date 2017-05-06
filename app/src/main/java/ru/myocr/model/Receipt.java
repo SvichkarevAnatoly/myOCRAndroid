@@ -48,6 +48,7 @@ public class Receipt implements Serializable {
     public int changeSum;
     @SerializedName("discountSum")
     public int discountSum;
+    public Uri photo;
 
     @Ignore
     public List<Tag> tags;

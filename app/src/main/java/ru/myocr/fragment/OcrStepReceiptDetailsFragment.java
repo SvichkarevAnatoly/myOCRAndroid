@@ -38,6 +38,7 @@ import ru.myocr.util.PriceUtil;
 import ru.myocr.util.TimeUtil;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_PHOTO;
 import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
 
@@ -45,6 +46,7 @@ import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
 public class OcrStepReceiptDetailsFragment extends Fragment {
 
     private ReceiptData receiptData;
+    private Uri photo;
     private FragmentOcrStepReceiptDetailsBinding binding;
     private Calendar date;
 
@@ -52,10 +54,11 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData) {
+    public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData, Uri photo) {
         OcrStepReceiptDetailsFragment fragment = new OcrStepReceiptDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_OCR_RESPONSE, receiptData);
+        args.putParcelable(ARG_OCR_PHOTO, photo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,6 +67,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         receiptData = (ReceiptData) getArguments().getSerializable(ARG_OCR_RESPONSE);
+        photo = getArguments().getParcelable(ARG_OCR_PHOTO);
     }
 
     @Override
@@ -98,6 +102,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         receipt.items = items;
 
         receipt.totalCostSum = Integer.valueOf(binding.total.getText().toString()) * 100;
+
+        receipt.photo = photo;
 
         // Save to Db
         Uri uri = DbModel.getProviderCompartment().put(Receipt.URI, receipt);

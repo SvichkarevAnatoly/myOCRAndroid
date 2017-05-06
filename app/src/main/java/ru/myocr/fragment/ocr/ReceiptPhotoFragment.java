@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentReceiptPhotoBinding;
 
@@ -48,7 +50,9 @@ public class ReceiptPhotoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final FragmentReceiptPhotoBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receipt_photo, container, false);
-        binding.receiptSelectedPhoto.setImageURI(photoUri);
+        Picasso.with(getActivity())
+                .load(photoUri)
+                .into(binding.receiptSelectedPhoto);
         return binding.getRoot();
     }
 

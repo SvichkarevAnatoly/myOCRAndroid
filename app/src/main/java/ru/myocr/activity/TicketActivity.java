@@ -19,6 +19,7 @@ import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.R;
 import ru.myocr.db.ReceiptContentProvider;
 import ru.myocr.fragment.ReceiptViewFragment;
+import ru.myocr.fragment.ocr.ReceiptPhotoFragment;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
@@ -103,7 +104,7 @@ public class TicketActivity extends AppCompatActivity {
                 case 0:
                     return ReceiptViewFragment.newInstance(receipt._id);
                 case 1:
-                    return ReceiptViewFragment.newInstance(receipt._id);
+                    return ReceiptPhotoFragment.newInstance(receipt.photo);
             }
             return null;
         }

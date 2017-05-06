@@ -1,5 +1,6 @@
 package ru.myocr.db;
 
+import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MergeCursor;
@@ -12,6 +13,8 @@ import nl.littlerobots.cupboard.tools.gson.GsonFieldConverter;
 import nl.littlerobots.cupboard.tools.provider.CupboardContentProvider;
 import nl.qbusict.cupboard.Cupboard;
 import nl.qbusict.cupboard.CupboardBuilder;
+import nl.qbusict.cupboard.convert.EntityConverter;
+import nl.qbusict.cupboard.convert.FieldConverter;
 import ru.myocr.BuildConfig;
 import ru.myocr.model.City;
 import ru.myocr.model.Receipt;
@@ -25,7 +28,7 @@ import static nl.qbusict.cupboard.CupboardFactory.setCupboard;
 public class ReceiptContentProvider extends CupboardContentProvider {
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String _ID = "_id";
 
     public static final String PATH_RECEIPT_BY_TAG = "PATH_RECEIPT_BY_TAG";
@@ -56,6 +59,23 @@ public class ReceiptContentProvider extends CupboardContentProvider {
                 .useAnnotations()
                 .registerFieldConverter(Receipt.Market.class,
                         new GsonFieldConverter<>(new Gson(), Receipt.Market.class))
+                .registerFieldConverter(Uri.class,
+                        new FieldConverter<Uri>() {
+                            @Override
+                            public Uri fromCursorValue(Cursor cursor, int columnIndex) {
+                                return Uri.parse(cursor.getString(columnIndex));
+                            }
+
+                            @Override
+                            public void toContentValue(Uri value, String key, ContentValues values) {
+                                values.put(key, value.toString());
+                            }
+
+                            @Override
+                            public EntityConverter.ColumnType getColumnType() {
+                                return EntityConverter.ColumnType.TEXT;
+                            }
+                        })
                 .build();
 
         setCupboard(cupboard);
