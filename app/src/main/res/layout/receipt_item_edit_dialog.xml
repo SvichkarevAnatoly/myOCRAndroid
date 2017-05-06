@@ -25,37 +25,34 @@
                     android:orientation="horizontal">
 
                     <android.support.design.widget.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
                         <android.support.v7.widget.AppCompatEditText
                             android:id="@+id/receipt_item_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
                             android:hint="Название продукта"
-                            android:inputType="date"
-                            android:lines="1" />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <android.support.v7.widget.AppCompatEditText
-                            android:id="@+id/price_edit_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:hint="Цена"
-                            android:inputType="date"
                             android:lines="1"
-                            android:text="" />
+                            android:textSize="14sp"/>
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/price_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Цена"
+                        android:inputType="numberDecimal"
+                        android:lines="1"
+                        android:text=""
+                        android:textSize="14sp"/>
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.v7.widget.AppCompatTextView
                     style="@style/SectionTextStyle"

@@ -171,7 +171,7 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
         matches.add(item.getSource());
 
         binding.receiptItemMatches.setAdapter(new ArrayAdapter<>(
-                getContext(), android.R.layout.simple_list_item_1, matches
+                getContext(), R.layout.receipt_matches_item, matches
         ));
 
         binding.receiptItemMatches.setOnItemClickListener(
