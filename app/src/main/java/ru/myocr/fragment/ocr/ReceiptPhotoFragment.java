@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import ru.myocr.R;
 import ru.myocr.databinding.FragmentReceiptPhotoBinding;
+import ru.myocr.util.BitmapTransform;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,8 +21,8 @@ import ru.myocr.databinding.FragmentReceiptPhotoBinding;
  * create an instance of this fragment.
  */
 public class ReceiptPhotoFragment extends Fragment {
+    public static final int MAX_BMP_SIZE = 1000;
     private static final String ARG_PARAM1 = "param1";
-
     private Uri photoUri;
 
     public ReceiptPhotoFragment() {
@@ -52,6 +53,7 @@ public class ReceiptPhotoFragment extends Fragment {
         final FragmentReceiptPhotoBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receipt_photo, container, false);
         Picasso.with(getActivity())
                 .load(photoUri)
+                .transform(new BitmapTransform(MAX_BMP_SIZE, MAX_BMP_SIZE))
                 .into(binding.receiptSelectedPhoto);
         return binding.getRoot();
     }
