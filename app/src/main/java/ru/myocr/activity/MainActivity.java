@@ -186,12 +186,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        // Always show the chooser (if there are multiple options available)
-        final Intent chooser = Intent.createChooser(intent, "Select Picture");
-        startActivityForResult(chooser, PICK_IMAGE_REQUEST);
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, PICK_IMAGE_REQUEST);
     }
 
     public void runCamScanner() {
