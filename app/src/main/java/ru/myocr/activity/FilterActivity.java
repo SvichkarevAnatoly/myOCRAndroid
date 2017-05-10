@@ -4,13 +4,16 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -43,6 +46,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
     private SearchSource searchSource = new SearchSourceRemote();
     private Filter filter = new Filter();
     private ArrayList<SearchReceiptItem> searchReceiptItems;
+    private List<String> shops = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,15 +99,18 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
     }
 
     private void query() {
+        binding.progress.setVisibility(View.VISIBLE);
         searchSource.search(filter, new SearchSource.SearchResultCallback() {
             @Override
             public void onFailed() {
                 Toast.makeText(FilterActivity.this, "Ошибка", Toast.LENGTH_SHORT).show();
+                binding.progress.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onSuccess(List<SearchReceiptItem> result) {
                 onLoadReceiptItems(result);
+                binding.progress.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -155,13 +162,53 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
         setListenerForDateEditText(dateStart, binding.dateStart);
         setListenerForDateEditText(dateEnd, binding.dateEnd);
 
-        new AlertDialog.Builder(this)
-                .setTitle("Дополнительные настройки")
-                .setPositiveButton("Применить", (dialog, which) -> {
+        binding.shop.setText(filter.getShop() != null ? filter.getShop() : "");
+        binding.shop.setOnClickListener(v -> new AlertDialog.Builder(this)
+                .setItems(shops.toArray(new String[shops.size()]), (dialog, which) -> {
+                    binding.shop.setText(shops.get(which));
+                    dialog.dismiss();
                 })
-                .setNegativeButton("Отменить", null)
-                .setView(binding.getRoot())
-                .show();
+                .show());
+
+        AppCompatDialog dialog = new AppCompatDialog(this, R.style.DialogTheme) {
+            @Override
+            public boolean onCreateOptionsMenu(Menu menu) {
+                getMenuInflater().inflate(R.menu.menu_filter_dialog, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemSelected(int featureId, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_ok:
+                        String shop = binding.shop.getText().toString();
+                        filter.setShop(shop.isEmpty() ? null : shop);
+                        query();
+                        dismiss();
+                        break;
+                    case android.R.id.home:
+                        dismiss();
+                        break;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareOptionsMenu(Menu menu) {
+                return super.onPrepareOptionsMenu(menu);
+            }
+
+        };
+        dialog.setContentView(binding.getRoot());
+
+        ActionBar actionBar = dialog.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Настройки Фильтра");
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_forward_white_18dp);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        dialog.show();
     }
 
     private void setListenerForDateEditText(Calendar date, EditText editText) {
@@ -183,23 +230,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
     }
 
     private void onLoadShops(List<String> shops) {
-        /*shops.add(0, "Не выбрано");
-        binding.spinnerShop.setAdapter(
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shops));
-        binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String shop = 0 != position ? shops.get(position) : null;
-                filter.setShop(shop);
-                query();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                filter.setShop(null);
-                query();
-            }
-        });*/
+        this.shops = shops;
     }
 }
 
