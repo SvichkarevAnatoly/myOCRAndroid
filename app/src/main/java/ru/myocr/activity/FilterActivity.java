@@ -122,7 +122,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
 
     @Override
     public void onListFragmentInteraction(SearchReceiptItem item) {
-
+        binding.editTextSearch.setText(item.getItem());
     }
 
     @Override
