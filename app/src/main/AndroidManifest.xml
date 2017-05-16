@@ -37,20 +37,10 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.ReceiptOcrActivity"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
-        <activity android:name=".activity.CropActivity" />
+        <activity
+            android:name=".activity.AddReceiptActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name=".db.ReceiptContentProvider"

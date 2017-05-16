@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.myocr.R;
-import ru.myocr.activity.ReceiptOcrActivity;
+import ru.myocr.activity.AddReceiptActivity;
 import ru.myocr.activity.adapter.ReceiptDataViewAdapter;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.ReceiptItemsInShopRequest;
@@ -30,8 +30,6 @@ import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
 import ru.myocr.util.collection.ArrayStack;
 import ru.myocr.util.collection.Stack;
-
-import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 
 public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAdapter.OnItemClickListener {
 
@@ -49,7 +47,7 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
     public static ReceiptItemsFragment newInstance(OcrReceiptResponse response) {
         ReceiptItemsFragment fragment = new ReceiptItemsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_OCR_RESPONSE, response);
+        args.putSerializable(AddReceiptActivity.ARG_OCR_RESPONSE, response);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,7 +99,7 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_receipt_ocr, container, false);
 
-        OcrReceiptResponse response = (OcrReceiptResponse) getArguments().getSerializable(ARG_OCR_RESPONSE);
+        OcrReceiptResponse response = (OcrReceiptResponse) getArguments().getSerializable(AddReceiptActivity.ARG_OCR_RESPONSE);
         if (response != null) {
             receiptDataStack.push(new ReceiptData(response));
             updateProductsView();
@@ -120,11 +118,11 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
                     })
                     .setPositiveButton("Да",
                             (dialog, which) ->
-                                    ((ReceiptOcrActivity) getActivity())
+                                    ((AddReceiptActivity) getActivity())
                                             .onReceiptDataSaved(receiptDataStack.peek().getCompletedList()))
                     .show();
         } else {
-            ((ReceiptOcrActivity) getActivity()).onReceiptDataSaved(receiptDataStack.peek());
+            ((AddReceiptActivity) getActivity()).onReceiptDataSaved(receiptDataStack.peek());
         }
     }
 

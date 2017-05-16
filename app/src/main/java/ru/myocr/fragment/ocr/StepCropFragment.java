@@ -1,9 +1,8 @@
-package ru.myocr.activity;
+package ru.myocr.fragment.ocr;
+
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,19 +12,18 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageOptions;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
@@ -35,31 +33,39 @@ import java.io.InputStream;
 import java.util.List;
 
 import ru.myocr.R;
+import ru.myocr.activity.AddReceiptActivity;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
-import ru.myocr.api.ocr.OcrReceiptResponse;
-import ru.myocr.databinding.ActivityCropBinding;
+import ru.myocr.databinding.FragmentStepCropBinding;
 import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
 
 import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
 
-public class CropActivity extends AppCompatActivity implements CropImageView.OnCropImageCompleteListener {
-
-    private CropImageView mCropImageView;
+public class StepCropFragment extends Fragment implements CropImageView.OnCropImageCompleteListener {
 
     private Uri mCropImageUri;
-
-    private CropImageOptions mOptions;
-
     private boolean isProductCropped = false;
-    private ActivityCropBinding binding;
+    private FragmentStepCropBinding binding;
 
     private Bitmap receiptItem;
 
     private ProgressDialog progressDialog;
     private Rect cropProductRect;
+
+
+    public StepCropFragment() {
+        // Required empty public constructor
+    }
+
+    public static StepCropFragment newInstance(Uri photo) {
+        StepCropFragment fragment = new StepCropFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(AddReceiptActivity.ARG_OCR_PHOTO, photo);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     private static Rect unionRect(Rect productRect, Rect pricesRect) {
         return new Rect(productRect.left, Math.min(productRect.top, pricesRect.top),
@@ -67,47 +73,36 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
     }
 
     @Override
-    @SuppressLint("NewApi")
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_step_crop, container, false);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_crop);
-
-        mCropImageView = (CropImageView) findViewById(R.id.cropImageView);
-
-        Intent intent = getIntent();
-        mCropImageUri = intent.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_SOURCE);
-        mOptions = intent.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_OPTIONS);
+        mCropImageUri = getArguments().getParcelable(AddReceiptActivity.ARG_OCR_PHOTO);
 
         if (savedInstanceState == null) {
-            if (CropImage.isReadExternalStoragePermissionsRequired(this, mCropImageUri)) {
+            if (CropImage.isReadExternalStoragePermissionsRequired(getActivity(), mCropImageUri)) {
                 // request permissions and handle the result in onRequestPermissionsResult()
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
             } else {
                 // no permissions required or already grunted, can start crop image activity
-                mCropImageView.setImageUriAsync(mCropImageUri);
+                binding.cropImageView.setImageUriAsync(mCropImageUri);
             }
         }
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            String title = "Распознать чек";
-            actionBar.setTitle(title);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        binding.buttonOk.setOnClickListener(v -> onClickCrop());
-        Toast.makeText(this, "Выделите продукты", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Выделите продукты", Toast.LENGTH_SHORT).show();
 
         ApiHelper.makeApiRequest(Settings.getString(Settings.CITY), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);
+
+        return binding.getRoot();
     }
 
     private void onLoadShops(List<String> shops) {
         binding.spinnerShop.setAdapter(
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shops));
+                new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, shops));
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -121,43 +116,33 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         });
     }
 
-    private void onClickCrop() {
+    public void onClickCrop() {
         if (!isProductCropped) {
-            Toast.makeText(this, "Выделите цены", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Выделите цены", Toast.LENGTH_SHORT).show();
         }
         cropImage();
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        mCropImageView.setOnCropImageCompleteListener(this);
+        binding.cropImageView.setOnCropImageCompleteListener(this);
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
-        mCropImageView.setOnCropImageCompleteListener(null);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
+        binding.cropImageView.setOnCropImageCompleteListener(null);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            onBackPressed();
+            getActivity().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     @Override
@@ -166,7 +151,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             isProductCropped = true;
             receiptItem = result.getBitmap();
             cropProductRect = result.getCropRect();
-            Toast.makeText(CropActivity.this, "Изображение продуктов получено", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Изображение продуктов получено", Toast.LENGTH_LONG).show();
         } else {
             Bitmap prices = result.getBitmap();
 
@@ -175,7 +160,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
             if (progressDialog == null) {
-                progressDialog = new ProgressDialog(this);
+                progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setCancelable(false);
                 progressDialog.setMessage("Загрузка...");
             }
@@ -185,7 +170,7 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
             ApiHelper.makeApiRequest(ocrRequest, ApiHelper::ocr,
                     throwable -> {
                         progressDialog.hide();
-                        new AlertDialog.Builder(this)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle("Ошибка").setMessage("Не удалось разпознать текст").show();
                     }, ocrReceiptResponse -> {
                         progressDialog.hide();
@@ -195,13 +180,22 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        startActivity(ocrReceiptResponse, itemsImageUri);
+                        ((AddReceiptActivity) getActivity()).onCropFinish(ocrReceiptResponse, itemsImageUri);
                     }, null);
         }
     }
 
+    /*private void startActivity(OcrReceiptResponse response, Uri cropItemsImageUri) {
+        Intent intent = new Intent(this, ReceiptOcrActivity.class);
+        intent.putExtra(ReceiptOcrActivity.ARG_OCR_RESPONSE, response);
+        intent.putExtra(ReceiptOcrActivity.ARG_OCR_PHOTO, cropItemsImageUri);
+        intent.putExtra(ReceiptOcrActivity.ARG_OCR_ORIGIN_PHOTO, mCropImageUri);
+        startActivity(intent);
+        finish();
+    }*/
+
     private Uri cropItemsImage(Rect cropProductRect, Rect cropPricesRect) throws IOException {
-        InputStream imageStream = getContentResolver().openInputStream(mCropImageUri);
+        InputStream imageStream = getActivity().getContentResolver().openInputStream(mCropImageUri);
         Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
 
         Rect unionRect = unionRect(cropProductRect, cropPricesRect);
@@ -220,21 +214,11 @@ public class CropActivity extends AppCompatActivity implements CropImageView.OnC
         mutableBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         outputStream.close();
 
-        return FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, tempFile);
-    }
-
-    private void startActivity(OcrReceiptResponse response, Uri cropItemsImageUri) {
-        Intent intent = new Intent(this, ReceiptOcrActivity.class);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_RESPONSE, response);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_PHOTO, cropItemsImageUri);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_ORIGIN_PHOTO, mCropImageUri);
-        startActivity(intent);
-        finish();
+        return FileProvider.getUriForFile(getActivity(), FILE_PROVIDER_AUTHORITY, tempFile);
     }
 
     protected void cropImage() {
-        mCropImageView.getCroppedImageAsync();
+        binding.cropImageView.getCroppedImageAsync();
     }
 
 }
-

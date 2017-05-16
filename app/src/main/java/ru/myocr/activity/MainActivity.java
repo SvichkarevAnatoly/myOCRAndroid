@@ -16,9 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
-
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
@@ -148,15 +145,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startCropImageActivity(Uri imageUri) {
-        final CropImage.ActivityBuilder activityBuilder = CropImage.activity(imageUri)
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setMaxZoom(16)
-                .setMinCropWindowSize(0, 0) // remove minimum restriction
-                .setBorderCornerThickness(0) // remove border corners
-                .setMultiTouchEnabled(true);
-        final Intent intent = activityBuilder.getIntent(this);
-        intent.setClass(this, CropActivity.class);
-        startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
+        Intent intent = new Intent(getApplicationContext(), AddReceiptActivity.class);
+        intent.putExtra(AddReceiptActivity.ARG_OCR_PHOTO, imageUri);
+        startActivity(intent);
     }
 
     @Override

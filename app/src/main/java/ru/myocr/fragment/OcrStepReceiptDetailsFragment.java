@@ -22,6 +22,7 @@ import java.util.Locale;
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.App;
 import ru.myocr.R;
+import ru.myocr.activity.AddReceiptActivity;
 import ru.myocr.activity.TicketActivity;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.SavePriceRequest;
@@ -38,8 +39,6 @@ import ru.myocr.util.PriceUtil;
 import ru.myocr.util.TimeUtil;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
-import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_PHOTO;
-import static ru.myocr.activity.ReceiptOcrActivity.ARG_OCR_RESPONSE;
 import static ru.myocr.activity.TicketActivity.ARG_RECEIPT;
 
 
@@ -57,8 +56,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData, Uri photo) {
         OcrStepReceiptDetailsFragment fragment = new OcrStepReceiptDetailsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_OCR_RESPONSE, receiptData);
-        args.putParcelable(ARG_OCR_PHOTO, photo);
+        args.putSerializable(AddReceiptActivity.ARG_OCR_RESPONSE, receiptData);
+        args.putParcelable(AddReceiptActivity.ARG_OCR_PHOTO, photo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,8 +65,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        receiptData = (ReceiptData) getArguments().getSerializable(ARG_OCR_RESPONSE);
-        photo = getArguments().getParcelable(ARG_OCR_PHOTO);
+        receiptData = (ReceiptData) getArguments().getSerializable(AddReceiptActivity.ARG_OCR_RESPONSE);
+        photo = getArguments().getParcelable(AddReceiptActivity.ARG_OCR_PHOTO);
     }
 
     @Override
