@@ -21,7 +21,11 @@ public class PriceUtil {
     public static String getStringWithDot(int intValue) {
         final String stringValue = Integer.toString(intValue);
         final int priceLength = stringValue.length();
-        return stringValue.substring(0, priceLength - 2) + "." +
-                stringValue.substring(priceLength - 2, priceLength);
+        if (priceLength <= 2) {
+            return stringValue;
+        } else {
+            return stringValue.substring(0, priceLength - 2) + "." +
+                    stringValue.substring(priceLength - 2, priceLength);
+        }
     }
 }
