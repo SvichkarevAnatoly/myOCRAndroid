@@ -8,12 +8,23 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/line_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/legends"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                tools:listitem="@layout/legend_item" />
+
         </LinearLayout>
 
         <com.github.clans.fab.FloatingActionButton

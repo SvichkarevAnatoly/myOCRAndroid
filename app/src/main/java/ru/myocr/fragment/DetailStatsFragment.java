@@ -6,27 +6,34 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import ru.myocr.R;
 import ru.myocr.activity.FilterActivity;
 import ru.myocr.databinding.FragmentDetailStatsBinding;
+import ru.myocr.fragment.adapter.LegendAdapter;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.ReceiptItem;
@@ -44,6 +51,8 @@ public class DetailStatsFragment extends Fragment {
     private FragmentDetailStatsBinding binding;
     private ArrayList<SearchReceiptItem> items;
     private String label;
+    private LegendAdapter adapter;
+    private Map<String, ILineDataSet> dataSetMap = new HashMap<>();
 
     public DetailStatsFragment() {
     }
@@ -101,7 +110,6 @@ public class DetailStatsFragment extends Fragment {
 
         lineChart.getDescription().setEnabled(false);
 
-
         if (null == items) {
             for (int i = 0; i < 1; i++) {
                 try {
@@ -112,6 +120,9 @@ public class DetailStatsFragment extends Fragment {
         } else {
             addDataSet(items, label);
         }
+
+        lineChart.getLegend().setEnabled(false);
+        updateLegends();
     }
 
     private void addDataSet(ArrayList<SearchReceiptItem> items, String label) {
@@ -183,6 +194,38 @@ public class DetailStatsFragment extends Fragment {
 
         binding.lineChart.setData(lineData);
         binding.lineChart.invalidate();
+
+        dataSetMap.put(name, dataSet);
+
+        updateLegends();
+    }
+
+    private void updateLegends() {
+        Legend legend = binding.lineChart.getLegend();
+        LegendEntry[] entries = legend.getEntries();
+        List<LegendEntry> legends = new ArrayList<>();
+        for (LegendEntry entry : entries) {
+            if (dataSetMap.containsKey(entry.label)) {
+                legends.add(entry);
+            }
+        }
+        if (adapter == null) {
+            adapter = new LegendAdapter(legends) {
+
+                @Override
+                public void onClickDelete(String label) {
+                    binding.lineChart.getLineData().removeDataSet(dataSetMap.get(label));
+                    binding.lineChart.invalidate();
+                    dataSetMap.remove(label);
+                    updateLegends();
+
+                }
+            };
+            binding.legends.setLayoutManager(new LinearLayoutManager(getActivity()));
+            binding.legends.setAdapter(adapter);
+        }
+        adapter.setLegends(legends);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
