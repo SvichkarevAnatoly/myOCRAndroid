@@ -21,29 +21,29 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
+                <ru.myocr.view.RobotoRegularTextView
                     android:id="@+id/market"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:lines="1"
                     android:text="Быстроном"
                     android:textColor="#000"
                     android:textSize="16sp" />
 
-                <TextView
+                <ru.myocr.view.RobotoRegularTextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:lines="1"
+                    android:paddingTop="2dp"
                     android:text="13 jan 2013"
                     android:textColor="#8e8e8e"
                     android:textSize="14sp" />
 
             </LinearLayout>
 
-            <TextView
+            <ru.myocr.view.RobotoRegularTextView
                 android:id="@+id/sum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

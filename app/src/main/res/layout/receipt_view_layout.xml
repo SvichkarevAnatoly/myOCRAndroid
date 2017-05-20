@@ -11,14 +11,14 @@
         android:paddingRight="16dp"
         android:paddingTop="16dp">
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ЧЕК"
             android:textColor="#000"
             android:textSize="24sp" />
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:id="@+id/market_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:textColor="#000"
             android:textSize="14sp" />
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:id="@+id/market_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <ru.myocr.view.RobotoRegularTextView
                 android:id="@+id/inn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 android:textColor="#000"
                 android:textSize="14sp" />
 
-            <TextView
+            <ru.myocr.view.RobotoRegularTextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
 
         </LinearLayout>
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -75,7 +75,7 @@
 
         </LinearLayout>
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <ru.myocr.view.RobotoRegularTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -95,7 +95,7 @@
                 android:textColor="#000"
                 android:textSize="24sp" />
 
-            <TextView
+            <ru.myocr.view.RobotoRegularTextView
                 android:id="@+id/sum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
 
         </LinearLayout>
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -113,7 +113,7 @@
             android:textColor="#000"
             android:textSize="14sp" />
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -121,7 +121,7 @@
             android:textColor="#000"
             android:textSize="14sp" />
 
-        <TextView
+        <ru.myocr.view.RobotoRegularTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
