@@ -48,16 +48,18 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     private Uri photo;
     private FragmentOcrStepReceiptDetailsBinding binding;
     private Calendar date;
+    private Receipt receipt;
 
     public OcrStepReceiptDetailsFragment() {
         // Required empty public constructor
     }
 
-    public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData, Uri photo) {
+    public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData, Uri photo, long receiptId) {
         OcrStepReceiptDetailsFragment fragment = new OcrStepReceiptDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(AddReceiptActivity.ARG_OCR_RESPONSE, receiptData);
         args.putParcelable(AddReceiptActivity.ARG_OCR_PHOTO, photo);
+        args.putLong(AddReceiptActivity.ARG_OCR_RECEIPT, receiptId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,6 +69,10 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         receiptData = (ReceiptData) getArguments().getSerializable(AddReceiptActivity.ARG_OCR_RESPONSE);
         photo = getArguments().getParcelable(AddReceiptActivity.ARG_OCR_PHOTO);
+        long id = getArguments().getLong(AddReceiptActivity.ARG_OCR_RECEIPT);
+        if (id >= 0) {
+            receipt = DbModel.byId(Receipt.URI, id, Receipt.class);
+        }
     }
 
     @Override
@@ -79,11 +85,23 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     }
 
     public void onClickSave() {
-        sentToServer();
+        if (receipt == null) {
+            sentToServer();
+        } else {
+            saveToLocalDb();
+        }
     }
 
     public void saveToLocalDb() {
-        Receipt receipt = new Receipt();
+        Receipt receipt;
+        if (this.receipt != null) {
+            cupboard().withContext(getActivity())
+                    .delete(DbModel.getUriHelper().getUri(ReceiptItem.class), "receiptId=?", String.valueOf(this.receipt._id));
+            receipt = this.receipt;
+        } else {
+            receipt = new Receipt();
+        }
+
 
         receipt.market = new Receipt.Market(binding.market.getText().toString(),
                 binding.address.getText().toString(),

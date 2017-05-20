@@ -1,5 +1,6 @@
 package ru.myocr.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -74,9 +75,18 @@ public class TicketActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_delete) {
             delete();
+        } else if (id == R.id.action_edit) {
+            edit();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void edit() {
+        Intent intent = new Intent(this, AddReceiptActivity.class);
+        intent.putExtra(AddReceiptActivity.ARG_OCR_RECEIPT, receipt._id);
+        intent.putExtra(AddReceiptActivity.ARG_OCR_PHOTO, receipt.photo);
+        startActivity(intent);
     }
 
     private void delete() {

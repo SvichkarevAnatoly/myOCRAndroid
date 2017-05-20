@@ -7,18 +7,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.myocr.R;
 import ru.myocr.api.ocr.OcrReceiptResponse;
+import ru.myocr.api.ocr.ParsedPrice;
+import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.databinding.ActivityAddReceiptBinding;
 import ru.myocr.fragment.OcrStepReceiptDetailsFragment;
 import ru.myocr.fragment.ocr.OcrStepReceiptItemsFragment;
 import ru.myocr.fragment.ocr.StepCropFragment;
+import ru.myocr.model.DbModel;
+import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptData;
+import ru.myocr.model.ReceiptItem;
+import ru.myocr.util.PriceUtil;
 
 public class AddReceiptActivity extends AppCompatActivity {
 
     public static final String ARG_OCR_RESPONSE = "ARG_OCR_RESPONSE";
+    public static final String ARG_OCR_RECEIPT = "ARG_OCR_RECEIPT";
     public static final String ARG_OCR_PHOTO = "ARG_OCR_PHOTO";
+    public static final String ARG_OCR_EDIT_MODE = "ARG_OCR_EDIT_MODE";
     public static final String ARG_OCR_ORIGIN_PHOTO = "ARG_OCR_ORIGIN_PHOTO";
 
     public static final String TAG_OCR_STEP_CROP = "StepCropFragment";
@@ -35,6 +46,8 @@ public class AddReceiptActivity extends AppCompatActivity {
     // from 2nd step
     private ReceiptData receiptData;
     private boolean receiptDataSaved;
+    private Receipt receipt;
+    private boolean isEditMode;
 
 
     @Override
@@ -45,14 +58,31 @@ public class AddReceiptActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        getSupportActionBar().setTitle("Добавить чек");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         originPhotoUri = getIntent().getParcelableExtra(ARG_OCR_PHOTO);
+        Long id = getIntent().getLongExtra(ARG_OCR_RECEIPT, -1);
+        if (id != -1) {
+            isEditMode = true;
+            receipt = DbModel.byId(Receipt.URI, id, Receipt.class);
+        }
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, StepCropFragment.newInstance(originPhotoUri),
-                        TAG_OCR_STEP_CROP).commit();
+        getSupportActionBar().setTitle(isEditMode ? "Редактировать чек" : "Добавить чек");
+
+        if (!isEditMode) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, StepCropFragment.newInstance(originPhotoUri),
+                            TAG_OCR_STEP_CROP)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, OcrStepReceiptItemsFragment.newInstance(getOcrResponseFromReceipt(), originPhotoUri),
+                            TAG_OCR_STEP_ITEMS_FRAGMENT)
+                    .commit();
+            step = 1;
+        }
     }
 
     @Override
@@ -110,7 +140,20 @@ public class AddReceiptActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.container, OcrStepReceiptDetailsFragment.newInstance(receiptData,
-                        cropItemsImageUri), TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT)
+                        cropItemsImageUri, receipt != null ? receipt._id : -1), TAG_OCR_STEP_RECEIPT_DETAILS_FRAGMENT)
                 .commit();
+    }
+
+    private OcrReceiptResponse getOcrResponseFromReceipt() {
+        List<ReceiptItemMatches> matches = new ArrayList<>();
+        List<ParsedPrice> prices = new ArrayList<>();
+
+        receipt.loadReceiptItems(this);
+        for (ReceiptItem item : receipt.items) {
+            matches.add(new ReceiptItemMatches(item.title, new ArrayList<>()));
+            prices.add(new ParsedPrice(PriceUtil.getStringWithDot(item.price), item.price));
+        }
+
+        return new OcrReceiptResponse(matches, prices);
     }
 }

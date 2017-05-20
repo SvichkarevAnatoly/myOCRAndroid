@@ -2,10 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.myocr.activity.TicketActivity">
+
     <item
         android:id="@+id/action_delete"
         android:icon="@drawable/ic_delete_white_24dp"
         android:orderInCategory="100"
         android:title="Удалить"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_edit"
+        android:icon="@drawable/ic_tune_white_24dp"
+        android:orderInCategory="100"
+        android:title="Редактировать"
         app:showAsAction="always" />
 </menu>
