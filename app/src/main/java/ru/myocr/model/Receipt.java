@@ -50,21 +50,8 @@ public class Receipt implements Serializable {
     public int discountSum;
     public Uri photo;
 
-    @Ignore
-    public List<Tag> tags;
-
-    public static List<Receipt> findReceiptByTag(String tag) {
-        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_BY_TAG, Receipt.class)
-                .withSelection("", tag).list();
-    }
-
-    public static List<Receipt> findReceiptByTagId(Long id) {
-        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_BY_TAG_ID, Receipt.class)
-                .withSelection("", id.toString()).list();
-    }
-
     public static List<Receipt> findReceiptWithoutTag() {
-        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_WITHOUT_TAG, Receipt.class).list();
+        return getProviderCompartment().query(ReceiptContentProvider.URI_RECEIPT_SEARCH, Receipt.class).list();
     }
 
     public void loadReceiptItems(Context context) {
@@ -74,13 +61,6 @@ public class Receipt implements Serializable {
                 .withContext(context)
                 .query(cheeseUri, ReceiptItem.class)
                 .withSelection("receiptId = ?", String.valueOf(_id)).list();
-    }
-
-    public void loadTags(Context context) {
-        tags = cupboard()
-                .withContext(context)
-                .query(ReceiptContentProvider.URI_RECEIPT_TAG, Tag.class)
-                .withSelection("", _id.toString()).list();
     }
 
     @Override

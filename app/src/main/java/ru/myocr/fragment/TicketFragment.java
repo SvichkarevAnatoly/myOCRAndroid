@@ -144,7 +144,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
                     null, null, null, null);
         } else if (1 == id) {
             return new CursorLoader(getActivity(),
-                    ReceiptContentProvider.URI_RECEIPT_BY_TAG,
+                    ReceiptContentProvider.URI_RECEIPT_SEARCH,
                     null, null, new String[]{args.getString(KEY_QUERY)}, null);
         } else {
             return null;
@@ -199,8 +199,8 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == 0 && data.getCount() == 0) {
-            DummyReceipt.addToDb(false);
-            DummyReceipt.addToDb(false);
+            DummyReceipt.addToDb();
+            DummyReceipt.addToDb();
             for (int i = 0; i < 10; i++) {
                 DummyReceipt.addToDb();
             }

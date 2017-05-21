@@ -27,7 +27,6 @@ import ru.myocr.databinding.FragmentMainStatsBinding;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
-import ru.myocr.model.Tag;
 import ru.myocr.util.ColorUtil;
 import ru.myocr.util.RxUtil;
 import rx.functions.Action0;
@@ -46,6 +45,39 @@ public class MainStatsFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private static void setPieDataSetStyling(PieDataSet pieDataSet) {
+        pieDataSet.setValueTextSize(12f);
+        pieDataSet.setValueLinePart1OffsetPercentage(90f);
+        pieDataSet.setValueLinePart1Length(0.5f);
+        pieDataSet.setValueLinePart2Length(0.3f);
+        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        pieDataSet.setSliceSpace(3f);
+    }
+
+    private static void setPieChartStyling(PieChart pieChart) {
+        pieChart.setEntryLabelTextSize(12f);
+        pieChart.animateY(500);
+        pieChart.setExtraOffsets(20f, 0f, 20f, 0f);
+        pieChart.setCenterTextSize(12);
+        pieChart.setDrawCenterText(true);
+        pieChart.setDrawEntryLabels(false);
+        pieChart.setUsePercentValues(true);
+        pieChart.setRotationEnabled(false);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(40f);
+
+        pieChart.getDescription().setEnabled(false);
+
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(true);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
     }
 
     @Override
@@ -90,18 +122,6 @@ public class MainStatsFragment extends Fragment {
                 }
             }
 
-            tagEntries = new ArrayList<>();
-            List<Tag> allTags = Tag.getAllTags();
-
-            for (Tag tag : allTags) {
-                List<Receipt> receiptByTag = Receipt.findReceiptByTagId(tag._id);
-                long sum = calculateReceiptCosts(receiptByTag) / 100;
-
-                if (sum != 0) {
-                    tagEntries.add(new PieEntry(sum, tag.tag));
-                }
-            }
-
             return 0;
         }, Throwable::printStackTrace, integer -> onDataLoaded.call());
     }
@@ -127,41 +147,6 @@ public class MainStatsFragment extends Fragment {
         data.setValueFormatter(new PercentFormatter());
         pieChart.setData(data);
         pieChart.invalidate();
-    }
-
-    private static void setPieDataSetStyling(PieDataSet pieDataSet)
-    {
-        pieDataSet.setValueTextSize(12f);
-        pieDataSet.setValueLinePart1OffsetPercentage(90f);
-        pieDataSet.setValueLinePart1Length(0.5f);
-        pieDataSet.setValueLinePart2Length(0.3f);
-        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        pieDataSet.setSliceSpace(3f);
-    }
-
-    private static void setPieChartStyling(PieChart pieChart)
-    {
-        pieChart.setEntryLabelTextSize(12f);
-        pieChart.animateY(500);
-        pieChart.setExtraOffsets(20f, 0f, 20f, 0f);
-        pieChart.setCenterTextSize(12);
-        pieChart.setDrawCenterText(true);
-        pieChart.setDrawEntryLabels(false);
-        pieChart.setUsePercentValues(true);
-        pieChart.setRotationEnabled(false);
-        pieChart.setHoleRadius(40f);
-        pieChart.setTransparentCircleRadius(40f);
-
-        pieChart.getDescription().setEnabled(false);
-
-        Legend l = pieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(true);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
     }
 
     private List<ReceiptItem> getCurrentMonthReceiptItems()

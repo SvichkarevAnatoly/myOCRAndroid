@@ -56,10 +56,6 @@ public class DummyReceipt {
     }
 
     public static void addToDb() {
-        addToDb(true);
-    }
-
-    public static void addToDb(boolean addTag) {
         Receipt receipt = buildItem();
 
         Uri uri = cupboard().withContext(App.getContext())
@@ -74,32 +70,8 @@ public class DummyReceipt {
         cupboard().withContext(App.getContext())
                 .put(UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(ReceiptItem.class),
                         ReceiptItem.class, receipt.items);
-
-        if (addTag) {
-            String tag = DUMMY_TAGS.get(RANDOM.nextInt(DUMMY_TAGS.size()));
-            addTag(tag, id);
-        }
     }
 
-    private static void addTag(String tag, long receiptId) {
-        Tag newTag = new Tag(tag);
-        Uri tagUri = DbModel.getUriHelper().getUri(Tag.class);
-        Tag existingTag = DbModel.getProviderCompartment()
-                .query(tagUri, Tag.class)
-                .withSelection("tag = ?", tag)
-                .get();
-        Long id;
-
-        if (existingTag == null) {
-            Uri uri = DbModel.getProviderCompartment().put(tagUri, newTag);
-            id = Long.valueOf(uri.getLastPathSegment());
-        } else {
-            id = existingTag._id;
-        }
-
-        ReceiptTag receiptTag = new ReceiptTag(receiptId, id);
-        receiptTag.updateDb();
-    }
     private static Receipt buildItem() {
 
         Receipt receipt = new Receipt();
