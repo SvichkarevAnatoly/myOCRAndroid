@@ -15,10 +15,6 @@ import ru.myocr.databinding.ReceiptViewLayoutBinding;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
 
-/**
- * Created by bs_oydopova on 12.03.2017.
- */
-
 public class ReceiptView extends LinearLayout {
 
     private ReceiptViewLayoutBinding binding;
@@ -59,7 +55,7 @@ public class ReceiptView extends LinearLayout {
         for (int i = 0; i < receipt.items.size(); i++) {
             ReceiptViewItemBinding itemBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),
                     R.layout.receipt_view_item, binding.items, false);
-            itemBinding.num.setText(String.format("%d", i));
+            itemBinding.num.setText(String.format("%d", i + 1));
             ReceiptItem item = receipt.items.get(i);
             itemBinding.amount.setText(String.format("%.3f", item.amount));
             itemBinding.name.setText(item.title);
