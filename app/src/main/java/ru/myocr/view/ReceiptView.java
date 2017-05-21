@@ -47,8 +47,6 @@ public class ReceiptView extends LinearLayout {
     public void setReceipt(Receipt receipt) {
         this.receipt = receipt;
         binding.marketName.setText(receipt.market.title);
-        binding.marketAddress.setText(receipt.market.address);
-        binding.inn.setText("ИНН" + receipt.market.inn);
 
         binding.date.setText(new SimpleDateFormat("dd.MM.yy", Locale.getDefault()).format(receipt.date));
 

@@ -103,9 +103,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         }
 
 
-        receipt.market = new Receipt.Market(binding.market.getText().toString(),
-                binding.address.getText().toString(),
-                binding.inn.getText().toString());
+        receipt.market = new Receipt.Market(binding.market.getText().toString());
 
         receipt.date = date.getTime();
 

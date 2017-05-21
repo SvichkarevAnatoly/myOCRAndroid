@@ -108,8 +108,6 @@ public class DummyReceipt {
         receipt.date = new Date(System.currentTimeMillis() - RANDOM.nextInt(1000) * 1000000L);
         receipt.market = new Receipt.Market();
         receipt.market.title = DUMMY_SHOPS.get(RANDOM.nextInt(DUMMY_SHOPS.size()));
-        receipt.market.inn = "" + (100000 + RANDOM.nextInt(100000));
-        receipt.market.address = DUMMY_ADDRESS.get(RANDOM.nextInt(DUMMY_ADDRESS.size()));
 
         receipt.items = new ArrayList<>();
 
@@ -119,7 +117,6 @@ public class DummyReceipt {
         for (int i = 0; i < size; i++) {
             int price = 10000 + 500 * RANDOM.nextInt(100);
             float amount = RANDOM.nextInt(100) / 100.0f;
-            int cost = (int) (price);
 
             receipt.items.add(new ReceiptItem(
                     i,
@@ -127,9 +124,9 @@ public class DummyReceipt {
                     receipt.date,
                     price,
                     amount,
-                    cost));
+                    price));
 
-            totalCost += cost;
+            totalCost += price;
         }
 
 

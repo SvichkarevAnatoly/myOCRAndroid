@@ -102,18 +102,12 @@ public class Receipt implements Serializable {
     public static class Market {
         @SerializedName("title")
         public String title;
-        @SerializedName("address")
-        public String address;
-        @SerializedName("inn")
-        public String inn;
 
         public Market() {
         }
 
-        public Market(String title, String address, String inn) {
+        public Market(String title) {
             this.title = title;
-            this.address = address;
-            this.inn = inn;
         }
     }
 }

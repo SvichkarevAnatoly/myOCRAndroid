@@ -12,13 +12,6 @@
         android:paddingTop="16dp">
 
         <ru.myocr.view.RobotoRegularTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ЧЕК"
-            android:textColor="#000"
-            android:textSize="24sp" />
-
-        <ru.myocr.view.RobotoRegularTextView
             android:id="@+id/market_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,27 +20,9 @@
             android:textColor="#000"
             android:textSize="14sp" />
 
-        <ru.myocr.view.RobotoRegularTextView
-            android:id="@+id/market_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="г. Новосибирск. ул. Инженерная, 4"
-            android:textColor="#000"
-            android:textSize="14sp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <ru.myocr.view.RobotoRegularTextView
-                android:id="@+id/inn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="ИНН 12313143123"
-                android:textColor="#000"
-                android:textSize="14sp" />
 
             <ru.myocr.view.RobotoRegularTextView
                 android:id="@+id/date"
