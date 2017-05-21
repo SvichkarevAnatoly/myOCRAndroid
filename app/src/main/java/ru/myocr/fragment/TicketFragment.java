@@ -141,7 +141,7 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         if (0 == id) {
             return new CursorLoader(getActivity(),
                     UriHelper.with(ReceiptContentProvider.AUTHORITY).getUri(Receipt.class),
-                    null, null, null, null);
+                    null, null, null, "date DESC");
         } else if (1 == id) {
             return new CursorLoader(getActivity(),
                     ReceiptContentProvider.URI_RECEIPT_SEARCH,
