@@ -130,7 +130,7 @@ public class TicketActivity extends AppCompatActivity {
                 case 0:
                     return "Продукты";
                 case 1:
-                    return "График";
+                    return "Фото";
             }
             return null;
         }

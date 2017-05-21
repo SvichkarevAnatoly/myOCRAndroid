@@ -29,11 +29,6 @@ public class BitmapUtil {
         String timeStamp = TimeUtil.parse(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        return image;
+        return new File(storageDir, imageFileName);
     }
 }
