@@ -103,7 +103,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         }
 
 
-        receipt.market = new Receipt.Market(binding.market.getText().toString());
+        receipt.market = new Receipt.Market(binding.shop.getText().toString());
 
         receipt.date = date.getTime();
 
@@ -170,6 +170,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     }
 
     public void initUi() {
+        binding.city.setText(Settings.getString(Settings.CITY));
+        binding.shop.setText(Preference.getString(Preference.SHOP));
         date = Calendar.getInstance();
 
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
@@ -192,7 +194,6 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         }
 
         binding.total.setText(String.valueOf((int) total));
-        binding.market.setText(Preference.getString(Preference.SHOP));
     }
 
     private void updateLabel() {

@@ -50,11 +50,11 @@ public class TicketRecyclerViewAdapter extends MockCursorRecyclerViewAdapter<Tic
     @Override
     public void onBindViewHolder(TicketRecyclerViewAdapter.ViewHolder holder, Cursor cursor) {
         if (cursor == null) {
-            holder.binding.market.setText("                         ");
+            holder.binding.shop.setText("                         ");
             holder.binding.date.setText("        ");
             holder.binding.sum.setText("            ");
             int color = Color.parseColor("#dddddd");
-            holder.binding.market.setBackgroundColor(color);
+            holder.binding.shop.setBackgroundColor(color);
             holder.binding.date.setBackgroundColor(color);
             holder.binding.sum.setBackgroundColor(color);
 
@@ -65,7 +65,7 @@ public class TicketRecyclerViewAdapter extends MockCursorRecyclerViewAdapter<Tic
             holder.isMock = true;
             return;
         } else {
-            holder.binding.market.setBackgroundColor(Color.parseColor("#00000000"));
+            holder.binding.shop.setBackgroundColor(Color.parseColor("#00000000"));
             holder.binding.date.setBackgroundColor(Color.parseColor("#00000000"));
             holder.binding.sum.setBackgroundColor(Color.parseColor("#00000000"));
         }
@@ -74,7 +74,7 @@ public class TicketRecyclerViewAdapter extends MockCursorRecyclerViewAdapter<Tic
         receipt.loadReceiptItems(App.getContext());
 
         holder.mItem = receipt;
-        holder.binding.market.setText(receipt.market.title);
+        holder.binding.shop.setText(receipt.market.title);
 
         Locale locale = new Locale("ru","RU");
         NumberFormat format = NumberFormat.getCurrencyInstance(locale);

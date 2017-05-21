@@ -22,7 +22,7 @@
                 android:orientation="vertical">
 
                 <ru.myocr.view.RobotoRegularTextView
-                    android:id="@+id/market"
+                    android:id="@+id/shop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:lines="1"
