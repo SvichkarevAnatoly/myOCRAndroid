@@ -85,7 +85,7 @@ public class DummyReceipt {
 
         int totalCost = 0;
 
-        int size = 5 + RANDOM.nextInt(5);
+        int size = 25 + RANDOM.nextInt(5);
         for (int i = 0; i < size; i++) {
             int price = 10000 + 500 * RANDOM.nextInt(100);
             float amount = RANDOM.nextInt(100) / 100.0f;
