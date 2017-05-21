@@ -25,8 +25,8 @@ import java.io.IOException;
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityMainBinding;
+import ru.myocr.fragment.DetailStatsFragment;
 import ru.myocr.fragment.SearchReceiptItemFragment;
-import ru.myocr.fragment.StatsFragment;
 import ru.myocr.fragment.TicketFragment;
 import ru.myocr.util.BitmapUtil;
 
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.my_tickets) {
             openFragment(TicketFragment.newInstance());
         } else if (id == R.id.nav_stats) {
-            openFragment(StatsFragment.newInstance());
+            openFragment(DetailStatsFragment.newInstance(null, null));
         } else if (id == R.id.nav_share) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_search) {

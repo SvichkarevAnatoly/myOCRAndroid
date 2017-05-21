@@ -77,25 +77,12 @@ public class DetailStatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail_stats, container, false);
-        binding.floatingMenu.hide(false);
 
         initLineChart();
 
         binding.floatingMenu.setOnClickListener(
                 v -> startActivityForResult(new Intent(getActivity(), FilterActivity.class), REQUEST_CODE_FILTER));
         return binding.getRoot();
-    }
-
-    public void showFab() {
-        if (binding != null) {
-            binding.floatingMenu.postDelayed(() -> binding.floatingMenu.show(true), 200);
-        }
-    }
-
-    public void hideFab() {
-        if (binding != null) {
-            binding.floatingMenu.hide(true);
-        }
     }
 
     private void initLineChart() {
