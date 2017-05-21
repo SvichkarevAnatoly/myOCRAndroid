@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAM_REQUEST = 2;
+    private static final String TAG_MAIN = "Main";
 
     private ActivityMainBinding binding;
     private Uri photoURI;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity
                 },
                 null, null);
 
-        openFragment(TicketFragment.newInstance());
+        openFragment(TicketFragment.newInstance(), TAG_MAIN);
         checkForUpdates();
     }
 
@@ -72,7 +73,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (null == getSupportFragmentManager().findFragmentByTag(TAG_MAIN)) {
+                openFragment(TicketFragment.newInstance(), TAG_MAIN);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -104,13 +109,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.my_tickets) {
-            openFragment(TicketFragment.newInstance());
+            openFragment(TicketFragment.newInstance(), TAG_MAIN);
         } else if (id == R.id.nav_stats) {
-            openFragment(DetailStatsFragment.newInstance(null, null));
+            openFragment(DetailStatsFragment.newInstance(null, null), null);
         } else if (id == R.id.nav_share) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_search) {
-            openFragment(SearchReceiptItemFragment.newInstance());
+            openFragment(SearchReceiptItemFragment.newInstance(), null);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -118,8 +123,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void openFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    private void openFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment, tag)
+                .commit();
     }
 
     public void onClickAddGallery() {
