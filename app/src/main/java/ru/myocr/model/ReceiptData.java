@@ -79,6 +79,15 @@ public class ReceiptData implements Serializable {
         return pairs;
     }
 
+    public List<String> getReceiptItems() {
+        final List<String> receiptItems = new ArrayList<>();
+        for (ReceiptItemPriceViewItem item : receiptItemPriceViewItems) {
+            receiptItems.add(item.getReceiptItem());
+        }
+
+        return receiptItems;
+    }
+
     public void removeReceiptItem(int idx) {
         final int size = receiptItemPriceViewItems.size();
         final int lastIndex = size - 1;

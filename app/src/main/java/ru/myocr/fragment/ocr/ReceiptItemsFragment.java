@@ -195,8 +195,10 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
                     binding.receiptItemEditText.setText(newText);
                 });
 
+        final List<String> autoCompleteItems = new ArrayList<>(autoCompleteShopReceiptItems);
+        autoCompleteItems.addAll(receiptDataStack.peek().getReceiptItems());
         binding.receiptItemEditText.setAdapter(new ArrayAdapter<>(
-                getContext(), android.R.layout.simple_list_item_1, autoCompleteShopReceiptItems
+                getContext(), android.R.layout.simple_list_item_1, autoCompleteItems
         ));
 
         new AlertDialog.Builder(getContext())
