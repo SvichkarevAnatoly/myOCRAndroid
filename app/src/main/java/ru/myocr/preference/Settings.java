@@ -12,6 +12,10 @@ public class Settings {
     private static final SharedPreferences defaultPreferences =
             PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
+    public static SharedPreferences getPreferences() {
+        return defaultPreferences;
+    }
+
     public static String getString(String key) {
         return defaultPreferences.getString(key, null);
     }
