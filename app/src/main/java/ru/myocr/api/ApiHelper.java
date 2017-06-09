@@ -1,6 +1,5 @@
 package ru.myocr.api;
 
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import java.io.IOException;
@@ -109,10 +108,8 @@ public class ApiHelper {
             cities.add(c);
         }
 
-        final SharedPreferences preferences = Settings.getPreferences();
-        if ((preferences.getString(Settings.CITY, null) == null)
-                && (cities.size() != 0)) {
-            preferences.edit().putString(Settings.CITY, cities.get(0).id).apply();
+        if ((Settings.getString(Settings.CITY) == null) && (cities.size() != 0)) {
+            Settings.setString(Settings.CITY, cities.get(0).id);
         }
 
         return cities;
