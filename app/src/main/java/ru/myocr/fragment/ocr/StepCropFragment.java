@@ -92,7 +92,7 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
 
         Toast.makeText(getActivity(), "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        ApiHelper.makeApiRequest(Settings.getString(Settings.CITY), ApiHelper::getShops,
+        ApiHelper.makeApiRequest(Settings.getCity(), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);
@@ -106,8 +106,7 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String shop = shops.get(position);
-                Preference.setString(Preference.SHOP, shop);
+                Preference.setShop(shops.get(position));
             }
 
             @Override
@@ -155,8 +154,8 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         } else {
             Bitmap prices = result.getBitmap();
 
-            final String city = Settings.getString(Settings.CITY);
-            final String shop = Preference.getString(Preference.SHOP);
+            final String city = Settings.getCity();
+            final String shop = Preference.getShop();
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
             if (progressDialog == null) {

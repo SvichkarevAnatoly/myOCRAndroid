@@ -108,8 +108,8 @@ public class ApiHelper {
             cities.add(c);
         }
 
-        if ((Settings.getString(Settings.CITY) == null) && (cities.size() != 0)) {
-            Settings.setString(Settings.CITY, cities.get(0).id);
+        if ((Settings.getCity() == null) && (cities.size() != 0)) {
+            Settings.setCity(cities.get(0).id);
         }
 
         return cities;

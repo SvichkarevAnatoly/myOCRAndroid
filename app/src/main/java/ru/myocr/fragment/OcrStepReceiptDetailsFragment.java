@@ -150,8 +150,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     @NonNull
     private SavePriceRequest initSavePriceRequest() {
         final List<ReceiptPriceItem> items = convert(receiptData.getProductsPricesPairs());
-        final String city = Settings.getString(Settings.CITY);
-        final String shop = Preference.getString(Preference.SHOP);
+        final String city = Settings.getCity();
+        final String shop = Preference.getShop();
         final String time = TimeUtil.parse(date.getTime());
         return new SavePriceRequest(city, shop, time, items);
     }
@@ -170,8 +170,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     }
 
     public void initUi() {
-        binding.city.setText(Settings.getString(Settings.CITY));
-        binding.shop.setText(Preference.getString(Preference.SHOP));
+        binding.city.setText(Settings.getCity());
+        binding.shop.setText(Preference.getShop());
         date = Calendar.getInstance();
 
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {

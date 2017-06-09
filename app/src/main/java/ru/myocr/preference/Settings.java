@@ -7,16 +7,24 @@ import android.preference.PreferenceManager;
 import ru.myocr.App;
 
 public class Settings {
-    public static final String CITY = "city";
+    private static final String CITY = "city";
 
     private static final SharedPreferences defaultPreferences =
             PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
-    public static void setString(String key, String value) {
+    public static String getCity() {
+        return getString(CITY);
+    }
+
+    public static void setCity(String city) {
+        setString(CITY, city);
+    }
+
+    private static void setString(String key, String value) {
         defaultPreferences.edit().putString(key, value).apply();
     }
 
-    public static String getString(String key) {
+    private static String getString(String key) {
         return defaultPreferences.getString(key, null);
     }
 }
