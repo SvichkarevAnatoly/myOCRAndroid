@@ -31,6 +31,7 @@ import ru.myocr.databinding.ActivityFilterBinding;
 import ru.myocr.databinding.FilterDialogLayoutBinding;
 import ru.myocr.fragment.SearchReceiptItemRecyclerViewAdapter;
 import ru.myocr.model.SearchReceiptItem;
+import ru.myocr.model.Shop;
 import ru.myocr.model.filter.Filter;
 import ru.myocr.model.filter.SearchSource;
 import ru.myocr.model.filter.SearchSourceRemote;
@@ -46,7 +47,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
     private SearchSource searchSource = new SearchSourceRemote();
     private Filter filter = new Filter();
     private ArrayList<SearchReceiptItem> searchReceiptItems;
-    private List<String> shops = new ArrayList<>();
+    private List<Shop> shops = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
 
         initSearchView();
 
-        filter.setCity(Settings.getCity());
+        filter.setCityId(Settings.getCity());
         ApiHelper.makeApiRequest(Settings.getCity(), ApiHelper::getShops,
                 throwable -> {
                 },
@@ -165,10 +166,18 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
         setListenerForDateEditText(dateStart, binding.dateStart);
         setListenerForDateEditText(dateEnd, binding.dateEnd);
 
-        binding.shop.setText(filter.getShop() != null ? filter.getShop() : "");
+        List<String> names = new ArrayList<>();
+
+        final long[] shopId = {-1};
+
+        for (Shop shop : shops) {
+            names.add(shop.name);
+        }
+        binding.shop.setText(filter.getShopId() != -1 ? "" + filter.getShopId() : "");
         binding.shop.setOnClickListener(v -> new AlertDialog.Builder(this)
-                .setItems(shops.toArray(new String[shops.size()]), (dialog, which) -> {
-                    binding.shop.setText(shops.get(which));
+                .setItems(names.toArray(new String[names.size()]), (dialog, which) -> {
+                    binding.shop.setText(shops.get(which).name);
+                    shopId[0] = shops.get(which).getId();
                     dialog.dismiss();
                 })
                 .show());
@@ -184,8 +193,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
             public boolean onMenuItemSelected(int featureId, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_ok:
-                        String shop = binding.shop.getText().toString();
-                        filter.setShop(shop.isEmpty() ? null : shop);
+                        filter.setShopId(shopId[0]);
                         query();
                         dismiss();
                         break;
@@ -232,7 +240,7 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
         });
     }
 
-    private void onLoadShops(List<String> shops) {
+    private void onLoadShops(List<Shop> shops) {
         this.shops = shops;
     }
 }

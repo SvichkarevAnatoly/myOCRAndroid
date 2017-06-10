@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SavePriceRequest {
-    private String cityName;
-    private String shopName;
+    private long cityId;
+    private long shopId;
     private String time;
 
     private List<ReceiptPriceItem> items = new ArrayList<>();
@@ -13,25 +13,25 @@ public class SavePriceRequest {
     public SavePriceRequest() {
     }
 
-    public SavePriceRequest(String cityName, String shopName, List<ReceiptPriceItem> items) {
-        this.cityName = cityName;
-        this.shopName = shopName;
+    public SavePriceRequest(long cityId, long shopId, List<ReceiptPriceItem> items) {
+        this.cityId = cityId;
+        this.shopId = shopId;
         this.items = items;
     }
 
-    public SavePriceRequest(String cityName, String shopName, String time, List<ReceiptPriceItem> items) {
-        this.cityName = cityName;
-        this.shopName = shopName;
+    public SavePriceRequest(long cityId, long shopId, String time, List<ReceiptPriceItem> items) {
+        this.cityId = cityId;
+        this.shopId = shopId;
         this.time = time;
         this.items = items;
     }
 
-    public String getCityName() {
-        return cityName;
+    public long getCityId() {
+        return cityId;
     }
 
-    public String getShopName() {
-        return shopName;
+    public long getShopId() {
+        return shopId;
     }
 
     public String getTime() {

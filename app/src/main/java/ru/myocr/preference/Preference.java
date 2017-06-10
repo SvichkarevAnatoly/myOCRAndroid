@@ -10,19 +10,19 @@ public class Preference {
     private static final String APP_PREFS = "APP_PREFS";
     private static SharedPreferences sharedPreferences = App.getContext().getSharedPreferences(APP_PREFS, 0);
 
-    public static String getShop() {
-        return getString(SHOP);
+    public static long getShop() {
+        return getLong(SHOP);
     }
 
-    public static void setShop(String shop) {
-        setString(SHOP, shop);
+    public static void setShop(long shop) {
+        setLong(SHOP, shop);
     }
 
-    private static void setString(String key, String value) {
-        sharedPreferences.edit().putString(key, value).apply();
+    private static void setLong(String key, long value) {
+        sharedPreferences.edit().putLong(key, value).apply();
     }
 
-    private static String getString(String key) {
-        return sharedPreferences.getString(key, null);
+    private static long getLong(String key) {
+        return sharedPreferences.getLong(key, -1);
     }
 }

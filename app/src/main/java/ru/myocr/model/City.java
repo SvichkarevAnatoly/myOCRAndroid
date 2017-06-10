@@ -12,16 +12,14 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class City extends DbModel<City> {
 
-    @SerializedName("id")
-    public String id;
     @SerializedName("name")
-    public String name;
+    private String name;
 
     public City() {
     }
 
-    public City(String id, String name) {
-        this.id = id;
+    public City(long id, String name) {
+        this._id = id;
         this.name = name;
     }
 
@@ -33,11 +31,15 @@ public class City extends DbModel<City> {
     public void putIfNotExist() {
         City city = cupboard().withContext(App.getContext())
                 .query(getTableUri(), getEntityClass())
-                .withSelection("id = ?", id).get();
-        if (null != city) {
+                .withSelection("_id = ?", String.valueOf(_id)).get();
+        if (city != null) {
             this._id = city._id;
         }
-        updateDb();
+        getProviderCompartment().put(getTableUri(), this);
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

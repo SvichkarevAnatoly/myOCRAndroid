@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.myocr.R;
@@ -37,6 +38,7 @@ import ru.myocr.activity.AddReceiptActivity;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
 import ru.myocr.databinding.FragmentStepCropBinding;
+import ru.myocr.model.Shop;
 import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
@@ -100,13 +102,17 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         return binding.getRoot();
     }
 
-    private void onLoadShops(List<String> shops) {
+    private void onLoadShops(List<Shop> shops) {
+        List<String> names = new ArrayList<>();
+        for (Shop shop : shops) {
+            names.add(shop.name);
+        }
         binding.spinnerShop.setAdapter(
-                new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, shops));
+                new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, names));
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Preference.setShop(shops.get(position));
+                Preference.setShop(shops.get(position).getId());
             }
 
             @Override
@@ -154,8 +160,8 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         } else {
             Bitmap prices = result.getBitmap();
 
-            final String city = Settings.getCity();
-            final String shop = Preference.getShop();
+            final long city = Settings.getCity();
+            final long shop = Preference.getShop();
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
             if (progressDialog == null) {

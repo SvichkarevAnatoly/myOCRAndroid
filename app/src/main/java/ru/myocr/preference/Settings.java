@@ -12,12 +12,12 @@ public class Settings {
     private static final SharedPreferences defaultPreferences =
             PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
-    public static String getCity() {
-        return getString(CITY);
+    public static long getCity() {
+        return Long.valueOf(getString(CITY));
     }
 
-    public static void setCity(String city) {
-        setString(CITY, city);
+    public static void setCity(long city) {
+        setString(CITY, String.valueOf(city));
     }
 
     private static void setString(String key, String value) {

@@ -57,8 +57,8 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        final String city = Settings.getCity();
-        final String shop = Preference.getShop();
+        final long city = Settings.getCity();
+        final long shop = Preference.getShop();
         final ReceiptItemsInShopRequest request = new ReceiptItemsInShopRequest(city, shop);
 
         ApiHelper.makeApiRequest(request, ApiHelper::getReceiptItemsInShop,

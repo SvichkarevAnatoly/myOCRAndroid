@@ -25,6 +25,7 @@ import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.FragmentSearchReceiptItemListBinding;
 import ru.myocr.model.SearchReceiptItem;
+import ru.myocr.model.Shop;
 import ru.myocr.model.filter.Filter;
 import ru.myocr.model.filter.SearchSource;
 import ru.myocr.model.filter.SearchSourceRemote;
@@ -54,7 +55,7 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        filter.setCity(Settings.getCity());
+        filter.setCityId(Settings.getCity());
         ApiHelper.makeApiRequest(Settings.getCity(), ApiHelper::getShops,
                 throwable -> {
                 },
@@ -145,20 +146,24 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
 
     }
 
-    private void onLoadShops(List<String> shops) {
+    private void onLoadShops(List<Shop> shops) {
+        List<String> names = new ArrayList<>();
+        for (Shop shop : shops) {
+            names.add(shop.name);
+        }
         binding.spinnerShop.setAdapter(
-                new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, shops));
+                new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, names));
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String shop = shops.get(position);
-                filter.setShop(shop);
+                final long shop = shops.get(position).getId();
+                filter.setShopId(shop);
                 query();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                filter.setShop(null);
+                filter.setShopId(-1);
                 query();
             }
         });

@@ -23,6 +23,7 @@ import ru.myocr.model.City;
 import ru.myocr.model.DummyReceipt;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.SearchReceiptItem;
+import ru.myocr.model.Shop;
 import ru.myocr.model.filter.Filter;
 import ru.myocr.preference.Server;
 import ru.myocr.preference.Settings;
@@ -98,18 +99,15 @@ public class ApiHelper {
     }
 
     public List<City> getAllCities(Void v) {
-        Call<List<String>> call = api.getAllCities();
-        List<String> citiesStr = makeRequest(call);
+        Call<List<City>> call = api.getAllCities();
+        List<City> cities = makeRequest(call);
 
-        List<City> cities = new ArrayList<>(citiesStr.size());
-        for (String city : citiesStr) {
-            City c = new City(city, city);
-            c.putIfNotExist();
-            cities.add(c);
+        for (City city : cities) {
+            city.putIfNotExist();
         }
 
-        if ((Settings.getCity() == null) && (cities.size() != 0)) {
-            Settings.setCity(cities.get(0).id);
+        if ((Settings.getCity() == -1) && (cities.size() != 0)) {
+            Settings.setCity(cities.get(0).getId());
         }
 
         return cities;
@@ -123,7 +121,7 @@ public class ApiHelper {
         final MultipartBody.Part receiptItemsPart = BitmapUtil.buildMultipartBody(request.receiptItems, "receiptItemsImage");
         final MultipartBody.Part pricesPart = BitmapUtil.buildMultipartBody(request.prices, "pricesImage");
 
-        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.city, request.shop);
+        Call<OcrReceiptResponse> call = api.ocr(receiptItemsPart, pricesPart, request.cityId, request.shopId);
         OcrReceiptResponse response = makeRequest(call);
 
         for (int i = 0; i < response.getPrices().size(); i++) {
@@ -155,20 +153,20 @@ public class ApiHelper {
         return makeRequest(call);
     }
 
-    public List<String> getShops(String city) {
-        Call<List<String>> call = api.getShops(city);
+    public List<Shop> getShops(long cityId) {
+        Call<List<Shop>> call = api.getShops(cityId);
         return makeRequest(call);
     }
 
     public List<String> getReceiptItemsInShop(ReceiptItemsInShopRequest request) {
         Call<List<String>> call = api.getReceiptItemsInShop(
-                request.getCity(), request.getShop());
+                request.getCityId(), request.getShopId());
         return makeRequest(call);
     }
 
     public List<SearchReceiptItem> searchReceiptItems(Filter filter) {
         Call<List<SearchReceiptItem>> call = api.getReceiptItems(
-                filter.getCity(), filter.getShop(), filter.getQuery());
+                filter.getCityId(), filter.hasShopId() ? filter.getShopId() : null, filter.getQuery());
         return makeRequest(call);
     }
 

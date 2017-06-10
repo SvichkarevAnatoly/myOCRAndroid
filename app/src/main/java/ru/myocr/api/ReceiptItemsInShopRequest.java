@@ -2,30 +2,30 @@ package ru.myocr.api;
 
 
 public class ReceiptItemsInShopRequest {
-    private String city;
-    private String shop;
+    private long cityId;
+    private long shopId;
 
     public ReceiptItemsInShopRequest() {
     }
 
-    public ReceiptItemsInShopRequest(String city, String shop) {
-        this.city = city;
-        this.shop = shop;
+    public ReceiptItemsInShopRequest(long cityId, long shopId) {
+        this.cityId = cityId;
+        this.shopId = shopId;
     }
 
-    public String getCity() {
-        return city;
+    public long getCityId() {
+        return cityId;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setCityId(long cityId) {
+        this.cityId = cityId;
     }
 
-    public String getShop() {
-        return shop;
+    public long getShopId() {
+        return shopId;
     }
 
-    public void setShop(String shop) {
-        this.shop = shop;
+    public void setShopId(long shopId) {
+        this.shopId = shopId;
     }
 }

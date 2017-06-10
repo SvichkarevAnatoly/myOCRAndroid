@@ -13,7 +13,9 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import ru.myocr.api.ocr.OcrReceiptResponse;
+import ru.myocr.model.City;
 import ru.myocr.model.SearchReceiptItem;
+import ru.myocr.model.Shop;
 
 public interface Api {
 
@@ -21,30 +23,30 @@ public interface Api {
     Call<FindResponse> find(@Body FindRequest request);
 
     @Multipart
-    @POST("ocr/{city}/{shop}")
+    @POST("ocr/{cityId}/{shopId}")
     Call<OcrReceiptResponse> ocr(
             @Part MultipartBody.Part receiptItemsImage,
             @Part MultipartBody.Part pricesImage,
-            @Path("city") String city,
-            @Path("shop") String shop);
+            @Path("cityId") long cityId,
+            @Path("shopId") long shopId);
 
     @POST("prices/save")
     Call<Integer> save(@Body SavePriceRequest request);
 
     @GET("cities/all")
-    Call<List<String>> getAllCities();
+    Call<List<City>> getAllCities();
 
-    @GET("shops/inCity/{cityName}")
-    Call<List<String>> getShops(@Path("cityName") String cityName);
+    @GET("shops/inCity/{cityId}")
+    Call<List<Shop>> getShops(@Path("cityId") long cityId);
 
     @GET("find/prices")
     Call<List<SearchReceiptItem>> getReceiptItems(
-            @Query("city") String city,
-            @Query("shop") String shop,
+            @Query("cityId") Long cityId,
+            @Query("shopId") Long shopId,
             @Query("q") String q);
 
     @GET("receiptItems")
     Call<List<String>> getReceiptItemsInShop(
-            @Query("city") String city,
-            @Query("shop") String shop);
+            @Query("cityId") long cityId,
+            @Query("shopId") long shopId);
 }

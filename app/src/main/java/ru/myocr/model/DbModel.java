@@ -4,6 +4,8 @@ package ru.myocr.model;
 import android.content.ContentValues;
 import android.net.Uri;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
@@ -15,7 +17,8 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public abstract class DbModel<T extends DbModel> implements Serializable {
 
-    public Long _id;
+    @SerializedName("id")
+    protected Long _id = -1L;
 
     public DbModel() {
     }

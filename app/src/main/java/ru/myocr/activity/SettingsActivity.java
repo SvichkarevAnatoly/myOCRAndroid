@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.myocr.R;
@@ -52,14 +51,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void loadCities(ListPreference cityPreference) {
             List<City> cities = City.getCities();
-            List<String> citiesIds = new ArrayList<>();
-            for (City city : cities) {
-                citiesIds.add(city.id);
+            String[] citiesNames = new String[cities.size()];
+            String[] citiesIds = new String[cities.size()];
+            for (int i = 0; i < cities.size(); i++) {
+                final City city = cities.get(i);
+                citiesNames[i] = city.getName();
+                citiesIds[i] = String.valueOf(city.getId());
             }
 
-            String[] ids = new String[citiesIds.size()];
-            cityPreference.setEntries(citiesIds.toArray(ids));
-            cityPreference.setEntryValues(citiesIds.toArray(ids));
+            cityPreference.setEntries(citiesNames);
+            cityPreference.setEntryValues(citiesIds);
         }
     }
 }

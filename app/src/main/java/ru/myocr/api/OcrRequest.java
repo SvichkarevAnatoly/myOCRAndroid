@@ -7,13 +7,13 @@ public class OcrRequest {
 
     public Bitmap receiptItems;
     public Bitmap prices;
-    public String city;
-    public String shop;
+    public long cityId;
+    public long shopId;
 
-    public OcrRequest(Bitmap receiptItems, Bitmap prices, String city, String shop) {
+    public OcrRequest(Bitmap receiptItems, Bitmap prices, long cityId, long shopId) {
         this.receiptItems = receiptItems;
         this.prices = prices;
-        this.city = city;
-        this.shop = shop;
+        this.cityId = cityId;
+        this.shopId = shopId;
     }
 }
