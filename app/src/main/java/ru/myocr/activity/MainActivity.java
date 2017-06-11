@@ -65,6 +65,11 @@ public class MainActivity extends AppCompatActivity
 
         openFragment(TicketFragment.newInstance(), TAG_MAIN);
         checkForUpdates();
+
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            handleIncomingImage(intent);
+        }
     }
 
     private void downloadCities() {
@@ -231,8 +236,6 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         checkForCrashes();
-        Intent intent = getIntent();
-        handleIncomingImage(intent);
     }
 
     @Override
