@@ -21,6 +21,7 @@ import net.hockeyapp.android.UpdateManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
@@ -28,6 +29,8 @@ import ru.myocr.databinding.ActivityMainBinding;
 import ru.myocr.fragment.DetailStatsFragment;
 import ru.myocr.fragment.SearchReceiptItemFragment;
 import ru.myocr.fragment.TicketFragment;
+import ru.myocr.model.City;
+import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
 
 import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
@@ -58,13 +61,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ApiHelper.makeApiRequest(null, ApiHelper::getAllCities,
-                throwable -> {
-                },
-                null, null);
+        downloadCities();
 
         openFragment(TicketFragment.newInstance(), TAG_MAIN);
         checkForUpdates();
+    }
+
+    private void downloadCities() {
+        ApiHelper.makeApiRequest(null, ApiHelper::getAllCities,
+                throwable -> {
+                },
+                this::onLoadCities, null);
+    }
+
+    private void onLoadCities(List<City> cities) {
+        for (City city : cities) {
+            city.putIfNotExist();
+        }
+
+        if (Settings.hasSelectedCity() && (cities.size() != 0)) {
+            Settings.setCity(cities.get(0).getId());
+        }
     }
 
     @Override

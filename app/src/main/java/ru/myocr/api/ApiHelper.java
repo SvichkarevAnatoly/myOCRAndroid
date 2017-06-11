@@ -26,7 +26,6 @@ import ru.myocr.model.SearchReceiptItem;
 import ru.myocr.model.Shop;
 import ru.myocr.model.filter.Filter;
 import ru.myocr.preference.Server;
-import ru.myocr.preference.Settings;
 import ru.myocr.util.BitmapUtil;
 import rx.Observable;
 import rx.Subscription;
@@ -100,17 +99,7 @@ public class ApiHelper {
 
     public List<City> getAllCities(Void v) {
         Call<List<City>> call = api.getAllCities();
-        List<City> cities = makeRequest(call);
-
-        for (City city : cities) {
-            city.putIfNotExist();
-        }
-
-        if ((Settings.getCity() == -1) && (cities.size() != 0)) {
-            Settings.setCity(cities.get(0).getId());
-        }
-
-        return cities;
+        return makeRequest(call);
     }
 
     public List<Receipt> getAllReceipt(Void v) {

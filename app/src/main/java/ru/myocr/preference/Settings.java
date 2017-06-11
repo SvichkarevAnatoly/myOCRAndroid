@@ -12,6 +12,10 @@ public class Settings {
     private static final SharedPreferences defaultPreferences =
             PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
+    public static boolean hasSelectedCity() {
+        return defaultPreferences.contains(CITY);
+    }
+
     public static long getCity() {
         return Long.valueOf(getString(CITY));
     }
