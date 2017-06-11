@@ -42,7 +42,7 @@ public class TicketActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ticket);
 
         long id = getIntent().getLongExtra(ARG_RECEIPT, -1);
-        receipt = DbModel.byId(Receipt.URI, id, Receipt.class);
+        receipt = DbModel.getById(Receipt.URI, id, Receipt.class);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

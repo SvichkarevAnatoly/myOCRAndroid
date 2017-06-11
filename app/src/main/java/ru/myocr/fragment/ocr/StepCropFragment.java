@@ -126,9 +126,7 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
     }
 
     private void onLoadShops(List<Shop> shops) {
-        for (Shop shop : shops) {
-            shop.putIfNotExist();
-        }
+        Shop.putIfNotExist(shops);
         initShopSpinner();
     }
 

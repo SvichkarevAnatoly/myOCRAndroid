@@ -71,7 +71,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         photo = getArguments().getParcelable(AddReceiptActivity.ARG_OCR_PHOTO);
         long id = getArguments().getLong(AddReceiptActivity.ARG_OCR_RECEIPT);
         if (id >= 0) {
-            receipt = DbModel.byId(Receipt.URI, id, Receipt.class);
+            receipt = DbModel.getById(Receipt.URI, id, Receipt.class);
         }
     }
 

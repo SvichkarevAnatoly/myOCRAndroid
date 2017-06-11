@@ -75,9 +75,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void onLoadCities(List<City> cities) {
-        for (City city : cities) {
-            city.putIfNotExist();
-        }
+        City.putIfNotExist(cities);
 
         if (!Settings.hasSelectedCity() && (cities.size() != 0)) {
             Settings.setCityId(cities.get(0).getId());

@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
@@ -28,10 +29,25 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
         this._id = _id;
     }
 
-    public static <T> T byId(Uri uri,
-                             Long id, Class<T> entityClass) {
+    public static <T> T getById(Uri uri, Long id, Class<T> entityClass) {
         return getProviderCompartment().query(uri, entityClass)
                 .withSelection(ReceiptContentProvider._ID + "=?", String.valueOf(id)).get();
+    }
+
+    public static <T> List<T> getAll(Class<T> entityClass) {
+        return getProviderCompartment().query(UriHelper.with(ReceiptContentProvider.AUTHORITY)
+                .getUri(entityClass), entityClass).list();
+    }
+
+    public static <T extends DbModel> void putIfNotExist(Collection<T> collection) {
+        for (T entity : collection) {
+            entity.putIfNotExist();
+        }
+    }
+
+    public static <T> void deleteAll(Class<T> entityClass) {
+        getProviderCompartment().delete(UriHelper.with(ReceiptContentProvider.AUTHORITY)
+                .getUri(entityClass), "", (String[]) null);
     }
 
     public static ProviderCompartment getProviderCompartment() {
@@ -40,16 +56,6 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
 
     public static UriHelper getUriHelper() {
         return UriHelper.with(ReceiptContentProvider.AUTHORITY);
-    }
-
-    public static <T> List<T> getAll(Class<T> entityClass) {
-        return getProviderCompartment().query(UriHelper.with(ReceiptContentProvider.AUTHORITY)
-                .getUri(entityClass), entityClass).list();
-    }
-
-    public static <T> void deleteAll(Class<T> entityClass) {
-        getProviderCompartment().delete(UriHelper.with(ReceiptContentProvider.AUTHORITY)
-                .getUri(entityClass), "", (String[]) null);
     }
 
     public Long getId() {
@@ -68,6 +74,13 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
             this._id = t._id;
         }
         getProviderCompartment().put(getTableUri(), this);
+    }
+
+    public boolean delete() {
+        if (!isValidId()) {
+            throw new IllegalStateException("Trying to remove entity ");
+        }
+        return getProviderCompartment().delete(getTableUri(), this) == 1;
     }
 
     public ContentValues buildContentValues() {
@@ -90,13 +103,6 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
             Uri put = getProviderCompartment().put(getTableUri(), this);
             _id = Long.valueOf(put.getLastPathSegment());
         }
-    }
-
-    public boolean delete() {
-        if (!isValidId()) {
-            throw new IllegalStateException("Trying to remove entity ");
-        }
-        return getProviderCompartment().delete(getTableUri(), this) == 1;
     }
 
     public boolean isValidId() {

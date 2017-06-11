@@ -62,15 +62,9 @@ public class SettingsActivity extends AppCompatActivity {
             ApiHelper.makeApiRequest(cityId, ApiHelper::getShops,
                     throwable -> {
                     },
-                    this::onLoadShops, null);
+                    Shop::putIfNotExist, null);
 
             return true;
-        }
-
-        private void onLoadShops(List<Shop> shops) {
-            for (Shop shop : shops) {
-                shop.putIfNotExist();
-            }
         }
 
         private void loadCities(ListPreference cityPreference) {
