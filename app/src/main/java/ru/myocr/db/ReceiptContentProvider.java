@@ -18,6 +18,7 @@ import ru.myocr.BuildConfig;
 import ru.myocr.model.City;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptItem;
+import ru.myocr.model.Shop;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import static nl.qbusict.cupboard.CupboardFactory.setCupboard;
@@ -70,6 +71,7 @@ public class ReceiptContentProvider extends CupboardContentProvider {
         cupboard().register(Receipt.class);
         cupboard().register(ReceiptItem.class);
         cupboard().register(City.class);
+        cupboard().register(Shop.class);
     }
 
     public ReceiptContentProvider() {
@@ -85,11 +87,6 @@ public class ReceiptContentProvider extends CupboardContentProvider {
         } else {
             return super.query(uri, projection, selection, selectionArgs, sortOrder);
         }
-    }
-
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return super.delete(uri, selection, selectionArgs);
     }
 
     private Cursor rawQuery(String query, String[] selectionArgs) {

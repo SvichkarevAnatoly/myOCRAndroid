@@ -150,7 +150,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     @NonNull
     private SavePriceRequest initSavePriceRequest() {
         final List<ReceiptPriceItem> items = convert(receiptData.getProductsPricesPairs());
-        final long city = Settings.getCity();
+        final long city = Settings.getCityId();
         final long shop = Preference.getShop();
         final String time = TimeUtil.parse(date.getTime());
         return new SavePriceRequest(city, shop, time, items);
@@ -170,7 +170,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     }
 
     public void initUi() {
-        binding.city.setText(String.valueOf(Settings.getCity()));
+        binding.city.setText(String.valueOf(Settings.getCityId()));
         binding.shop.setText(String.valueOf(Preference.getShop()));
         date = Calendar.getInstance();
 

@@ -63,8 +63,8 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
 
         initSearchView();
 
-        filter.setCityId(Settings.getCity());
-        ApiHelper.makeApiRequest(Settings.getCity(), ApiHelper::getShops,
+        filter.setCityId(Settings.getCityId());
+        ApiHelper.makeApiRequest(Settings.getCityId(), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);

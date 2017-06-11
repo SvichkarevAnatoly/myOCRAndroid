@@ -55,8 +55,8 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        filter.setCityId(Settings.getCity());
-        ApiHelper.makeApiRequest(Settings.getCity(), ApiHelper::getShops,
+        filter.setCityId(Settings.getCityId());
+        ApiHelper.makeApiRequest(Settings.getCityId(), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);

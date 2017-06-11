@@ -38,6 +38,7 @@ import ru.myocr.activity.AddReceiptActivity;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
 import ru.myocr.databinding.FragmentStepCropBinding;
+import ru.myocr.model.DbModel;
 import ru.myocr.model.Shop;
 import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
@@ -94,15 +95,18 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
 
         Toast.makeText(getActivity(), "Выделите продукты", Toast.LENGTH_SHORT).show();
 
-        ApiHelper.makeApiRequest(Settings.getCity(), ApiHelper::getShops,
+        ApiHelper.makeApiRequest(Settings.getCityId(), ApiHelper::getShops,
                 throwable -> {
                 },
                 this::onLoadShops, null);
 
+        initShopSpinner();
+
         return binding.getRoot();
     }
 
-    private void onLoadShops(List<Shop> shops) {
+    private void initShopSpinner() {
+        List<Shop> shops = DbModel.getAll(Shop.class);
         List<String> names = new ArrayList<>();
         for (Shop shop : shops) {
             names.add(shop.getName());
@@ -119,6 +123,13 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void onLoadShops(List<Shop> shops) {
+        for (Shop shop : shops) {
+            shop.putIfNotExist();
+        }
+        initShopSpinner();
     }
 
     public void onClickCrop() {
@@ -160,7 +171,7 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         } else {
             Bitmap prices = result.getBitmap();
 
-            final long city = Settings.getCity();
+            final long city = Settings.getCityId();
             final long shop = Preference.getShop();
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 

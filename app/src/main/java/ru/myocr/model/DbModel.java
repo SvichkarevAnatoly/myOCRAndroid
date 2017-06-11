@@ -47,6 +47,11 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
                 .getUri(entityClass), entityClass).list();
     }
 
+    public static <T> void deleteAll(Class<T> entityClass) {
+        getProviderCompartment().delete(UriHelper.with(ReceiptContentProvider.AUTHORITY)
+                .getUri(entityClass), "", (String[]) null);
+    }
+
     public Long getId() {
         return _id == null ? -1 : _id;
     }

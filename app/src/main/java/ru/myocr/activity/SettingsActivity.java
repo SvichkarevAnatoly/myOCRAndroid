@@ -2,6 +2,7 @@ package ru.myocr.activity;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,8 +11,10 @@ import android.view.MenuItem;
 import java.util.List;
 
 import ru.myocr.R;
+import ru.myocr.api.ApiHelper;
 import ru.myocr.model.City;
 import ru.myocr.model.DbModel;
+import ru.myocr.model.Shop;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -48,6 +51,26 @@ public class SettingsActivity extends AppCompatActivity {
             ListPreference cityPreference = (ListPreference) getPreferenceScreen()
                     .findPreference(getActivity().getString(R.string.pref_key_city));
             loadCities(cityPreference);
+
+            cityPreference.setOnPreferenceChangeListener(this::onChangedCity);
+        }
+
+        private boolean onChangedCity(Preference preference, Object newValue) {
+            Shop.deleteAll(Shop.class);
+            long cityId = Long.valueOf((String) newValue);
+
+            ApiHelper.makeApiRequest(cityId, ApiHelper::getShops,
+                    throwable -> {
+                    },
+                    this::onLoadShops, null);
+
+            return true;
+        }
+
+        private void onLoadShops(List<Shop> shops) {
+            for (Shop shop : shops) {
+                shop.putIfNotExist();
+            }
         }
 
         private void loadCities(ListPreference cityPreference) {

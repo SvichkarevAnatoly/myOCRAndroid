@@ -16,12 +16,12 @@ public class Settings {
         return defaultPreferences.contains(CITY);
     }
 
-    public static long getCity() {
+    public static long getCityId() {
         return Long.valueOf(getString(CITY));
     }
 
-    public static void setCity(long city) {
-        setString(CITY, String.valueOf(city));
+    public static void setCityId(long cityId) {
+        setString(CITY, String.valueOf(cityId));
     }
 
     private static void setString(String key, String value) {

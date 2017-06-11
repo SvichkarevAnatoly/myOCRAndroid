@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity
             city.putIfNotExist();
         }
 
-        if (Settings.hasSelectedCity() && (cities.size() != 0)) {
-            Settings.setCity(cities.get(0).getId());
+        if (!Settings.hasSelectedCity() && (cities.size() != 0)) {
+            Settings.setCityId(cities.get(0).getId());
         }
     }
 
