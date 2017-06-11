@@ -149,7 +149,7 @@ public class SearchReceiptItemFragment extends Fragment implements SearchReceipt
     private void onLoadShops(List<Shop> shops) {
         List<String> names = new ArrayList<>();
         for (Shop shop : shops) {
-            names.add(shop.name);
+            names.add(shop.getName());
         }
         binding.spinnerShop.setAdapter(
                 new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, names));

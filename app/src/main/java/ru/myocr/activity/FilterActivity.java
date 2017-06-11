@@ -171,12 +171,12 @@ public class FilterActivity extends AppCompatActivity implements SearchReceiptIt
         final long[] shopId = {-1};
 
         for (Shop shop : shops) {
-            names.add(shop.name);
+            names.add(shop.getName());
         }
         binding.shop.setText(filter.getShopId() != -1 ? "" + filter.getShopId() : "");
         binding.shop.setOnClickListener(v -> new AlertDialog.Builder(this)
                 .setItems(names.toArray(new String[names.size()]), (dialog, which) -> {
-                    binding.shop.setText(shops.get(which).name);
+                    binding.shop.setText(shops.get(which).getName());
                     shopId[0] = shops.get(which).getId();
                     dialog.dismiss();
                 })

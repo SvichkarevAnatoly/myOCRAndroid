@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import nl.qbusict.cupboard.ProviderCompartment;
@@ -41,12 +42,27 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
         return UriHelper.with(ReceiptContentProvider.AUTHORITY);
     }
 
+    public static <T> List<T> getAll(Class<T> entityClass) {
+        return getProviderCompartment().query(UriHelper.with(ReceiptContentProvider.AUTHORITY)
+                .getUri(entityClass), entityClass).list();
+    }
+
     public Long getId() {
         return _id == null ? -1 : _id;
     }
 
     public void setId(Long id) {
         _id = id;
+    }
+
+    public void putIfNotExist() {
+        T t = cupboard().withContext(App.getContext())
+                .query(getTableUri(), getEntityClass())
+                .withSelection("_id = ?", String.valueOf(_id)).get();
+        if (t != null) {
+            this._id = t._id;
+        }
+        getProviderCompartment().put(getTableUri(), this);
     }
 
     public ContentValues buildContentValues() {

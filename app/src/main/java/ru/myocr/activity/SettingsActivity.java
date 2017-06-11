@@ -11,6 +11,7 @@ import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.model.City;
+import ru.myocr.model.DbModel;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -50,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void loadCities(ListPreference cityPreference) {
-            List<City> cities = City.getCities();
+            List<City> cities = DbModel.getAll(City.class);
             String[] citiesNames = new String[cities.size()];
             String[] citiesIds = new String[cities.size()];
             for (int i = 0; i < cities.size(); i++) {

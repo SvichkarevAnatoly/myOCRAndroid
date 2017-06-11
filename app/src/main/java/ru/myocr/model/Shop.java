@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Shop extends DbModel<Shop> {
 
     @SerializedName("name")
-    public String name;
+    private String name;
 
     public Shop() {
     }
@@ -13,6 +13,10 @@ public class Shop extends DbModel<Shop> {
     public Shop(long id, String name) {
         this._id = id;
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
