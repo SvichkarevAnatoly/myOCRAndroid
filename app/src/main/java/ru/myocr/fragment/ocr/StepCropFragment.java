@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,11 +70,6 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         args.putParcelable(AddReceiptActivity.ARG_OCR_PHOTO, photo);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    private static Rect unionRect(Rect productRect, Rect pricesRect) {
-        return new Rect(productRect.left, Math.min(productRect.top, pricesRect.top),
-                pricesRect.right, Math.max(productRect.bottom, pricesRect.bottom));
     }
 
     @Override
@@ -188,51 +185,59 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
                                 .setTitle("Ошибка").setMessage("Не удалось разпознать текст").show();
                     }, ocrReceiptResponse -> {
                         progressDialog.hide();
-                        Uri itemsImageUri = null;
+                        Uri imageUri = null;
                         try {
-                            itemsImageUri = cropItemsImage(cropProductRect, result.getCropRect());
+                            imageUri = createBitmapWithRects(cropProductRect, result.getCropRect());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        ((AddReceiptActivity) getActivity()).onCropFinish(ocrReceiptResponse, itemsImageUri);
+                        ((AddReceiptActivity) getActivity()).onCropFinish(ocrReceiptResponse, imageUri);
                     }, null);
         }
     }
 
-    /*private void startActivity(OcrReceiptResponse response, Uri cropItemsImageUri) {
-        Intent intent = new Intent(this, ReceiptOcrActivity.class);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_RESPONSE, response);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_PHOTO, cropItemsImageUri);
-        intent.putExtra(ReceiptOcrActivity.ARG_OCR_ORIGIN_PHOTO, mCropImageUri);
-        startActivity(intent);
-        finish();
-    }*/
+    private void cropImage() {
+        binding.cropImageView.getCroppedImageAsync();
+    }
 
-    private Uri cropItemsImage(Rect cropProductRect, Rect cropPricesRect) throws IOException {
+    private Uri createBitmapWithRects(Rect croppedProductsRect, Rect croppedPricesRect) throws IOException {
+        Bitmap bitmapWithRects = drawRects(croppedProductsRect, croppedPricesRect);
+        return saveBitmap(bitmapWithRects);
+    }
+
+    @NonNull
+    private Bitmap drawRects(Rect croppedProductsRect, Rect croppedPricesRect) throws FileNotFoundException {
+        Bitmap mutableBitmap = copyOcrBitmap();
+
+        Paint paint = initPaint();
+        Canvas canvas = new Canvas(mutableBitmap);
+        canvas.drawRect(croppedProductsRect, paint);
+        canvas.drawRect(croppedPricesRect, paint);
+
+        return mutableBitmap;
+    }
+
+    private Bitmap copyOcrBitmap() throws FileNotFoundException {
         InputStream imageStream = getActivity().getContentResolver().openInputStream(mCropImageUri);
         Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+        return bitmap.copy(Bitmap.Config.ARGB_8888, true);
+    }
 
-        Rect unionRect = unionRect(cropProductRect, cropPricesRect);
-        Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-        Canvas canvas = new Canvas(mutableBitmap);
+    @NonNull
+    private Paint initPaint() {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(unionRect, paint);
+        return paint;
+    }
 
+    private Uri saveBitmap(Bitmap bitmap) throws IOException {
         File tempFile = BitmapUtil.createTempFile();
         FileOutputStream outputStream = new FileOutputStream(tempFile);
-        mutableBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         outputStream.close();
-
         return FileProvider.getUriForFile(getActivity(), FILE_PROVIDER_AUTHORITY, tempFile);
     }
-
-    protected void cropImage() {
-        binding.cropImageView.getCroppedImageAsync();
-    }
-
 }
