@@ -29,10 +29,12 @@ import ru.myocr.api.SavePriceRequest;
 import ru.myocr.api.SavePriceRequest.ReceiptPriceItem;
 import ru.myocr.databinding.FragmentOcrStepReceiptDetailsBinding;
 import ru.myocr.db.ReceiptContentProvider;
+import ru.myocr.model.City;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.Receipt;
 import ru.myocr.model.ReceiptData;
 import ru.myocr.model.ReceiptItem;
+import ru.myocr.model.Shop;
 import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
 import ru.myocr.util.PriceUtil;
@@ -54,7 +56,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData, Uri photo, long receiptId) {
+    public static OcrStepReceiptDetailsFragment newInstance(ReceiptData receiptData, Uri photo,
+                                                            long receiptId) {
         OcrStepReceiptDetailsFragment fragment = new OcrStepReceiptDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(AddReceiptActivity.ARG_OCR_RESPONSE, receiptData);
@@ -71,7 +74,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         photo = getArguments().getParcelable(AddReceiptActivity.ARG_OCR_PHOTO);
         long id = getArguments().getLong(AddReceiptActivity.ARG_OCR_RECEIPT);
         if (id >= 0) {
-            receipt = DbModel.getById(Receipt.URI, id, Receipt.class);
+            receipt = DbModel.getById(id, Receipt.class);
         }
     }
 
@@ -151,7 +154,7 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     private SavePriceRequest initSavePriceRequest() {
         final List<ReceiptPriceItem> items = convert(receiptData.getProductsPricesPairs());
         final long city = Settings.getCityId();
-        final long shop = Preference.getShop();
+        final long shop = Preference.getShopId();
         final String time = TimeUtil.parse(date.getTime());
         return new SavePriceRequest(city, shop, time, items);
     }
@@ -170,8 +173,11 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
     }
 
     public void initUi() {
-        binding.city.setText(String.valueOf(Settings.getCityId()));
-        binding.shop.setText(String.valueOf(Preference.getShop()));
+        final Shop shop = Shop.getById(Preference.getShopId(), Shop.class);
+        final City city = City.getById(Settings.getCityId(), City.class);
+
+        binding.city.setText(String.valueOf(city.getName()));
+        binding.shop.setText(String.valueOf(shop.getName()));
         date = Calendar.getInstance();
 
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {

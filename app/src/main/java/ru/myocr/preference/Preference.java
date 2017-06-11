@@ -10,11 +10,11 @@ public class Preference {
     private static final String APP_PREFS = "APP_PREFS";
     private static SharedPreferences sharedPreferences = App.getContext().getSharedPreferences(APP_PREFS, 0);
 
-    public static long getShop() {
+    public static long getShopId() {
         return getLong(SHOP);
     }
 
-    public static void setShop(long shop) {
+    public static void setShopId(long shop) {
         setLong(SHOP, shop);
     }
 

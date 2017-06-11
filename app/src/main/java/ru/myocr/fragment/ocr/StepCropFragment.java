@@ -113,7 +113,7 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
         binding.spinnerShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Preference.setShop(shops.get(position).getId());
+                Preference.setShopId(shops.get(position).getId());
             }
 
             @Override
@@ -167,7 +167,7 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
             Bitmap prices = result.getBitmap();
 
             final long city = Settings.getCityId();
-            final long shop = Preference.getShop();
+            final long shop = Preference.getShopId();
             final OcrRequest ocrRequest = new OcrRequest(receiptItem, prices, city, shop);
 
             if (progressDialog == null) {

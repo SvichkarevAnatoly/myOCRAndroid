@@ -64,7 +64,7 @@ public class AddReceiptActivity extends AppCompatActivity {
         Long id = getIntent().getLongExtra(ARG_OCR_RECEIPT, -1);
         if (id != -1) {
             isEditMode = true;
-            receipt = DbModel.getById(Receipt.URI, id, Receipt.class);
+            receipt = DbModel.getById(id, Receipt.class);
         }
 
         getSupportActionBar().setTitle(isEditMode ? "Редактировать чек" : "Добавить чек");

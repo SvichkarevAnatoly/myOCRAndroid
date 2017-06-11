@@ -35,7 +35,7 @@ public class ReceiptViewFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         long id = getArguments().getLong(ARG_RECEIPT, -1);
-        receipt = DbModel.getById(Receipt.URI, id, Receipt.class);
+        receipt = DbModel.getById(id, Receipt.class);
         receipt.loadReceiptItems(getActivity());
     }
 

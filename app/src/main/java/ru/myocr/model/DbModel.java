@@ -29,8 +29,8 @@ public abstract class DbModel<T extends DbModel> implements Serializable {
         this._id = _id;
     }
 
-    public static <T> T getById(Uri uri, Long id, Class<T> entityClass) {
-        return getProviderCompartment().query(uri, entityClass)
+    public static <T> T getById(Long id, Class<T> entityClass) {
+        return getProviderCompartment().query(getUriHelper().getUri(entityClass), entityClass)
                 .withSelection(ReceiptContentProvider._ID + "=?", String.valueOf(id)).get();
     }
 
