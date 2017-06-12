@@ -17,7 +17,7 @@ import ru.myocr.App;
 public class BitmapUtil {
     public static MultipartBody.Part buildMultipartBody(Bitmap bmp, String paramName) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 80, stream);
         byte[] inputImage = stream.toByteArray();
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), inputImage);
@@ -30,5 +30,19 @@ public class BitmapUtil {
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return new File(storageDir, imageFileName);
+    }
+
+    public static Bitmap compress(Bitmap srcBmp, int rawMaxSize) {
+        long size = srcBmp.getByteCount();
+        if (size < rawMaxSize) {
+            return srcBmp;
+        } else {
+            double coef = (double) rawMaxSize / size;
+            final int newWidth = (int) (coef * srcBmp.getWidth());
+            final int newHeight = (int) (coef * srcBmp.getHeight());
+            final Bitmap compressedBmp = Bitmap.createScaledBitmap(srcBmp, newWidth, newHeight, false);
+            srcBmp.recycle();
+            return compressedBmp;
+        }
     }
 }

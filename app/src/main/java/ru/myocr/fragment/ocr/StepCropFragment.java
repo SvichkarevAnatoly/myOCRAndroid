@@ -39,6 +39,7 @@ import ru.myocr.R;
 import ru.myocr.activity.AddReceiptActivity;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.api.OcrRequest;
+import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.databinding.FragmentStepCropBinding;
 import ru.myocr.model.DbModel;
 import ru.myocr.model.Shop;
@@ -49,6 +50,8 @@ import ru.myocr.util.BitmapUtil;
 import static ru.myocr.App.FILE_PROVIDER_AUTHORITY;
 
 public class StepCropFragment extends Fragment implements CropImageView.OnCropImageCompleteListener {
+
+    private static final int MAX_RAW_IMAGE_SIZE = 5 * 3 * 1024 * 1024; /*5 Mp*/
 
     private Uri mCropImageUri;
     private boolean isProductCropped = false;
@@ -160,11 +163,11 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
     public void onCropImageComplete(CropImageView view, CropImageView.CropResult result) {
         if (!isProductCropped) {
             isProductCropped = true;
-            receiptItem = result.getBitmap();
+            receiptItem = BitmapUtil.compress(result.getBitmap(), MAX_RAW_IMAGE_SIZE);
             cropProductRect = result.getCropRect();
             Toast.makeText(getActivity(), "Изображение продуктов получено", Toast.LENGTH_LONG).show();
         } else {
-            Bitmap prices = result.getBitmap();
+            Bitmap prices = BitmapUtil.compress(result.getBitmap(), MAX_RAW_IMAGE_SIZE);
 
             final long city = Settings.getCityId();
             final long shop = Preference.getShopId();
@@ -183,17 +186,19 @@ public class StepCropFragment extends Fragment implements CropImageView.OnCropIm
                         progressDialog.hide();
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("Ошибка").setMessage("Не удалось разпознать текст").show();
-                    }, ocrReceiptResponse -> {
-                        progressDialog.hide();
-                        Uri imageUri = null;
-                        try {
-                            imageUri = createBitmapWithRects(cropProductRect, result.getCropRect());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        ((AddReceiptActivity) getActivity()).onCropFinish(ocrReceiptResponse, imageUri);
-                    }, null);
+                    }, ocrReceiptResponse -> onOcrDone(result, ocrReceiptResponse), null);
         }
+    }
+
+    private void onOcrDone(CropImageView.CropResult result, OcrReceiptResponse ocrReceiptResponse) {
+        progressDialog.hide();
+        Uri imageUri = null;
+        try {
+            imageUri = createBitmapWithRects(cropProductRect, result.getCropRect());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ((AddReceiptActivity) getActivity()).onCropFinish(ocrReceiptResponse, imageUri);
     }
 
     private void cropImage() {
