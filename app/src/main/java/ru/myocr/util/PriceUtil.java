@@ -6,10 +6,6 @@ import ru.myocr.api.ocr.ParsedPrice;
 public class PriceUtil {
     private static String DOT = ".";
 
-    public static int getIntValue(String price) {
-        return Integer.parseInt(price.replace(DOT, ""));
-    }
-
     public static String getValue(ParsedPrice price) {
         final String priceValue;
         if (price.getIntValue() != null) {
@@ -18,6 +14,24 @@ public class PriceUtil {
             priceValue = price.getStringValue();
         }
         return priceValue;
+    }
+
+    public static int getIntValue(String price) {
+        if (!isCorrect(price)) {
+            throw new IllegalArgumentException("Price " + price + " is not correct");
+        }
+
+        final int intPrice = Integer.parseInt(price.replace(DOT, ""));
+        if (!price.contains(DOT)) {
+            return Integer.parseInt(price) * 100;
+        } else {
+            final int dotIndex = price.lastIndexOf(DOT);
+            if (dotIndex == price.length() - 2) {
+                return intPrice * 10;
+            }
+        }
+
+        return intPrice;
     }
 
     public static String getStringWithDot(int intValue) {
@@ -32,7 +46,29 @@ public class PriceUtil {
     }
 
     public static boolean isCorrect(String price) {
-        int countDots = price.length() - price.replace(DOT, "").length();
-        return countDots < 2 && price.length() <= 10;
+        final int length = price.length();
+        int countDots = length - price.replace(DOT, "").length();
+        if (countDots > 1) {
+            return false;
+        } else if (countDots == 1) {
+            final int dotIndex = price.indexOf(DOT);
+            if (dotIndex == 0) { // .20 for example
+                return false;
+            } else if (dotIndex == length - 1) { // 20. for example
+                return false;
+            } else if (dotIndex < length - 3) { // 20.567 for example
+                return false;
+            }
+        }
+
+        if (length > 10) {
+            return false;
+        }
+
+        if (Integer.parseInt(price.replace(DOT, "")) <= 0) {
+            return false;
+        }
+
+        return true;
     }
 }

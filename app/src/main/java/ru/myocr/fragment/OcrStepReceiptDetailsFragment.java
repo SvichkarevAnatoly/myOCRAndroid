@@ -105,7 +105,6 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
             receipt = new Receipt();
         }
 
-
         receipt.market = new Receipt.Market(binding.shop.getText().toString());
 
         receipt.date = date.getTime();
@@ -119,7 +118,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
         }
         receipt.items = items;
 
-        receipt.totalCostSum = Integer.valueOf(binding.total.getText().toString()) * 100;
+        final String totalPrice = binding.total.getText().toString();
+        receipt.totalCostSum = PriceUtil.getIntValue(totalPrice);
 
         receipt.photo = photo;
 
@@ -143,8 +143,8 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
 
         ApiHelper.makeApiRequest(savePriceRequest, ApiHelper::save,
                 throwable -> Toast.makeText(getContext(), "Ошибка сохранения", Toast.LENGTH_SHORT).show(),
-                integer -> {
-                    Toast.makeText(getContext(), "Успешно сохранено " + integer + " записей", Toast.LENGTH_SHORT).show();
+                savedItemsCount -> {
+                    Toast.makeText(getContext(), "Успешно сохранено " + savedItemsCount + " записей", Toast.LENGTH_SHORT).show();
                     saveToLocalDb();
                     getActivity().finish();
                 }, null);
@@ -161,12 +161,12 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
 
     private List<ReceiptPriceItem> convert(List<Pair<String, String>> productPricePairs) {
         final ArrayList<ReceiptPriceItem> items = new ArrayList<>();
-        for (Pair<String, String> pair : productPricePairs) {
-            if (pair.first == null || pair.second == null) {
+        for (Pair<String, String> item : productPricePairs) {
+            if (item.first == null || item.second == null) {
                 break;
             }
-            final int price = Integer.parseInt(pair.second.replace(".", ""));
-            items.add(new ReceiptPriceItem(pair.first, price));
+            final int price = PriceUtil.getIntValue(item.second);
+            items.add(new ReceiptPriceItem(item.first, price));
         }
 
         return items;
