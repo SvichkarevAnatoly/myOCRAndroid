@@ -109,7 +109,20 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
     }
 
     public void onClickNext() {
-        if (receiptDataIsNotCompleted()) {
+        boolean allowNext = true;
+        final ReceiptData receiptData = receiptDataStack.peek();
+        if (!receiptData.isPricesCorrect()) {
+            allowNext = false;
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Предупреждение")
+                    .setMessage("Присутствуют некорректные значения цен.\n" +
+                            "Пожалуйста, исправьте.")
+                    .setPositiveButton("Ok", (dialog, which) -> {
+                    })
+                    .show();
+        }
+        if (allowNext && receiptData.isNotCompleted()) {
+            allowNext = false;
             new AlertDialog.Builder(getContext())
                     .setTitle("Предупреждение")
                     .setMessage("Незаполненые полностью строки не будут сохранены.\n" +
@@ -119,17 +132,12 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
                     .setPositiveButton("Да",
                             (dialog, which) ->
                                     ((AddReceiptActivity) getActivity())
-                                            .onReceiptDataSaved(receiptDataStack.peek().getCompletedList()))
+                                            .onReceiptDataSaved(receiptData.getCompletedList()))
                     .show();
-        } else {
-            ((AddReceiptActivity) getActivity()).onReceiptDataSaved(receiptDataStack.peek());
         }
-    }
-
-    private boolean receiptDataIsNotCompleted() {
-        final int lastIndex = receiptDataStack.peek().size() - 1;
-        final ReceiptItemPriceViewItem item = receiptDataStack.peek().getReceiptItemPriceViewItem(lastIndex);
-        return item.isPartEmpty();
+        if (allowNext) {
+            ((AddReceiptActivity) getActivity()).onReceiptDataSaved(receiptData);
+        }
     }
 
     private void updateProductsView() {

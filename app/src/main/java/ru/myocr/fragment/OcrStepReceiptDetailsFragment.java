@@ -194,12 +194,12 @@ public class OcrStepReceiptDetailsFragment extends Fragment {
 
         updateLabel();
 
-        double total = 0;
+        int total = 0;
         for (Pair<String, String> item : receiptData.getProductsPricesPairs()) {
-            total += Double.valueOf(item.second);
+            total += PriceUtil.getIntValue(item.second);
         }
 
-        binding.total.setText(String.valueOf((int) total));
+        binding.total.setText(PriceUtil.getStringWithDot(total));
     }
 
     private void updateLabel() {

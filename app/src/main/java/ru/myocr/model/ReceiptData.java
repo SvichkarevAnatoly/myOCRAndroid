@@ -12,6 +12,7 @@ import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
+import ru.myocr.util.PriceUtil;
 
 public class ReceiptData implements Serializable {
     private final static String EMPTY_LINE = "";
@@ -88,6 +89,15 @@ public class ReceiptData implements Serializable {
         return receiptItems;
     }
 
+    public List<String> getPrices() {
+        final List<String> prices = new ArrayList<>();
+        for (ReceiptItemPriceViewItem item : receiptItemPriceViewItems) {
+            prices.add(item.getPrice());
+        }
+
+        return prices;
+    }
+
     public void removeReceiptItem(int idx) {
         final int size = receiptItemPriceViewItems.size();
         final int lastIndex = size - 1;
@@ -141,5 +151,20 @@ public class ReceiptData implements Serializable {
             }
         }
         return completedReceiptData;
+    }
+
+    public boolean isNotCompleted() {
+        final int lastIndex = size() - 1;
+        final ReceiptItemPriceViewItem item = getReceiptItemPriceViewItem(lastIndex);
+        return item.isPartEmpty();
+    }
+
+    public boolean isPricesCorrect() {
+        for (String price : getPrices()) {
+            if (!PriceUtil.isCorrect(price)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
