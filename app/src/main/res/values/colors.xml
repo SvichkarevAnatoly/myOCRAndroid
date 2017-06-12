@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#009db0</color>
     <color name="colorAccent">#FF7A00</color>
 
+    <color name="lightGrey">#949494</color>
+
     <color name="receipt_item_bg_light">#00ffffff</color>
     <color name="receipt_item_bg_dark">#0d000000</color>
 </resources>

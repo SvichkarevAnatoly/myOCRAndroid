@@ -182,6 +182,9 @@ public class ReceiptItemsFragment extends Fragment implements ReceiptDataViewAda
         binding.receiptItemEditText.setText(item.getReceiptItem());
         binding.priceEditText.setText(item.getPrice());
 
+        binding.receiptItemEditTextClear.setOnClickListener(v -> binding.receiptItemEditText.setText(""));
+        binding.priceEditTextClear.setOnClickListener(v -> binding.priceEditText.setText(""));
+
         final List<String> matches = new ArrayList<>(item.getMatches());
         matches.add(item.getSource());
 
