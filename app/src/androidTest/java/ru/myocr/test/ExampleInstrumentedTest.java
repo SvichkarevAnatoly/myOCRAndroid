@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ru.myocr.myocrandroid", appContext.getPackageName());
+        assertEquals("ru.myocr", appContext.getPackageName());
     }
 }
