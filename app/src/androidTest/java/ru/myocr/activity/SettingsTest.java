@@ -5,6 +5,8 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +20,12 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static java.lang.Thread.sleep;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
@@ -37,24 +41,16 @@ public class SettingsTest {
     @Rule
     public ActivityTestRule<SplashActivity> mActivityTestRule = new ActivityTestRule<>(SplashActivity.class);
 
-    @Test
-    public void mainOptions() {
+    @Before
+    public void setUp() throws Exception {
         // temporary solution for parallel test
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep(200);
 
-        // go to app settings
-        onView(allOf(withContentDescription("Open navigation drawer"),
-                withParent(withId(R.id.toolbar)), isDisplayed()))
-                .perform(click());
+        goToSettings();
+    }
 
-        onView(allOf(withId(R.id.design_menu_item_text),
-                withText("Настройки"), isDisplayed()))
-                .perform(click());
-
+    @Test
+    public void mainOptions() throws InterruptedException {
         // asserts
         // back btn
         onView(withContentDescription("Navigate up"))
@@ -86,22 +82,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void viewCityOption() {
-        // temporary solution for parallel test
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // go to app settings
-        onView(allOf(withContentDescription("Open navigation drawer"),
-                withParent(withId(R.id.toolbar)), isDisplayed()))
-                .perform(click());
-
-        onView(allOf(withId(R.id.design_menu_item_text), withText("Настройки"), isDisplayed()))
-                .perform(click());
-
+    public void viewCityOption() throws InterruptedException {
         // select city
         onView(allOf(childAtPosition(withId(android.R.id.list), 1), isDisplayed()))
                 .perform(click());
@@ -117,22 +98,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void selectAnotherCity() {
-        // temporary solution for parallel test
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // go to app settings
-        onView(allOf(withContentDescription("Open navigation drawer"),
-                withParent(withId(R.id.toolbar)), isDisplayed()))
-                .perform(click());
-
-        onView(allOf(withId(R.id.design_menu_item_text), withText("Настройки"), isDisplayed()))
-                .perform(click());
-
+    public void selectAnotherCity() throws InterruptedException {
         chooseCity("Nsk");
         final long NskId = Settings.getCityId();
 
@@ -142,6 +108,31 @@ public class SettingsTest {
 
         // return Nsk
         chooseCity("Spb");
+    }
+
+    @Test
+    public void useLocalServerSwitch() throws InterruptedException {
+        onView(allOf(childAtPosition(withId(android.R.id.list), 2), isDisplayed()))
+                .perform(click());
+
+        onView(allOf(IsInstanceOf.instanceOf(android.widget.Switch.class), isDisplayed()))
+                .check(matches(isChecked()));
+
+        onView(allOf(childAtPosition(withId(android.R.id.list), 2), isDisplayed()))
+                .perform(click());
+
+        onView(allOf(IsInstanceOf.instanceOf(android.widget.Switch.class), isDisplayed()))
+                .check(matches(isNotChecked()));
+    }
+
+    private void goToSettings() {
+        onView(allOf(withContentDescription("Open navigation drawer"),
+                withParent(withId(R.id.toolbar)), isDisplayed()))
+                .perform(click());
+
+        onView(allOf(withId(R.id.design_menu_item_text),
+                withText("Настройки"), isDisplayed()))
+                .perform(click());
     }
 
     private void chooseCity(String cityName) {
