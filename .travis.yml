@@ -31,7 +31,7 @@ before_script:
   - echo "y" | android update sdk --no-ui --filter extra-android-m2repository
   - echo "y" | android update sdk --no-ui --filter extra-google-m2repository
 
-script: ./gradlew test androidConnectedTest -i
+script: ./gradlew test connectedAndroidTest -i
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
