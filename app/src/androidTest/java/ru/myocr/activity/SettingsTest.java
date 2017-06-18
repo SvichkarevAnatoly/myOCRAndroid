@@ -125,6 +125,38 @@ public class SettingsTest {
                 .check(matches(isNotChecked()));
     }
 
+    @Test
+    public void openRemoteServerDialog() {
+        onView(allOf(childAtPosition(withId(android.R.id.list), 3), isDisplayed()))
+                .perform(click());
+
+        onView(allOf(withText("Адрес удаленного сервера"),
+                IsInstanceOf.instanceOf(android.widget.TextView.class)))
+                .check(matches(isDisplayed()));
+
+        onView(allOf(withText("http://104.199.78.135:8080/"), withId(android.R.id.edit)))
+                .check(matches(isDisplayed()));
+
+        onView(allOf(withText("OK"), withId(android.R.id.button1), isDisplayed()))
+                .perform(click());
+    }
+
+    @Test
+    public void openLocalServerDialog() {
+        onView(allOf(childAtPosition(withId(android.R.id.list), 4), isDisplayed()))
+                .perform(click());
+
+        onView(allOf(withText("Адрес локального сервера"),
+                IsInstanceOf.instanceOf(android.widget.TextView.class)))
+                .check(matches(isDisplayed()));
+
+        onView(allOf(withText("http://193.169.0.100:8080/"), withId(android.R.id.edit)))
+                .check(matches(isDisplayed()));
+
+        onView(allOf(withText("OK"), withId(android.R.id.button1), isDisplayed()))
+                .perform(click());
+    }
+
     private void goToSettings() {
         onView(allOf(withContentDescription("Open navigation drawer"),
                 withParent(withId(R.id.toolbar)), isDisplayed()))
