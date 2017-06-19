@@ -6,12 +6,12 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import ru.myocr.R;
+import ru.myocr.SleepTest;
 import ru.myocr.preference.Server;
 import ru.myocr.preference.Settings;
 
@@ -26,7 +26,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withContentDesc
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static java.lang.Thread.sleep;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
@@ -38,16 +37,13 @@ import static ru.myocr.OcrMatcher.isListEmpty;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SettingsTest {
+public class SettingsTest extends SleepTest {
 
     @Rule
     public ActivityTestRule<SplashActivity> mActivityTestRule = new ActivityTestRule<>(SplashActivity.class);
 
-    @Before
-    public void setUp() throws Exception {
-        // temporary solution for parallel test
-        sleep(200);
-
+    @Override
+    public void setUp() {
         goToSettings();
     }
 

@@ -1,12 +1,16 @@
 package ru.myocr.fragment;
 
-import org.junit.Before;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
 import ru.myocr.R;
+import ru.myocr.SleepTest;
 import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
@@ -21,15 +25,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-public class ReceiptItemsFragmentTest {
+@LargeTest
+@RunWith(AndroidJUnit4.class)
+public class ReceiptItemsFragmentTest extends SleepTest {
 
     @Rule
     public ReceiptItemsFragmentTestRule fragmentTestRule = new ReceiptItemsFragmentTestRule();
 
-    @Before
-    public void setUp() throws Exception {
-        Thread.sleep(200);
-
+    @Override
+    public void setUp() {
         Settings.setCityId(1L);
         Preference.setShopId(1L);
     }

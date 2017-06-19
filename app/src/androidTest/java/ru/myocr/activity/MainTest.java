@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import ru.myocr.R;
+import ru.myocr.SleepTest;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -27,7 +28,7 @@ import static org.hamcrest.Matchers.startsWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainTest {
+public class MainTest extends SleepTest {
 
     @Rule
     public ActivityTestRule<SplashActivity> mActivityTestRule = new ActivityTestRule<>(SplashActivity.class);
