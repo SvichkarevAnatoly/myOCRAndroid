@@ -15,6 +15,7 @@ import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
 import ru.myocr.api.ocr.ReceiptItemMatches;
+import ru.myocr.fragment.support.ReceiptItemsFragmentTestRule;
 import ru.myocr.preference.Preference;
 import ru.myocr.preference.Settings;
 

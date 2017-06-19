@@ -1,4 +1,4 @@
-package ru.myocr.fragment;
+package ru.myocr.fragment.support;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.v4.app.FragmentManager;

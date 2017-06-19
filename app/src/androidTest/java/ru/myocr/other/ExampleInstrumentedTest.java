@@ -1,4 +1,4 @@
-package ru.myocr.test;
+package ru.myocr.other;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
