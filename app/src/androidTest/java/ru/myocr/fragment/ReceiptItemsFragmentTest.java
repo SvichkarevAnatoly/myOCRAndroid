@@ -7,7 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import ru.myocr.R;
 import ru.myocr.SleepTest;
@@ -54,23 +55,22 @@ public class ReceiptItemsFragmentTest extends SleepTest {
         onView(allOf(withId(R.id.button_product_remove), isDisplayed()))
                 .check(matches(isDisplayed()));
 
-        onView(allOf(withText("pizZza"), withId(R.id.text_product)))
+        onView(allOf(withText("Milk"), withId(R.id.text_product)))
                 .check(matches(isDisplayed()));
 
         onView(allOf(withId(R.id.button_price_remove), isDisplayed()))
                 .check(matches(isDisplayed()));
 
-        onView(allOf(withText("45.56g"), withId(R.id.text_price)))
+        onView(allOf(withText("42.00"), withId(R.id.text_price)))
                 .check(matches(isDisplayed()));
     }
 
     private OcrReceiptResponse generateOcrReceiptResponse() {
-        final ArrayList<ReceiptItemMatches> itemMatches = new ArrayList<>();
-        final ArrayList<Match> matches = new ArrayList<>();
-        matches.add(new Match("pizZza", 5));
-        itemMatches.add(new ReceiptItemMatches("pizza", matches));
-        final ArrayList<ParsedPrice> prices = new ArrayList<>();
-        prices.add(new ParsedPrice("45.56g"));
+        final List<Match> matches = Collections.singletonList(new Match("Milk", 5));
+        final List<ReceiptItemMatches> itemMatches =
+                Collections.singletonList(new ReceiptItemMatches("miilllsdf", matches));
+        final List<ParsedPrice> prices =
+                Collections.singletonList(new ParsedPrice("42.00", 4200));
         return new OcrReceiptResponse(itemMatches, prices);
     }
 }
