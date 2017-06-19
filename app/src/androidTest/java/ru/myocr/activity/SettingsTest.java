@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import ru.myocr.R;
+import ru.myocr.preference.Server;
 import ru.myocr.preference.Settings;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -31,6 +32,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static ru.myocr.OcrMatcher.childAtPosition;
 import static ru.myocr.OcrMatcher.isListEmpty;
 
@@ -112,17 +114,24 @@ public class SettingsTest {
 
     @Test
     public void useLocalServerSwitch() throws InterruptedException {
-        onView(allOf(childAtPosition(withId(android.R.id.list), 2), isDisplayed()))
-                .perform(click());
-
-        onView(allOf(IsInstanceOf.instanceOf(android.widget.Switch.class), isDisplayed()))
-                .check(matches(isChecked()));
-
-        onView(allOf(childAtPosition(withId(android.R.id.list), 2), isDisplayed()))
-                .perform(click());
-
+        // check unchecked
         onView(allOf(IsInstanceOf.instanceOf(android.widget.Switch.class), isDisplayed()))
                 .check(matches(isNotChecked()));
+        assertEquals("http://104.199.78.135:8080/", Server.getUrl());
+
+        // check checked
+        onView(allOf(childAtPosition(withId(android.R.id.list), 2), isDisplayed()))
+                .perform(click());
+        onView(allOf(IsInstanceOf.instanceOf(android.widget.Switch.class), isDisplayed()))
+                .check(matches(isChecked()));
+        assertEquals("http://193.169.0.100:8080/", Server.getUrl());
+
+        // check unchecked
+        onView(allOf(childAtPosition(withId(android.R.id.list), 2), isDisplayed()))
+                .perform(click());
+        onView(allOf(IsInstanceOf.instanceOf(android.widget.Switch.class), isDisplayed()))
+                .check(matches(isNotChecked()));
+        assertEquals("http://104.199.78.135:8080/", Server.getUrl());
     }
 
     @Test
