@@ -41,7 +41,7 @@ public class ReceiptItemsFragmentTest extends SleepTest {
     }
 
     @Test
-    public void viewOcrResults() {
+    public void viewOneItem() {
         // Launch the activity to make the fragment visible
         fragmentTestRule.setData(generateOcrReceiptResponse());
         fragmentTestRule.launchActivity(null);
@@ -55,7 +55,7 @@ public class ReceiptItemsFragmentTest extends SleepTest {
         onView(allOf(withId(R.id.button_product_remove), isDisplayed()))
                 .check(matches(isDisplayed()));
 
-        onView(allOf(withText("Milk"), withId(R.id.text_product)))
+        onView(allOf(withText("item1"), withId(R.id.text_product)))
                 .check(matches(isDisplayed()));
 
         onView(allOf(withId(R.id.button_price_remove), isDisplayed()))
@@ -66,9 +66,9 @@ public class ReceiptItemsFragmentTest extends SleepTest {
     }
 
     private OcrReceiptResponse generateOcrReceiptResponse() {
-        final List<Match> matches = Collections.singletonList(new Match("Milk", 5));
+        final List<Match> matches = Collections.singletonList(new Match("item1", 5));
         final List<ReceiptItemMatches> itemMatches =
-                Collections.singletonList(new ReceiptItemMatches("miilllsdf", matches));
+                Collections.singletonList(new ReceiptItemMatches("itemN", matches));
         final List<ParsedPrice> prices =
                 Collections.singletonList(new ParsedPrice("42.00", 4200));
         return new OcrReceiptResponse(itemMatches, prices);
