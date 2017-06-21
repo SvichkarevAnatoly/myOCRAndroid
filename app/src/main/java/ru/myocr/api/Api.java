@@ -19,9 +19,6 @@ import ru.myocr.model.Shop;
 
 public interface Api {
 
-    @POST("find")
-    Call<FindResponse> find(@Body FindRequest request);
-
     @Multipart
     @POST("ocr/{cityId}/{shopId}")
     Call<OcrReceiptResponse> ocr(

@@ -4,9 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
@@ -15,13 +13,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.myocr.api.ocr.Match;
 import ru.myocr.api.ocr.OcrReceiptResponse;
 import ru.myocr.api.ocr.ParsedPrice;
-import ru.myocr.api.ocr.ReceiptItemMatches;
 import ru.myocr.model.City;
-import ru.myocr.model.DummyReceipt;
-import ru.myocr.model.Receipt;
 import ru.myocr.model.SearchReceiptItem;
 import ru.myocr.model.Shop;
 import ru.myocr.model.filter.Filter;
@@ -92,18 +86,9 @@ public class ApiHelper {
         );
     }
 
-    public FindResponse find(FindRequest request) {
-        final Call<FindResponse> responseCall = api.find(request);
-        return makeRequest(responseCall);
-    }
-
     public List<City> getAllCities(Void v) {
         Call<List<City>> call = api.getAllCities();
         return makeRequest(call);
-    }
-
-    public List<Receipt> getAllReceipt(Void v) {
-        return DummyReceipt.LIST;
     }
 
     public OcrReceiptResponse ocr(OcrRequest request) {
@@ -119,22 +104,6 @@ public class ApiHelper {
         }
 
         return response;
-    }
-
-    public OcrReceiptResponse ocrFake(OcrRequest request) {
-        List<ReceiptItemMatches> itemMatches = new ArrayList<>();
-        List<ParsedPrice> prices = new ArrayList<>();
-
-        ArrayList<Match> matches = new ArrayList<>();
-        matches.add(new Match(DummyReceipt.getDummyProduct(), 10));
-
-        Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            itemMatches.add(new ReceiptItemMatches(DummyReceipt.getDummyProduct(), matches));
-            prices.add(new ParsedPrice("1000", random.nextInt(100) * 1000));
-        }
-
-        return new OcrReceiptResponse(itemMatches, prices);
     }
 
     public Integer save(SavePriceRequest request) {
