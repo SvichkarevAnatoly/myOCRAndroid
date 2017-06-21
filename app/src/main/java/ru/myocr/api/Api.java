@@ -42,8 +42,8 @@ public interface Api {
             @Query("shopId") Long shopId,
             @Query("q") String q);
 
-    @GET("receiptItems")
+    @GET("receiptItems/{cityId}/{shopId}")
     Call<List<String>> getReceiptItemsInShop(
-            @Query("cityId") long cityId,
-            @Query("shopId") long shopId);
+            @Path("cityId") long cityId,
+            @Path("shopId") long shopId);
 }
