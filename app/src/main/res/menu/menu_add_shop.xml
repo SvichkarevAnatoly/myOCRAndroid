@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ru.myocr.activity.TicketActivity">
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_check_white_18dp"
+        android:orderInCategory="100"
+        android:title="Добавить"
+        app:showAsAction="always" />
+</menu>

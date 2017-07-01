@@ -67,6 +67,16 @@
             fab:fab_label="Выбрать из CamScanner"
             fab:fab_size="mini" />
 
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabAddShop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_white_18dp"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorAccent"
+            fab:fab_colorRipple="@color/colorAccent"
+            fab:fab_label="Добавить магазин"
+            fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
 

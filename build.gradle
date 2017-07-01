@@ -18,6 +18,9 @@ allprojects {
         mavenCentral()
         jcenter()
         maven { url "https://jitpack.io" }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -27,8 +30,10 @@ task clean(type: Delete) {
 
 ext {
     buildToolsVersion = "25.0.2"
-    supportLibVersion = "25.1.0"
+    supportLibVersion = "25.3.1"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
     espressoVersion = "2.2.2"
+    archLifecycleVersion = "1.0.0-alpha3"
+    archRoomVersion = "1.0.0-alpha3"
 }

@@ -26,6 +26,7 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import nl.littlerobots.cupboard.tools.provider.UriHelper;
 import ru.myocr.R;
+import ru.myocr.activity.AddShopActivity;
 import ru.myocr.activity.MainActivity;
 import ru.myocr.activity.TicketActivity;
 import ru.myocr.db.ReceiptContentProvider;
@@ -88,6 +89,11 @@ public class TicketFragment extends Fragment implements LoaderManager.LoaderCall
         view.findViewById(R.id.fabCamScanner).setOnClickListener(v -> {
             fab.hideMenu(true);
             ((MainActivity) getActivity()).onClickRunCamScanner();
+        });
+        view.findViewById(R.id.fabAddShop).setOnClickListener(v -> {
+            fab.hideMenu(true);
+            Intent intent = new Intent(getActivity(), AddShopActivity.class);
+            startActivity(intent);
         });
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);

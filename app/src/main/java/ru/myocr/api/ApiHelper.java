@@ -91,6 +91,15 @@ public class ApiHelper {
         return makeRequest(call);
     }
 
+    public boolean addShop() {
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public OcrReceiptResponse ocr(OcrRequest request) {
         final MultipartBody.Part receiptItemsPart = BitmapUtil.buildMultipartBody(request.receiptItems, "receiptItemsImage");
         final MultipartBody.Part pricesPart = BitmapUtil.buildMultipartBody(request.prices, "pricesImage");
