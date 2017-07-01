@@ -34,13 +34,17 @@ public class ApiHelper {
     private final Api api;
 
     public ApiHelper() {
+        this(Server.getUrl());
+    }
+
+    public ApiHelper(String baseUrl) {
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Server.getUrl())
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
