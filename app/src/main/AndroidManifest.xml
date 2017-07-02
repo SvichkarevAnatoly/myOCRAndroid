@@ -82,7 +82,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AddShopActivity"
+            android:name=".activity.ShopAddingActivity"
             android:theme="@style/AppTheme" />
     </application>
 

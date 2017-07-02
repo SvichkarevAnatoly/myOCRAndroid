@@ -11,13 +11,13 @@ import ru.myocr.api.ApiHelper;
 import ru.myocr.model.City;
 import rx.Subscription;
 
-public class AddShopViewModel extends ViewModel {
+public class ShopAddingViewModel extends ViewModel {
 
     private MutableLiveData<List<City>> cities = new MutableLiveData<>();
     private MutableLiveData<Boolean> progress = new MutableLiveData<>();
     private Subscription subscription;
 
-    public AddShopViewModel() {
+    public ShopAddingViewModel() {
         loadCities();
     }
 

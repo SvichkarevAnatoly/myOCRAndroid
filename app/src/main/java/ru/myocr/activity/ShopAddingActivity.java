@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import ru.myocr.R;
 import ru.myocr.databinding.ActivityAddShopBinding;
 import ru.myocr.model.City;
-import ru.myocr.viewmodel.AddShopViewModel;
+import ru.myocr.viewmodel.ShopAddingViewModel;
 
-public class AddShopActivity extends LifecycleActivity {
+public class ShopAddingActivity extends LifecycleActivity {
 
-    private AddShopViewModel viewModel;
+    private ShopAddingViewModel viewModel;
     private ActivityAddShopBinding binding;
 
     private ProgressDialog progressDialog;
@@ -30,7 +30,7 @@ public class AddShopActivity extends LifecycleActivity {
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);*/
 
-        viewModel = ViewModelProviders.of(this).get(AddShopViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(ShopAddingViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_shop);
 
         progressDialog = new ProgressDialog(this);
