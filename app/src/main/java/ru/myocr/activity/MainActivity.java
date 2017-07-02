@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -23,9 +24,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.databinding.ActivityMainBinding;
+import ru.myocr.di.HelloWorldService;
 import ru.myocr.fragment.DetailStatsFragment;
 import ru.myocr.fragment.SearchReceiptItemFragment;
 import ru.myocr.fragment.TicketFragment;
@@ -42,6 +47,9 @@ public class MainActivity extends AppCompatActivity
     private static final int CAM_REQUEST = 2;
     private static final String TAG_MAIN = "Main";
 
+    @Inject
+    HelloWorldService helloWorldService;
+
     private ActivityMainBinding binding;
     private Uri photoURI;
 
@@ -49,6 +57,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        App.component().inject(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,6 +81,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = getIntent();
             handleIncomingImage(intent);
         }
+
+        Toast.makeText(this, helloWorldService.greet("Anatoly"), Toast.LENGTH_LONG).show();
     }
 
     private void downloadCities() {

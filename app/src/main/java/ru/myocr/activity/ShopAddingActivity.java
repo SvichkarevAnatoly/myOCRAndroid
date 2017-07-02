@@ -95,6 +95,7 @@ public class ShopAddingActivity extends LifecycleActivity {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(Class<T> modelClass) {
             return (T) new ShopAddingViewModel(dataSource);
         }
