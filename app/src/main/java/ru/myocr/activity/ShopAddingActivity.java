@@ -2,7 +2,6 @@ package ru.myocr.activity;
 
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LifecycleActivity;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,13 +18,13 @@ import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.databinding.ActivityAddShopBinding;
 import ru.myocr.model.City;
-import ru.myocr.viewmodel.DataSource;
 import ru.myocr.viewmodel.ShopAddingViewModel;
 
 public class ShopAddingActivity extends LifecycleActivity {
 
     @Inject
-    DataSource<List<City>> dataSource;
+    ViewModelProvider.Factory factory;
+
     private ShopAddingViewModel viewModel;
     private ActivityAddShopBinding binding;
     private ProgressDialog progressDialog;
@@ -36,7 +34,6 @@ public class ShopAddingActivity extends LifecycleActivity {
         super.onCreate(savedInstanceState);
         App.component().inject(this);
 
-        final ShopAddingViewModelFactory factory = new ShopAddingViewModelFactory(dataSource);
         viewModel = ViewModelProviders.of(this, factory).get(ShopAddingViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_shop);
 
@@ -84,20 +81,5 @@ public class ShopAddingActivity extends LifecycleActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private class ShopAddingViewModelFactory implements ViewModelProvider.Factory {
-
-        private DataSource<List<City>> dataSource;
-
-        public ShopAddingViewModelFactory(DataSource<List<City>> dataSource) {
-            this.dataSource = dataSource;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new ShopAddingViewModel(dataSource);
-        }
     }
 }
