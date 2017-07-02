@@ -10,14 +10,19 @@ import java.util.List;
 import ru.myocr.api.ApiHelper;
 import ru.myocr.model.City;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ShopAddingViewModel extends ViewModel {
 
     private MutableLiveData<List<City>> cities = new MutableLiveData<>();
     private MutableLiveData<Boolean> progress = new MutableLiveData<>();
-    private Subscription subscription;
 
-    public ShopAddingViewModel() {
+    private Subscription subscription;
+    private DataSource<List<City>> shopDataSource;
+
+    public ShopAddingViewModel(DataSource<List<City>> shopDataSource) {
+        this.shopDataSource = shopDataSource;
         loadCities();
     }
 
@@ -50,11 +55,11 @@ public class ShopAddingViewModel extends ViewModel {
     }
 
     private void loadCities() {
-        subscription = ApiHelper.makeApiRequest(null,
-                (requester, var) -> requester.getAllCities(null),
-                throwable -> {
-                },
-                cityList -> cities.setValue(cityList),
-                null);
+        subscription = shopDataSource.get()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loadedCities -> cities.setValue(loadedCities),
+                        Throwable::printStackTrace);
+
     }
 }

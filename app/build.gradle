@@ -78,7 +78,10 @@ dependencies {
     }
     // add this for intent mocking support
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:' + rootProject.espressoVersion;
+
     testCompile 'com.squareup.okhttp3:mockwebserver:3.8.1'
+    testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
+    testCompile "android.arch.core:core-testing:$rootProject.architectureComponentsVersion"
 
     compile 'android.arch.lifecycle:extensions:' + rootProject.archLifecycleVersion;
     compile 'android.arch.persistence.room:runtime:' + rootProject.archRoomVersion;
