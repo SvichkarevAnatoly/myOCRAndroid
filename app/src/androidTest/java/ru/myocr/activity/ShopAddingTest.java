@@ -31,7 +31,7 @@ public class ShopAddingTest extends SleepTest {
     public ActivityTestRule<SplashActivity> mActivityTestRule = new ActivityTestRule<>(SplashActivity.class);
 
     @Test
-    public void splashActivityTest() {
+    public void checkVisualElements() {
         ViewInteraction floatingActionButton = onView(
                 allOf(withClassName(is("com.github.clans.fab.FloatingActionButton")),
                         withParent(withId(R.id.floatingMenu)),
