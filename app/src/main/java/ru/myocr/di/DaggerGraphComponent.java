@@ -4,12 +4,12 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import ru.myocr.App;
-import ru.myocr.activity.MainActivity;
+import ru.myocr.activity.ShopAddingActivity;
 
 @Singleton
 @Component(modules = {MainModule.class})
 public interface DaggerGraphComponent {
-    void inject(MainActivity mainActivity);
+    void inject(ShopAddingActivity activity);
 
     final class Initializer {
         private Initializer() {

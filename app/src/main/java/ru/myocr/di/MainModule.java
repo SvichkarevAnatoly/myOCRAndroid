@@ -2,10 +2,15 @@ package ru.myocr.di;
 
 import android.app.Application;
 
+import java.util.List;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import ru.myocr.model.City;
+import ru.myocr.viewmodel.DataSource;
+import ru.myocr.viewmodel.ShopDataSourceImpl;
 
 @Module
 public class MainModule {
@@ -23,7 +28,7 @@ public class MainModule {
 
     @Provides
     @Singleton
-    HelloWorldService provideHelloWorldService() {
-        return new HelloWorldServiceManager();
+    DataSource<List<City>> provideDataSource() {
+        return new ShopDataSourceImpl();
     }
 }

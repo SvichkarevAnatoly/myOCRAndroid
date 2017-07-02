@@ -14,28 +14,28 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import ru.myocr.App;
 import ru.myocr.R;
 import ru.myocr.databinding.ActivityAddShopBinding;
 import ru.myocr.model.City;
 import ru.myocr.viewmodel.DataSource;
 import ru.myocr.viewmodel.ShopAddingViewModel;
-import ru.myocr.viewmodel.ShopDataSourceImpl;
 
 public class ShopAddingActivity extends LifecycleActivity {
 
+    @Inject
+    DataSource<List<City>> dataSource;
     private ShopAddingViewModel viewModel;
     private ActivityAddShopBinding binding;
-
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.component().inject(this);
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);*/
-
-        final ShopDataSourceImpl dataSource = new ShopDataSourceImpl();
         final ShopAddingViewModelFactory factory = new ShopAddingViewModelFactory(dataSource);
         viewModel = ViewModelProviders.of(this, factory).get(ShopAddingViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_shop);
